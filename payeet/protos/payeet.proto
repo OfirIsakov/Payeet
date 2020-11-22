@@ -1,0 +1,70 @@
+syntax= "proto3";
+package payeet;
+
+message LoginRequest_S{
+    string session = 1;
+}
+
+message LoginRequest{
+    string mail = 1;
+    string password = 2;
+}
+
+message LoginResponse{
+    string FirstName = 1;
+    string LastName = 2;
+    string session = 3;
+    string user_ID = 4;
+}
+
+message RegisterRequest{
+    string FirstName = 1;
+    string LastName = 2;
+
+    string mail = 3;
+    string password = 4;
+    
+}
+
+message StatusResponse{
+    enum code{
+        SUCCESS = 0;
+        WORNG_CREDS = 1;
+        INVALID_MAIL = 2;
+        INVALID_SESSION = 3;
+    }
+    code StatusCode = 1;
+    string message = 2;
+}
+
+message BalanceRequest{
+    string user_ID = 1;
+    string session = 2;
+}
+
+message BalanceResponse{
+    string balance = 1;
+}
+
+message TransferRequest{
+    string receiverMail = 1;
+    string senderID = 2;
+    string session = 3;
+}
+
+message historyRequest{
+    int32 index = 1;
+    string senderID = 2;
+    string session = 3;
+}
+
+service payeet{
+    rpc login (LoginRequest) returns (LoginResponse);
+    rpc loginS (LoginRequest_S) returns (LoginResponse);
+    
+    rpc register(RegisterRequest) returns (StatusResponse);
+
+    rpc getBalance (BalanceRequest) returns (BalanceResponse);
+    
+    rpc transferBalance (TransferRequest) returns (StatusResponse);
+}
