@@ -8,15 +8,15 @@
 const LoginRequest_S$json = const {
   '1': 'LoginRequest_S',
   '2': const [
-    const {'1': 'session', '3': 1, '4': 1, '5': 9, '10': 'session'},
+    const {'1': 'Session', '3': 1, '4': 1, '5': 9, '10': 'Session'},
   ],
 };
 
 const LoginRequest$json = const {
   '1': 'LoginRequest',
   '2': const [
-    const {'1': 'mail', '3': 1, '4': 1, '5': 9, '10': 'mail'},
-    const {'1': 'password', '3': 2, '4': 1, '5': 9, '10': 'password'},
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
   ],
 };
 
@@ -25,8 +25,8 @@ const LoginResponse$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'session', '3': 3, '4': 1, '5': 9, '10': 'session'},
-    const {'1': 'user_ID', '3': 4, '4': 1, '5': 9, '10': 'userID'},
+    const {'1': 'Session', '3': 3, '4': 1, '5': 9, '10': 'Session'},
+    const {'1': 'User_ID', '3': 4, '4': 1, '5': 9, '10': 'UserID'},
   ],
 };
 
@@ -35,8 +35,8 @@ const RegisterRequest$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'mail', '3': 3, '4': 1, '5': 9, '10': 'mail'},
-    const {'1': 'password', '3': 4, '4': 1, '5': 9, '10': 'password'},
+    const {'1': 'Mail', '3': 3, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'Password', '3': 4, '4': 1, '5': 9, '10': 'Password'},
   ],
 };
 
@@ -44,7 +44,7 @@ const StatusResponse$json = const {
   '1': 'StatusResponse',
   '2': const [
     const {'1': 'StatusCode', '3': 1, '4': 1, '5': 14, '6': '.payeet.StatusResponse.code', '10': 'StatusCode'},
-    const {'1': 'message', '3': 2, '4': 1, '5': 9, '10': 'message'},
+    const {'1': 'Message', '3': 2, '4': 1, '5': 9, '10': 'Message'},
   ],
   '4': const [StatusResponse_code$json],
 };
@@ -62,33 +62,33 @@ const StatusResponse_code$json = const {
 const BalanceRequest$json = const {
   '1': 'BalanceRequest',
   '2': const [
-    const {'1': 'user_ID', '3': 1, '4': 1, '5': 9, '10': 'userID'},
-    const {'1': 'session', '3': 2, '4': 1, '5': 9, '10': 'session'},
+    const {'1': 'User_ID', '3': 1, '4': 1, '5': 9, '10': 'UserID'},
+    const {'1': 'Session', '3': 2, '4': 1, '5': 9, '10': 'Session'},
   ],
 };
 
 const BalanceResponse$json = const {
   '1': 'BalanceResponse',
   '2': const [
-    const {'1': 'balance', '3': 1, '4': 1, '5': 9, '10': 'balance'},
+    const {'1': 'Balance', '3': 1, '4': 1, '5': 9, '10': 'Balance'},
   ],
 };
 
 const TransferRequest$json = const {
   '1': 'TransferRequest',
   '2': const [
-    const {'1': 'receiverMail', '3': 1, '4': 1, '5': 9, '10': 'receiverMail'},
-    const {'1': 'senderID', '3': 2, '4': 1, '5': 9, '10': 'senderID'},
-    const {'1': 'session', '3': 3, '4': 1, '5': 9, '10': 'session'},
+    const {'1': 'ReceiverMail', '3': 1, '4': 1, '5': 9, '10': 'ReceiverMail'},
+    const {'1': 'SenderID', '3': 2, '4': 1, '5': 9, '10': 'SenderID'},
+    const {'1': 'Session', '3': 3, '4': 1, '5': 9, '10': 'Session'},
   ],
 };
 
 const historyRequest$json = const {
   '1': 'historyRequest',
   '2': const [
-    const {'1': 'index', '3': 1, '4': 1, '5': 5, '10': 'index'},
-    const {'1': 'senderID', '3': 2, '4': 1, '5': 9, '10': 'senderID'},
-    const {'1': 'session', '3': 3, '4': 1, '5': 9, '10': 'session'},
+    const {'1': 'Index', '3': 1, '4': 1, '5': 5, '10': 'Index'},
+    const {'1': 'SenderID', '3': 2, '4': 1, '5': 9, '10': 'SenderID'},
+    const {'1': 'Session', '3': 3, '4': 1, '5': 9, '10': 'Session'},
   ],
 };
 

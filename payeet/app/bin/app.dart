@@ -1,7 +1,7 @@
 import 'package:grpc/grpc.dart';
 
-import 'package:payeet/protos/dart/payeet.pb.dart';
-import 'package:tutorial/protos/dart/payeet.pbgrpc.dart';
+import '../../protos/dart/payeet.pb.dart';
+import '../../protos/dart/payeet.pbgrpc.dart';
 
 
 Future<void> main(List<String> args) async {
@@ -17,12 +17,12 @@ Future<void> main(List<String> args) async {
     
     final response = await stub.login(
       LoginRequest()
-      ..a = "mail"
-      ..b = "password"
+      ..mail = 'mail'
+      ..password = 'password'
 
       );
 
-    print('Client received: ${response.result}');
+    print('Client received: ${response}');
   } catch (e) {
     print('Caught error: $e');
   }

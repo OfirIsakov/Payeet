@@ -6,11 +6,8 @@ description: A simple command-line application.
 environment:
   sdk: '>=2.8.1 <3.0.0'
 
-#dependencies:
-#  path: ^1.7.0
-
-dev_dependencies:
+dependencies:
+  path: ^1.7.0
   async: ^2.2.0
-  grpc:
-    path: ../../
+  grpc: ^2.8.0
   protobuf: ^1.0.1

@@ -15,70 +15,60 @@ export 'payeet.pb.dart';
 
 class payeetClient extends $grpc.Client {
   static final _$login = $grpc.ClientMethod<$0.LoginRequest, $0.LoginResponse>(
-      '/payeet.payeet/login',
+      '/payeet.payeet/Login',
       ($0.LoginRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.LoginResponse.fromBuffer(value));
   static final _$loginS =
       $grpc.ClientMethod<$0.LoginRequest_S, $0.LoginResponse>(
-          '/payeet.payeet/loginS',
+          '/payeet.payeet/LoginS',
           ($0.LoginRequest_S value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.LoginResponse.fromBuffer(value));
   static final _$register =
       $grpc.ClientMethod<$0.RegisterRequest, $0.StatusResponse>(
-          '/payeet.payeet/register',
+          '/payeet.payeet/Register',
           ($0.RegisterRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
   static final _$getBalance =
       $grpc.ClientMethod<$0.BalanceRequest, $0.BalanceResponse>(
-          '/payeet.payeet/getBalance',
+          '/payeet.payeet/GetBalance',
           ($0.BalanceRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.BalanceResponse.fromBuffer(value));
   static final _$transferBalance =
       $grpc.ClientMethod<$0.TransferRequest, $0.StatusResponse>(
-          '/payeet.payeet/transferBalance',
+          '/payeet.payeet/TransferBalance',
           ($0.TransferRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
 
-  payeetClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
-      : super(channel, options: options);
+  payeetClient($grpc.ClientChannel channel,
+      {$grpc.CallOptions options,
+      $core.Iterable<$grpc.ClientInterceptor> interceptors})
+      : super(channel, options: options, interceptors: interceptors);
 
   $grpc.ResponseFuture<$0.LoginResponse> login($0.LoginRequest request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(_$login, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
+    return $createUnaryCall(_$login, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.LoginResponse> loginS($0.LoginRequest_S request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(_$loginS, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
+    return $createUnaryCall(_$loginS, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> register($0.RegisterRequest request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(_$register, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
+    return $createUnaryCall(_$register, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.BalanceResponse> getBalance($0.BalanceRequest request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(
-        _$getBalance, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
+    return $createUnaryCall(_$getBalance, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> transferBalance(
       $0.TransferRequest request,
       {$grpc.CallOptions options}) {
-    final call = $createCall(
-        _$transferBalance, $async.Stream.fromIterable([request]),
-        options: options);
-    return $grpc.ResponseFuture(call);
+    return $createUnaryCall(_$transferBalance, request, options: options);
   }
 }
 
@@ -87,35 +77,35 @@ abstract class payeetServiceBase extends $grpc.Service {
 
   payeetServiceBase() {
     $addMethod($grpc.ServiceMethod<$0.LoginRequest, $0.LoginResponse>(
-        'login',
+        'Login',
         login_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.LoginRequest.fromBuffer(value),
         ($0.LoginResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.LoginRequest_S, $0.LoginResponse>(
-        'loginS',
+        'LoginS',
         loginS_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.LoginRequest_S.fromBuffer(value),
         ($0.LoginResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.RegisterRequest, $0.StatusResponse>(
-        'register',
+        'Register',
         register_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.RegisterRequest.fromBuffer(value),
         ($0.StatusResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.BalanceRequest, $0.BalanceResponse>(
-        'getBalance',
+        'GetBalance',
         getBalance_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.BalanceRequest.fromBuffer(value),
         ($0.BalanceResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.TransferRequest, $0.StatusResponse>(
-        'transferBalance',
+        'TransferBalance',
         transferBalance_Pre,
         false,
         false,

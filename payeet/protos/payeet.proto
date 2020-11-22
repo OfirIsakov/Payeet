@@ -2,27 +2,27 @@ syntax= "proto3";
 package payeet;
 
 message LoginRequest_S{
-    string session = 1;
+    string Session = 1;
 }
 
 message LoginRequest{
-    string mail = 1;
-    string password = 2;
+    string Mail = 1;
+    string Password = 2;
 }
 
 message LoginResponse{
     string FirstName = 1;
     string LastName = 2;
-    string session = 3;
-    string user_ID = 4;
+    string Session = 3;
+    string User_ID = 4;
 }
 
 message RegisterRequest{
     string FirstName = 1;
     string LastName = 2;
 
-    string mail = 3;
-    string password = 4;
+    string Mail = 3;
+    string Password = 4;
     
 }
 
@@ -34,37 +34,37 @@ message StatusResponse{
         INVALID_SESSION = 3;
     }
     code StatusCode = 1;
-    string message = 2;
+    string Message = 2;
 }
 
 message BalanceRequest{
-    string user_ID = 1;
-    string session = 2;
+    string User_ID = 1;
+    string Session = 2;
 }
 
 message BalanceResponse{
-    string balance = 1;
+    string Balance = 1;
 }
 
 message TransferRequest{
-    string receiverMail = 1;
-    string senderID = 2;
-    string session = 3;
+    string ReceiverMail = 1;
+    string SenderID = 2;
+    string Session = 3;
 }
 
 message historyRequest{
-    int32 index = 1;
-    string senderID = 2;
-    string session = 3;
+    int32 Index = 1;
+    string SenderID = 2;
+    string Session = 3;
 }
 
 service payeet{
-    rpc login (LoginRequest) returns (LoginResponse);
-    rpc loginS (LoginRequest_S) returns (LoginResponse);
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc LoginS (LoginRequest_S) returns (LoginResponse);
     
-    rpc register(RegisterRequest) returns (StatusResponse);
+    rpc Register(RegisterRequest) returns (StatusResponse);
 
-    rpc getBalance (BalanceRequest) returns (BalanceResponse);
+    rpc GetBalance (BalanceRequest) returns (BalanceResponse);
     
-    rpc transferBalance (TransferRequest) returns (StatusResponse);
+    rpc TransferBalance (TransferRequest) returns (StatusResponse);
 }
