@@ -5,9 +5,10 @@ import (
 	"log"
 	"net"
 
-	pb "../protos/go"
+	pb "galil-maaravi-802-payeet/payeet/protos/go"
 
 	"google.golang.org/grpc"
+
 	"google.golang.org/grpc/reflection"
 )
 
