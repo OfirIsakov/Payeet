@@ -12,12 +12,12 @@ import (
 
 // Is a server intercepor for authentication and autharization
 type AuthInterceptor struct {
-	jwtManager      *jwtManager
+	jwtManager      *JWTManager
 	accessibleRoles map[string][]string
 }
 
 // Returns a new auth interceptor
-func NewAuthInterceptor(jwtManager *jwtManager, accessibleRole map[string][]string) *AuthInterceptor {
+func NewAuthInterceptor(jwtManager *JWTManager, accessibleRole map[string][]string) *AuthInterceptor {
 	return &AuthInterceptor{jwtManager, accessibleRole}
 }
 
@@ -76,7 +76,7 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string
 	}
 
 	accessToken := values[0]                           // the access token is always in the first cell
-	claims, err := interceptor.jwtManager(accessToken) // check if the token is vlaid
+	claims, err := interceptor.JWTManager(accessToken) // check if the token is vlaid
 	if err != nil {
 		return status.Errorf(codes.Unauthorized, "access token is invalid %v", err)
 	}
