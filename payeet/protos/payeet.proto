@@ -1,22 +1,6 @@
 syntax= "proto3";
 package payeet;
 
-message LoginRequest_S{
-    string Session = 1;
-}
-
-message LoginRequest{
-    string Mail = 1;
-    string Password = 2;
-}
-
-message LoginResponse{
-    string FirstName = 1;
-    string LastName = 2;
-    string Session = 3;
-    string User_ID = 4;
-}
-
 message RegisterRequest{
     string FirstName = 1;
     string LastName = 2;
@@ -38,8 +22,6 @@ message StatusResponse{
 }
 
 message BalanceRequest{
-    string User_ID = 1;
-    string Session = 2;
 }
 
 message BalanceResponse{
@@ -49,19 +31,34 @@ message BalanceResponse{
 message TransferRequest{
     string ReceiverMail = 1;
     string SenderID = 2;
-    string Session = 3;
 }
 
 message historyRequest{
     int32 Index = 1;
     string SenderID = 2;
+}
+message LoginRequest_S{
+    string Session = 1;
+}
+
+message LoginRequest{
+    string Mail = 1;
+    string Password = 2;
+}
+
+message LoginResponse{
+    string FirstName = 1;
+    string LastName = 2;
     string Session = 3;
+    string User_ID = 4;
+}
+
+service payeet_auth{
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc LoginS (LoginRequest_S) returns (LoginResponse);
 }
 
 service payeet{
-    rpc Login (LoginRequest) returns (LoginResponse);
-    rpc LoginS (LoginRequest_S) returns (LoginResponse);
-    
     rpc Register(RegisterRequest) returns (StatusResponse);
 
     rpc GetBalance (BalanceRequest) returns (BalanceResponse);

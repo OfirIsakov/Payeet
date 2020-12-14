@@ -34,7 +34,7 @@ func (manager *JWTManager) Generate(user *User) (string, error) {
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(manager.tokenDuration).Unix(),
 		},
-		UUID: user.UUID,
+		UUID: user.uuid,
 		Role: user.Role,
 	}
 
@@ -45,7 +45,8 @@ func (manager *JWTManager) Generate(user *User) (string, error) {
 
 // Verify Verifies the given token and returns a UserClaims if valid.
 func (manager *JWTManager) Verify(accessToken string) (*UserClaims, error) {
-
+	
+	// add a check if the toekn hasn't expired !!!
 	token, err := jwt.ParseWithClaims(
 		accessToken,
 		&UserClaims{},

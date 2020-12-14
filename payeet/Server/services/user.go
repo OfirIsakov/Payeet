@@ -2,11 +2,10 @@ package services
 
 import (
 	"crypto/sha256"
-	"crypto/subtle"
 	"encoding/hex"
+	"errors"
+
 	"github.com/google/uuid"
-
-
 )
 
 // User struct conains user info.
@@ -24,18 +23,16 @@ type User struct {
 func NewUser(firstName string, lastName string, email string, password string, Role string) (*User, error) {
 	salt := genSalt()
 
-	hp = hashPassword(password,salt)
+	hp := hashPassword(password, salt)
 
 	user := &User{
-		uuid: getUUID(), 
-		firstName: firstName, 
-		lastName: lastName,
-		salt: salt,
-		email: email,
-		password: hp, 
-		Role: Role
-
-	}
+		uuid:      getUUID(),
+		firstName: firstName,
+		lastName:  lastName,
+		salt:      salt,
+		email:     email,
+		password:  hp,
+		Role:      Role}
 
 	return user, nil
 
@@ -57,32 +54,33 @@ func getUUID() string {
 	return u
 }
 
-
-func hashPassword(password string, salt string) (string){
+func hashPassword(password string, salt string) string {
 
 	h := sha256.New()
 	h.Write([]byte(password))
 	h.Write([]byte(salt)) // adding the salt to the password.
 
-	return h.Sum(nil).EncodeToString()
+	return hex.EncodeToString(h.Sum(nil))
 
 }
 
 func (user *User) validatePassword(password string) error {
-	return hashPassword(password, user.salt) == user.password
+
+	if hashPassword(password, user.salt) == user.password {
+		return nil
+	}
+	return errors.New("passwords do not match")
+
 }
 
-
+// Clone returns a clone of a user.
 func (user *User) Clone() *User {
 	return &User{
-		&User{
-			uuid: user.uuid, 
-			firstName: user.firstName, 
-			lastName: user.lastName,
-			email: email,
-			salt: user.salt,
-			password: user.password, 
-			Role: user.Role
-		}
-	}
+		uuid:      user.uuid,
+		firstName: user.firstName,
+		lastName:  user.lastName,
+		email:     user.email,
+		salt:      user.salt,
+		password:  user.password,
+		Role:      user.Role}
 }
