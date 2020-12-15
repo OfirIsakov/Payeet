@@ -11,14 +11,6 @@ message RegisterRequest{
 }
 
 message StatusResponse{
-    enum code{
-        SUCCESS = 0;
-        WORNG_CREDS = 1;
-        INVALID_MAIL = 2;
-        INVALID_SESSION = 3;
-    }
-    code StatusCode = 1;
-    string Message = 2;
 }
 
 message BalanceRequest{
@@ -56,11 +48,10 @@ message LoginResponse{
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc LoginS (LoginRequest_S) returns (LoginResponse);
+    rpc Register(RegisterRequest) returns (StatusResponse);
 }
 
 service payeet{
-    rpc Register(RegisterRequest) returns (StatusResponse);
-
     rpc GetBalance (BalanceRequest) returns (BalanceResponse);
     
     rpc TransferBalance (TransferRequest) returns (StatusResponse);

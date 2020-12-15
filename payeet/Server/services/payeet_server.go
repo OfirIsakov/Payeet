@@ -15,12 +15,6 @@ func NewPayeetServer() *PayeetServer {
 	return &PayeetServer{}
 }
 
-// Register creates a new user.
-func (s *PayeetServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.StatusResponse, error) {
-
-	return &pb.StatusResponse{}, nil
-}
-
 // GetBalance returns the blances of the user.
 func (s *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*pb.BalanceResponse, error) {
 

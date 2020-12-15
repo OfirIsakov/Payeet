@@ -62,3 +62,18 @@ func (server *AuthServer) LoginS(ctx context.Context, req *pb.LoginRequest_S) (*
 	return res, nil
 
 }
+
+// Register creates a new user.
+func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
+
+	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
+
+	// add checks for password requirements
+
+	if err != nil {
+		return nil, err
+	}
+
+	server.userStore.AddUser(user)
+	return &pb.StatusResponse{}, nil
+}
