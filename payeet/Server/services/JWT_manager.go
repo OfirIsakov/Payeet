@@ -24,8 +24,14 @@ type UserClaims struct {
 }
 
 // NewJWTManager creates a new JWTManager.
-func NewJWTManager(secretKey string, tokenDuration time.Duration) *JWTManager {
-	return &JWTManager{secretKey, tokenDuration}
+func NewJWTManager(secretKey string, duration string) (*JWTManager, error) {
+
+	tokenDuration, err := time.ParseDuration(duration)
+	if err != nil {
+		return nil, err
+	}
+
+	return &JWTManager{secretKey, tokenDuration}, nil
 }
 
 // Generate Generate and sings a new token for a given user.
@@ -45,7 +51,7 @@ func (manager *JWTManager) Generate(user *User) (string, error) {
 
 // Verify Verifies the given token and returns a UserClaims if valid.
 func (manager *JWTManager) Verify(accessToken string) (*UserClaims, error) {
-	
+
 	// add a check if the toekn hasn't expired !!!
 	token, err := jwt.ParseWithClaims(
 		accessToken,

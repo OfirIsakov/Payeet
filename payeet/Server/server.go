@@ -3,21 +3,14 @@ package main
 import (
 	"log"
 	"net"
-	"time"
 
 	"galil-maaravi-802-payeet/payeet/Server/services"
+	"galil-maaravi-802-payeet/payeet/Server/util"
 	pb "galil-maaravi-802-payeet/payeet/protos/go"
 
 	"google.golang.org/grpc"
 
 	"google.golang.org/grpc/reflection"
-)
-
-const (
-	// load this from config file!!!!.
-	port          = ":6969"
-	secretKey     = "secret"
-	tokenDuration = 10 * time.Minute
 )
 
 func seedUsers(userStore services.UserStore) error {
@@ -47,16 +40,26 @@ func accessibleRoles() map[string][]string {
 }
 
 func main() {
-	log.Printf("Starting server on port [%s]", port)
+	log.Printf("Loading config...")
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Panic("cannot load config")
+	}
+
+	log.Printf("Starting server on port [%s]", config.Port)
 
 	userStore := services.NewMemoryUserStore()
-	jwtManger := services.NewJWTManager(secretKey, tokenDuration)
+	jwtManger, err := services.NewJWTManager(config.SecretKey, config.TokenDuration)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
 	authServer := services.NewAuthServer(userStore, jwtManger)
 	logic := services.NewPayeetServer()
 
-	err := seedUsers(userStore)
-	if err != nil {
-		log.Fatal("cannot seed users")
+	if seedUsers(userStore) != nil {
+		log.Panic("cannot seed users")
 	}
 
 	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
@@ -68,7 +71,7 @@ func main() {
 	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
 
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", config.Port)
 	if err != nil {
 		log.Panic(err)
 	}
