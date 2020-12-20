@@ -33,6 +33,7 @@ func createUser(userStore services.UserStore, firstName string, lastName string,
 func accessibleRoles() map[string][]string {
 	const path = "/payeet.payeet/"
 	return map[string][]string{
+		path + "GetUserInfo":     {"user"},
 		path + "TransferBalance": {"user"},
 		path + "GetBalance":      {"user"},
 	}
