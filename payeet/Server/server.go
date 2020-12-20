@@ -33,6 +33,7 @@ func createUser(userStore services.UserStore, firstName string, lastName string,
 func accessibleRoles() map[string][]string {
 	const path = "/payeet.payeet/"
 	return map[string][]string{
+		path + "GetUserInfo":     {"user"},
 		path + "TransferBalance": {"user"},
 		path + "GetBalance":      {"user"},
 	}
@@ -49,7 +50,7 @@ func main() {
 	log.Printf("Starting server on port [%s]", config.Port)
 
 	userStore := services.NewMemoryUserStore()
-	jwtManger, err := services.NewJWTManager(config.SecretKey, config.TokenDuration)
+	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
 		log.Panic(err)

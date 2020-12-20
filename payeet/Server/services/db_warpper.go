@@ -11,6 +11,8 @@ type UserStore interface {
 	// save a new user to the storge.
 	AddUser(user *User) error
 
+	SetRefreshToken(uuid string, refreshToken string) error
+
 	FindWithMail(uuid string) (*User, error)
 	FindWithUUID(uuid string) (*User, error)
 }
@@ -38,6 +40,21 @@ func (store *InMemoryUserStore) AddUser(user *User) error {
 	}
 
 	store.users[user.uuid] = user.Clone()
+
+	return nil
+
+}
+
+// SetRefreshToken save a new user to the storge.
+func (store *InMemoryUserStore) SetRefreshToken(uuid string, refreshToken string) error {
+	store.mutex.Lock()
+	defer store.mutex.Unlock()
+
+	if store.users[uuid] == nil {
+		return errors.New("user doesnt exists")
+	}
+
+	store.users[uuid].refreshToken = refreshToken
 
 	return nil
 

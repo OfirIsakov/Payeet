@@ -10,13 +10,14 @@ import (
 
 // User struct conains user info.
 type User struct {
-	uuid      string
-	firstName string
-	lastName  string
-	salt      string
-	email     string
-	password  string
-	Role      string
+	uuid         string
+	firstName    string
+	lastName     string
+	salt         string
+	email        string
+	password     string
+	Role         string
+	refreshToken string
 }
 
 // NewUser returns a new user.
@@ -26,13 +27,14 @@ func NewUser(firstName string, lastName string, email string, password string, R
 	hp := hashPassword(password, salt)
 
 	user := &User{
-		uuid:      getUUID(),
-		firstName: firstName,
-		lastName:  lastName,
-		salt:      salt,
-		email:     email,
-		password:  hp,
-		Role:      Role}
+		uuid:         getUUID(),
+		firstName:    firstName,
+		lastName:     lastName,
+		salt:         salt,
+		email:        email,
+		password:     hp,
+		Role:         Role,
+		refreshToken: ""}
 
 	return user, nil
 
@@ -76,11 +78,12 @@ func (user *User) validatePassword(password string) error {
 // Clone returns a clone of a user.
 func (user *User) Clone() *User {
 	return &User{
-		uuid:      user.uuid,
-		firstName: user.firstName,
-		lastName:  user.lastName,
-		email:     user.email,
-		salt:      user.salt,
-		password:  user.password,
-		Role:      user.Role}
+		uuid:         user.uuid,
+		firstName:    user.firstName,
+		lastName:     user.lastName,
+		email:        user.email,
+		salt:         user.salt,
+		password:     user.password,
+		Role:         user.Role,
+		refreshToken: user.refreshToken}
 }
