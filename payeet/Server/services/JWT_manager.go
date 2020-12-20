@@ -9,9 +9,10 @@ import (
 
 // JWTManager handels the JWT actions.
 type JWTManager struct {
-	secretKey            string
 	AccessTokenDuration  time.Duration
 	RefreshTokenDuration time.Duration
+	AccessTokenKey       string
+	RefreshTokenKey      string
 }
 
 /*
@@ -25,7 +26,11 @@ type UserClaims struct {
 }
 
 // NewJWTManager creates a new JWTManager.
-func NewJWTManager(secretKey string, AccessTokenDuration string, RefreshTokenDuration string) (*JWTManager, error) {
+func NewJWTManager(
+	AccessTokenDuration,
+	RefreshTokenDuration,
+	AccessTokenKey,
+	RefreshTokenKey string) (*JWTManager, error) {
 
 	_AccessTokenDuration, err := time.ParseDuration(AccessTokenDuration)
 	if err != nil {
@@ -37,21 +42,21 @@ func NewJWTManager(secretKey string, AccessTokenDuration string, RefreshTokenDur
 		return nil, err
 	}
 
-	return &JWTManager{secretKey, _AccessTokenDuration, _RefreshTokenDuration}, nil
+	return &JWTManager{_AccessTokenDuration, _RefreshTokenDuration, AccessTokenKey, RefreshTokenKey}, nil
 }
 
 // GenerateAccessToken Generate and sings a new token for a given user.
 func (manager *JWTManager) GenerateAccessToken(user *User) (string, error) {
-	return manager.Generate(user, manager.AccessTokenDuration)
+	return manager.Generate(user, manager.AccessTokenDuration, manager.AccessTokenKey)
 }
 
 // GenerateRefreshToken Generate and sings a new token for a given user.
 func (manager *JWTManager) GenerateRefreshToken(user *User) (string, error) {
-	return manager.Generate(user, manager.RefreshTokenDuration)
+	return manager.Generate(user, manager.RefreshTokenDuration, manager.RefreshTokenKey)
 }
 
 // Generate creates a token.
-func (manager *JWTManager) Generate(user *User, t time.Duration) (string, error) {
+func (manager *JWTManager) Generate(user *User, t time.Duration, key string) (string, error) {
 
 	claims := UserClaims{
 		StandardClaims: jwt.StandardClaims{
@@ -63,11 +68,11 @@ func (manager *JWTManager) Generate(user *User, t time.Duration) (string, error)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // change this to a more secure method!!
 
-	return token.SignedString([]byte(manager.secretKey))
+	return token.SignedString([]byte(key))
 }
 
-// Verify Verifies the given token and returns a UserClaims if valid.
-func (manager *JWTManager) Verify(accessToken string) (*UserClaims, error) {
+// VerifyAccessToken Verifies the given token and returns a UserClaims if valid.
+func (manager *JWTManager) VerifyAccessToken(accessToken string) (*UserClaims, error) {
 
 	token, err := jwt.ParseWithClaims(
 		accessToken,
@@ -80,7 +85,7 @@ func (manager *JWTManager) Verify(accessToken string) (*UserClaims, error) {
 				return nil, fmt.Errorf("wrong signing method used")
 			}
 
-			return []byte(manager.secretKey), nil
+			return []byte(manager.AccessTokenKey), nil
 			// if the token uses the same signing method as our server,
 			// we send ParseWithClaims the manager's secret key so we can decode it.
 		},
@@ -100,7 +105,7 @@ func (manager *JWTManager) Verify(accessToken string) (*UserClaims, error) {
 
 }
 
-// VerifyRefreshToken Verifies the given token against the database.
+// VerifyRefreshToken Verifies the given token and returns a UserClaims if valid.
 func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims, error) {
 
 	token, err := jwt.ParseWithClaims(
@@ -114,7 +119,7 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 				return nil, fmt.Errorf("wrong signing method used")
 			}
 
-			return []byte(manager.secretKey), nil
+			return []byte(manager.RefreshTokenKey), nil
 			// if the token uses the same signing method as our server,
 			// we send ParseWithClaims the manager's secret key so we can decode it.
 		},

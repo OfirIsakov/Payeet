@@ -47,7 +47,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	}
 
 	// get userclaims from the token so we could get the expire time.
-	userClaims, err := server.jwtManager.Verify(accessToken)
+	userClaims, err := server.jwtManager.VerifyAccessToken(accessToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot get claims from accessToken")
 	}
@@ -66,7 +66,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.LoginResponse, error) {
 
 	// get the userclims from the refresh token
-	userClaims, err := server.jwtManager.Verify(req.GetRefreshToken())
+	userClaims, err := server.jwtManager.VerifyRefreshToken(req.GetRefreshToken())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot verify refresh token")
 	}
@@ -94,8 +94,8 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 		return nil, status.Errorf(codes.Internal, "cannot generate refresh token")
 	}
 
-	// get the userclims from the refresh token
-	userClaims, err = server.jwtManager.Verify(accessToken)
+	// get the userclims from the accessToken token
+	userClaims, err = server.jwtManager.VerifyAccessToken(accessToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot get userclaims")
 	}

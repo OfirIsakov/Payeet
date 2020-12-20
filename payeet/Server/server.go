@@ -49,7 +49,7 @@ func main() {
 	log.Printf("Starting server on port [%s]", config.Port)
 
 	userStore := services.NewMemoryUserStore()
-	jwtManger, err := services.NewJWTManager(config.SecretKey, config.AccessTokenDuration, config.RefreshTokenDuration)
+	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
 		log.Panic(err)
