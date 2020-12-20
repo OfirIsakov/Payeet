@@ -4,9 +4,10 @@ import "github.com/spf13/viper"
 
 // Config holds the config data
 type Config struct {
-	Port          string `mapstructure:"PORT"`
-	SecretKey     string `mapstructure:"SECRET_KEY"`
-	TokenDuration string `mapstructure:"TOKEN_DURATION"`
+	Port                 string `mapstructure:"PORT"`
+	SecretKey            string `mapstructure:"SECRET_KEY"`
+	AccessTokenDuration  string `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration string `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
 // LoadConfig is used to load the config from the config file.

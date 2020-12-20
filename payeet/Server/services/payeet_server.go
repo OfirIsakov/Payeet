@@ -26,3 +26,9 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 
 	return &pb.StatusResponse{}, nil
 }
+
+// GetUserInfo returns the blances of the user.
+func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) (*pb.UserInfoResponse, error) {
+
+	return &pb.UserInfoResponse{FirstName: "aaa", LastName: "aaa", User_ID: "dddd"}, nil
+}

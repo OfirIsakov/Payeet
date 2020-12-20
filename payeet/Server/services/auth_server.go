@@ -22,43 +22,86 @@ func NewAuthServer(userStore UserStore, jwtManager *JWTManager) *AuthServer {
 
 // Login function
 func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+
+	// find the user in the database.
 	user, err := server.userStore.FindWithMail(req.GetMail())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
 	}
 
+	// check if the password is correct
 	if user == nil || user.validatePassword(req.GetPassword()) != nil {
 		return nil, status.Errorf(codes.NotFound, "invalid username or password")
 	}
 
-	token, err := server.jwtManager.Generate(user) // create a new token
+	// generate JWT token
+	accessToken, err := server.jwtManager.GenerateAccessToken(user) // create a new token
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot generate access token")
 	}
 
-	res := &pb.LoginResponse{FirstName: user.firstName, LastName: user.lastName, Session: token, User_ID: user.uuid}
+	// generate refresh toke
+	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot generate refresh token")
+	}
+
+	// get userclaims from the token so we could get the expire time.
+	userClaims, err := server.jwtManager.Verify(accessToken)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot get claims from accessToken")
+	}
+
+	// save the refresh token in the database.
+	if server.userStore.SetRefreshToken(user.uuid, refreshToken) != nil {
+		return nil, status.Errorf(codes.Internal, "cannot set refresh token for user")
+	}
+
+	// sending a new JWT token, expire time, new refresh token.
+	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: userClaims.ExpiresAt, RefreshToken: refreshToken}
 	return res, nil
 }
 
-// LoginS function
-func (server *AuthServer) LoginS(ctx context.Context, req *pb.LoginRequest_S) (*pb.LoginResponse, error) {
+// RefreshToken function
+func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.LoginResponse, error) {
 
-	userClaims, err := server.jwtManager.Verify(req.GetSession())
+	// get the userclims from the refresh token
+	userClaims, err := server.jwtManager.Verify(req.GetRefreshToken())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot verify access token")
+		return nil, status.Errorf(codes.Internal, "cannot verify refresh token")
 	}
 
+	// get the user from the userclaims.
 	user, err := server.userStore.FindWithUUID(userClaims.UUID)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
 	}
 
-	token, err := server.jwtManager.Generate(user) // create a new token
+	// verify refresh token against database.
+	if user.refreshToken != req.GetRefreshToken() {
+		return nil, status.Errorf(codes.Internal, "refresh tokens do not match")
+	}
+
+	// generate JWT token
+	accessToken, err := server.jwtManager.GenerateAccessToken(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot generate access token")
 	}
 
-	res := &pb.LoginResponse{FirstName: user.firstName, LastName: user.lastName, Session: token, User_ID: user.uuid}
+	// generate refresh token
+	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot generate refresh token")
+	}
+
+	// get the userclims from the refresh token
+	userClaims, err = server.jwtManager.Verify(accessToken)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot get userclaims")
+	}
+
+	// sending a new JWT token, expire time, new refresh token.
+	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: userClaims.ExpiresAt, RefreshToken: refreshToken}
 	return res, nil
 
 }

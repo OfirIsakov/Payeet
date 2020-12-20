@@ -4,7 +4,6 @@ package payeet;
 message RegisterRequest{
     string FirstName = 1;
     string LastName = 2;
-
     string Mail = 3;
     string Password = 4;
     
@@ -29,8 +28,9 @@ message historyRequest{
     int32 Index = 1;
     string SenderID = 2;
 }
-message LoginRequest_S{
-    string Session = 1;
+
+message RefreshTokenRequest{
+    string RefreshToken = 1;
 }
 
 message LoginRequest{
@@ -38,20 +38,34 @@ message LoginRequest{
     string Password = 2;
 }
 
+
 message LoginResponse{
+    string AccessToken = 1;
+    int64 ExpiresOn = 2;
+    string RefreshToken = 3;
+
+}
+
+
+message UserInfoRequest{
+}
+
+message UserInfoResponse{
     string FirstName = 1;
     string LastName = 2;
-    string Session = 3;
-    string User_ID = 4;
+    string User_ID = 3;
 }
 
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
-    rpc LoginS (LoginRequest_S) returns (LoginResponse);
+    rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (StatusResponse);
 }
 
 service payeet{
+
+    rpc GetUserInfo(UserInfoRequest) returns (UserInfoResponse);
+
     rpc GetBalance (BalanceRequest) returns (BalanceResponse);
     
     rpc TransferBalance (TransferRequest) returns (StatusResponse);
