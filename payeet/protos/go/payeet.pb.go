@@ -24,231 +24,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type StatusResponseCode int32
-
-const (
-	StatusResponse_SUCCESS         StatusResponseCode = 0
-	StatusResponse_WORNG_CREDS     StatusResponseCode = 1
-	StatusResponse_INVALID_MAIL    StatusResponseCode = 2
-	StatusResponse_INVALID_SESSION StatusResponseCode = 3
-)
-
-// Enum value maps for StatusResponseCode.
-var (
-	StatusResponseCode_name = map[int32]string{
-		0: "SUCCESS",
-		1: "WORNG_CREDS",
-		2: "INVALID_MAIL",
-		3: "INVALID_SESSION",
-	}
-	StatusResponseCode_value = map[string]int32{
-		"SUCCESS":         0,
-		"WORNG_CREDS":     1,
-		"INVALID_MAIL":    2,
-		"INVALID_SESSION": 3,
-	}
-)
-
-func (x StatusResponseCode) Enum() *StatusResponseCode {
-	p := new(StatusResponseCode)
-	*p = x
-	return p
-}
-
-func (x StatusResponseCode) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (StatusResponseCode) Descriptor() protoreflect.EnumDescriptor {
-	return file_payeet_proto_enumTypes[0].Descriptor()
-}
-
-func (StatusResponseCode) Type() protoreflect.EnumType {
-	return &file_payeet_proto_enumTypes[0]
-}
-
-func (x StatusResponseCode) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use StatusResponseCode.Descriptor instead.
-func (StatusResponseCode) EnumDescriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{4, 0}
-}
-
-type LoginRequest_S struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Session string `protobuf:"bytes,1,opt,name=Session,proto3" json:"Session,omitempty"`
-}
-
-func (x *LoginRequest_S) Reset() {
-	*x = LoginRequest_S{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LoginRequest_S) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LoginRequest_S) ProtoMessage() {}
-
-func (x *LoginRequest_S) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LoginRequest_S.ProtoReflect.Descriptor instead.
-func (*LoginRequest_S) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *LoginRequest_S) GetSession() string {
-	if x != nil {
-		return x.Session
-	}
-	return ""
-}
-
-type LoginRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Mail     string `protobuf:"bytes,1,opt,name=Mail,proto3" json:"Mail,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"`
-}
-
-func (x *LoginRequest) Reset() {
-	*x = LoginRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LoginRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LoginRequest) ProtoMessage() {}
-
-func (x *LoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
-func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *LoginRequest) GetMail() string {
-	if x != nil {
-		return x.Mail
-	}
-	return ""
-}
-
-func (x *LoginRequest) GetPassword() string {
-	if x != nil {
-		return x.Password
-	}
-	return ""
-}
-
-type LoginResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	FirstName string `protobuf:"bytes,1,opt,name=FirstName,proto3" json:"FirstName,omitempty"`
-	LastName  string `protobuf:"bytes,2,opt,name=LastName,proto3" json:"LastName,omitempty"`
-	Session   string `protobuf:"bytes,3,opt,name=Session,proto3" json:"Session,omitempty"`
-	User_ID   string `protobuf:"bytes,4,opt,name=User_ID,json=UserID,proto3" json:"User_ID,omitempty"`
-}
-
-func (x *LoginResponse) Reset() {
-	*x = LoginResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *LoginResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*LoginResponse) ProtoMessage() {}
-
-func (x *LoginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
-func (*LoginResponse) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *LoginResponse) GetFirstName() string {
-	if x != nil {
-		return x.FirstName
-	}
-	return ""
-}
-
-func (x *LoginResponse) GetLastName() string {
-	if x != nil {
-		return x.LastName
-	}
-	return ""
-}
-
-func (x *LoginResponse) GetSession() string {
-	if x != nil {
-		return x.Session
-	}
-	return ""
-}
-
-func (x *LoginResponse) GetUser_ID() string {
-	if x != nil {
-		return x.User_ID
-	}
-	return ""
-}
-
 type RegisterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -263,7 +38,7 @@ type RegisterRequest struct {
 func (x *RegisterRequest) Reset() {
 	*x = RegisterRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[3]
+		mi := &file_payeet_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -276,7 +51,7 @@ func (x *RegisterRequest) String() string {
 func (*RegisterRequest) ProtoMessage() {}
 
 func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[3]
+	mi := &file_payeet_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -289,7 +64,7 @@ func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
 func (*RegisterRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{3}
+	return file_payeet_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *RegisterRequest) GetFirstName() string {
@@ -324,15 +99,12 @@ type StatusResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	StatusCode StatusResponseCode `protobuf:"varint,1,opt,name=StatusCode,proto3,enum=payeet.StatusResponseCode" json:"StatusCode,omitempty"`
-	Message    string             `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
 }
 
 func (x *StatusResponse) Reset() {
 	*x = StatusResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[4]
+		mi := &file_payeet_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -345,7 +117,7 @@ func (x *StatusResponse) String() string {
 func (*StatusResponse) ProtoMessage() {}
 
 func (x *StatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[4]
+	mi := &file_payeet_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -358,36 +130,19 @@ func (x *StatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
 func (*StatusResponse) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *StatusResponse) GetStatusCode() StatusResponseCode {
-	if x != nil {
-		return x.StatusCode
-	}
-	return StatusResponse_SUCCESS
-}
-
-func (x *StatusResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
+	return file_payeet_proto_rawDescGZIP(), []int{1}
 }
 
 type BalanceRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	User_ID string `protobuf:"bytes,1,opt,name=User_ID,json=UserID,proto3" json:"User_ID,omitempty"`
-	Session string `protobuf:"bytes,2,opt,name=Session,proto3" json:"Session,omitempty"`
 }
 
 func (x *BalanceRequest) Reset() {
 	*x = BalanceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[5]
+		mi := &file_payeet_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -400,7 +155,7 @@ func (x *BalanceRequest) String() string {
 func (*BalanceRequest) ProtoMessage() {}
 
 func (x *BalanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[5]
+	mi := &file_payeet_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -413,21 +168,7 @@ func (x *BalanceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BalanceRequest.ProtoReflect.Descriptor instead.
 func (*BalanceRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *BalanceRequest) GetUser_ID() string {
-	if x != nil {
-		return x.User_ID
-	}
-	return ""
-}
-
-func (x *BalanceRequest) GetSession() string {
-	if x != nil {
-		return x.Session
-	}
-	return ""
+	return file_payeet_proto_rawDescGZIP(), []int{2}
 }
 
 type BalanceResponse struct {
@@ -441,7 +182,7 @@ type BalanceResponse struct {
 func (x *BalanceResponse) Reset() {
 	*x = BalanceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[6]
+		mi := &file_payeet_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -454,7 +195,7 @@ func (x *BalanceResponse) String() string {
 func (*BalanceResponse) ProtoMessage() {}
 
 func (x *BalanceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[6]
+	mi := &file_payeet_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -467,7 +208,7 @@ func (x *BalanceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BalanceResponse.ProtoReflect.Descriptor instead.
 func (*BalanceResponse) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{6}
+	return file_payeet_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *BalanceResponse) GetBalance() string {
@@ -484,13 +225,12 @@ type TransferRequest struct {
 
 	ReceiverMail string `protobuf:"bytes,1,opt,name=ReceiverMail,proto3" json:"ReceiverMail,omitempty"`
 	SenderID     string `protobuf:"bytes,2,opt,name=SenderID,proto3" json:"SenderID,omitempty"`
-	Session      string `protobuf:"bytes,3,opt,name=Session,proto3" json:"Session,omitempty"`
 }
 
 func (x *TransferRequest) Reset() {
 	*x = TransferRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[7]
+		mi := &file_payeet_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -503,7 +243,7 @@ func (x *TransferRequest) String() string {
 func (*TransferRequest) ProtoMessage() {}
 
 func (x *TransferRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[7]
+	mi := &file_payeet_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -516,7 +256,7 @@ func (x *TransferRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferRequest.ProtoReflect.Descriptor instead.
 func (*TransferRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{7}
+	return file_payeet_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TransferRequest) GetReceiverMail() string {
@@ -533,13 +273,6 @@ func (x *TransferRequest) GetSenderID() string {
 	return ""
 }
 
-func (x *TransferRequest) GetSession() string {
-	if x != nil {
-		return x.Session
-	}
-	return ""
-}
-
 type HistoryRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -547,13 +280,12 @@ type HistoryRequest struct {
 
 	Index    int32  `protobuf:"varint,1,opt,name=Index,proto3" json:"Index,omitempty"`
 	SenderID string `protobuf:"bytes,2,opt,name=SenderID,proto3" json:"SenderID,omitempty"`
-	Session  string `protobuf:"bytes,3,opt,name=Session,proto3" json:"Session,omitempty"`
 }
 
 func (x *HistoryRequest) Reset() {
 	*x = HistoryRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[8]
+		mi := &file_payeet_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -566,7 +298,7 @@ func (x *HistoryRequest) String() string {
 func (*HistoryRequest) ProtoMessage() {}
 
 func (x *HistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[8]
+	mi := &file_payeet_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -579,7 +311,7 @@ func (x *HistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HistoryRequest.ProtoReflect.Descriptor instead.
 func (*HistoryRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{8}
+	return file_payeet_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *HistoryRequest) GetIndex() int32 {
@@ -596,9 +328,268 @@ func (x *HistoryRequest) GetSenderID() string {
 	return ""
 }
 
-func (x *HistoryRequest) GetSession() string {
+type RefreshTokenRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RefreshToken string `protobuf:"bytes,1,opt,name=RefreshToken,proto3" json:"RefreshToken,omitempty"`
+}
+
+func (x *RefreshTokenRequest) Reset() {
+	*x = RefreshTokenRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RefreshTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenRequest) ProtoMessage() {}
+
+func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
+func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RefreshTokenRequest) GetRefreshToken() string {
 	if x != nil {
-		return x.Session
+		return x.RefreshToken
+	}
+	return ""
+}
+
+type LoginRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Mail     string `protobuf:"bytes,1,opt,name=Mail,proto3" json:"Mail,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=Password,proto3" json:"Password,omitempty"`
+}
+
+func (x *LoginRequest) Reset() {
+	*x = LoginRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LoginRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginRequest) ProtoMessage() {}
+
+func (x *LoginRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
+func (*LoginRequest) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *LoginRequest) GetMail() string {
+	if x != nil {
+		return x.Mail
+	}
+	return ""
+}
+
+func (x *LoginRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type LoginResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccessToken  string `protobuf:"bytes,1,opt,name=AccessToken,proto3" json:"AccessToken,omitempty"`
+	ExpiresOn    int64  `protobuf:"varint,2,opt,name=ExpiresOn,proto3" json:"ExpiresOn,omitempty"`
+	RefreshToken string `protobuf:"bytes,3,opt,name=RefreshToken,proto3" json:"RefreshToken,omitempty"`
+}
+
+func (x *LoginResponse) Reset() {
+	*x = LoginResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LoginResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginResponse) ProtoMessage() {}
+
+func (x *LoginResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
+func (*LoginResponse) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *LoginResponse) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *LoginResponse) GetExpiresOn() int64 {
+	if x != nil {
+		return x.ExpiresOn
+	}
+	return 0
+}
+
+func (x *LoginResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
+type UserInfoRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *UserInfoRequest) Reset() {
+	*x = UserInfoRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserInfoRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserInfoRequest) ProtoMessage() {}
+
+func (x *UserInfoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserInfoRequest.ProtoReflect.Descriptor instead.
+func (*UserInfoRequest) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{9}
+}
+
+type UserInfoResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FirstName string `protobuf:"bytes,1,opt,name=FirstName,proto3" json:"FirstName,omitempty"`
+	LastName  string `protobuf:"bytes,2,opt,name=LastName,proto3" json:"LastName,omitempty"`
+	User_ID   string `protobuf:"bytes,3,opt,name=User_ID,json=UserID,proto3" json:"User_ID,omitempty"`
+}
+
+func (x *UserInfoResponse) Reset() {
+	*x = UserInfoResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserInfoResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserInfoResponse) ProtoMessage() {}
+
+func (x *UserInfoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserInfoResponse.ProtoReflect.Descriptor instead.
+func (*UserInfoResponse) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UserInfoResponse) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *UserInfoResponse) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *UserInfoResponse) GetUser_ID() string {
+	if x != nil {
+		return x.User_ID
 	}
 	return ""
 }
@@ -607,81 +598,78 @@ var File_payeet_proto protoreflect.FileDescriptor
 
 var file_payeet_proto_rawDesc = []byte{
 	0x0a, 0x0c, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06,
-	0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x22, 0x2a, 0x0a, 0x0e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x5f, 0x53, 0x12, 0x18, 0x0a, 0x07, 0x53, 0x65, 0x73, 0x73,
-	0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x22, 0x3e, 0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f,
-	0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f,
-	0x72, 0x64, 0x22, 0x7c, 0x0a, 0x0d, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d,
-	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a,
-	0x07, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x17, 0x0a, 0x07, 0x55, 0x73, 0x65, 0x72, 0x5f,
-	0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44,
-	0x22, 0x7b, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d,
-	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a,
-	0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4d, 0x61, 0x69,
-	0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0xb4, 0x01,
-	0x0a, 0x0e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x3b, 0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0e, 0x32, 0x1b, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x63, 0x6f, 0x64,
-	0x65, 0x52, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a,
-	0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x4b, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12,
-	0x0b, 0x0a, 0x07, 0x53, 0x55, 0x43, 0x43, 0x45, 0x53, 0x53, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b,
-	0x57, 0x4f, 0x52, 0x4e, 0x47, 0x5f, 0x43, 0x52, 0x45, 0x44, 0x53, 0x10, 0x01, 0x12, 0x10, 0x0a,
-	0x0c, 0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x5f, 0x4d, 0x41, 0x49, 0x4c, 0x10, 0x02, 0x12,
-	0x13, 0x0a, 0x0f, 0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x5f, 0x53, 0x45, 0x53, 0x53, 0x49,
-	0x4f, 0x4e, 0x10, 0x03, 0x22, 0x43, 0x0a, 0x0e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x55, 0x73, 0x65, 0x72, 0x5f, 0x49,
-	0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12,
-	0x18, 0x0a, 0x07, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x22, 0x2b, 0x0a, 0x0f, 0x42, 0x61, 0x6c,
-	0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07,
-	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x42,
-	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x22, 0x6b, 0x0a, 0x0f, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66,
-	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x52, 0x65, 0x63,
-	0x65, 0x69, 0x76, 0x65, 0x72, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0c, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a,
-	0x08, 0x53, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x53, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x53, 0x65, 0x73,
-	0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x53, 0x65, 0x73, 0x73,
-	0x69, 0x6f, 0x6e, 0x22, 0x5c, 0x0a, 0x0e, 0x68, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x1a, 0x0a, 0x08, 0x53,
+	0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x22, 0x7b, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x46, 0x69, 0x72,
+	0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x46, 0x69,
+	0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e,
+	0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e,
+	0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77,
+	0x6f, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x50, 0x61, 0x73, 0x73, 0x77,
+	0x6f, 0x72, 0x64, 0x22, 0x10, 0x0a, 0x0e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x10, 0x0a, 0x0e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2b, 0x0a, 0x0f, 0x42, 0x61, 0x6c, 0x61, 0x6e,
+	0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x42, 0x61,
+	0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x42, 0x61, 0x6c,
+	0x61, 0x6e, 0x63, 0x65, 0x22, 0x51, 0x0a, 0x0f, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x52, 0x65, 0x63, 0x65, 0x69,
+	0x76, 0x65, 0x72, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x52,
+	0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x53,
 	0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x53,
-	0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x12, 0x18, 0x0a, 0x07, 0x53, 0x65, 0x73, 0x73, 0x69,
-	0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
-	0x6e, 0x32, 0xb7, 0x02, 0x0a, 0x06, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x12, 0x34, 0x0a, 0x05,
-	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x14, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c,
-	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x70, 0x61,
-	0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x37, 0x0a, 0x06, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x53, 0x12, 0x16, 0x2e, 0x70,
-	0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x5f, 0x53, 0x1a, 0x15, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c, 0x6f,
-	0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x08, 0x52,
-	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74,
-	0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x42,
-	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e,
-	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17,
-	0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x0f, 0x54, 0x72, 0x61, 0x6e, 0x73,
-	0x66, 0x65, 0x72, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x17, 0x2e, 0x70, 0x61, 0x79,
-	0x65, 0x65, 0x74, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x53, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x22, 0x42, 0x0a, 0x0e, 0x68, 0x69, 0x73, 0x74, 0x6f,
+	0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x49, 0x6e, 0x64,
+	0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12,
+	0x1a, 0x0a, 0x08, 0x53, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x53, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x49, 0x44, 0x22, 0x39, 0x0a, 0x13, 0x52,
+	0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b,
+	0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73,
+	0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x3e, 0x0a, 0x0c, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x50, 0x61,
+	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x50, 0x61,
+	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x73, 0x0a, 0x0d, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x41, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x41, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x45, 0x78, 0x70,
+	0x69, 0x72, 0x65, 0x73, 0x4f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x45, 0x78,
+	0x70, 0x69, 0x72, 0x65, 0x73, 0x4f, 0x6e, 0x12, 0x22, 0x0a, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65,
+	0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x52,
+	0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x11, 0x0a, 0x0f, 0x55,
+	0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x65,
+	0x0a, 0x10, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65,
+	0x12, 0x1a, 0x0a, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x17, 0x0a, 0x07,
+	0x55, 0x73, 0x65, 0x72, 0x5f, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x55,
+	0x73, 0x65, 0x72, 0x49, 0x44, 0x32, 0xc4, 0x01, 0x0a, 0x0b, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74,
+	0x5f, 0x61, 0x75, 0x74, 0x68, 0x12, 0x34, 0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x14,
+	0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x4c, 0x6f,
+	0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x0c, 0x52,
+	0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1b, 0x2e, 0x70, 0x61,
+	0x79, 0x65, 0x65, 0x74, 0x2e, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65,
+	0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3b, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x70, 0x61,
+	0x79, 0x65, 0x65, 0x74, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xcd, 0x01, 0x0a,
+	0x06, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x12, 0x40, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x55, 0x73,
+	0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x17, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x18, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x47, 0x65, 0x74,
+	0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74,
+	0x2e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x17, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x0f, 0x54, 0x72, 0x61, 0x6e,
+	0x73, 0x66, 0x65, 0x72, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x17, 0x2e, 0x70, 0x61,
+	0x79, 0x65, 0x65, 0x74, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x70, 0x61, 0x79, 0x65, 0x65, 0x74, 0x2e, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -696,37 +684,38 @@ func file_payeet_proto_rawDescGZIP() []byte {
 	return file_payeet_proto_rawDescData
 }
 
-var file_payeet_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_payeet_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_payeet_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_payeet_proto_goTypes = []interface{}{
-	(StatusResponseCode)(0), // 0: payeet.StatusResponse.code
-	(*LoginRequest_S)(nil),  // 1: payeet.LoginRequest_S
-	(*LoginRequest)(nil),    // 2: payeet.LoginRequest
-	(*LoginResponse)(nil),   // 3: payeet.LoginResponse
-	(*RegisterRequest)(nil), // 4: payeet.RegisterRequest
-	(*StatusResponse)(nil),  // 5: payeet.StatusResponse
-	(*BalanceRequest)(nil),  // 6: payeet.BalanceRequest
-	(*BalanceResponse)(nil), // 7: payeet.BalanceResponse
-	(*TransferRequest)(nil), // 8: payeet.TransferRequest
-	(*HistoryRequest)(nil),  // 9: payeet.historyRequest
+	(*RegisterRequest)(nil),     // 0: payeet.RegisterRequest
+	(*StatusResponse)(nil),      // 1: payeet.StatusResponse
+	(*BalanceRequest)(nil),      // 2: payeet.BalanceRequest
+	(*BalanceResponse)(nil),     // 3: payeet.BalanceResponse
+	(*TransferRequest)(nil),     // 4: payeet.TransferRequest
+	(*HistoryRequest)(nil),      // 5: payeet.historyRequest
+	(*RefreshTokenRequest)(nil), // 6: payeet.RefreshTokenRequest
+	(*LoginRequest)(nil),        // 7: payeet.LoginRequest
+	(*LoginResponse)(nil),       // 8: payeet.LoginResponse
+	(*UserInfoRequest)(nil),     // 9: payeet.UserInfoRequest
+	(*UserInfoResponse)(nil),    // 10: payeet.UserInfoResponse
 }
 var file_payeet_proto_depIdxs = []int32{
-	0, // 0: payeet.StatusResponse.StatusCode:type_name -> payeet.StatusResponse.code
-	2, // 1: payeet.payeet.Login:input_type -> payeet.LoginRequest
-	1, // 2: payeet.payeet.LoginS:input_type -> payeet.LoginRequest_S
-	4, // 3: payeet.payeet.Register:input_type -> payeet.RegisterRequest
-	6, // 4: payeet.payeet.GetBalance:input_type -> payeet.BalanceRequest
-	8, // 5: payeet.payeet.TransferBalance:input_type -> payeet.TransferRequest
-	3, // 6: payeet.payeet.Login:output_type -> payeet.LoginResponse
-	3, // 7: payeet.payeet.LoginS:output_type -> payeet.LoginResponse
-	5, // 8: payeet.payeet.Register:output_type -> payeet.StatusResponse
-	7, // 9: payeet.payeet.GetBalance:output_type -> payeet.BalanceResponse
-	5, // 10: payeet.payeet.TransferBalance:output_type -> payeet.StatusResponse
-	6, // [6:11] is the sub-list for method output_type
-	1, // [1:6] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	7,  // 0: payeet.payeet_auth.Login:input_type -> payeet.LoginRequest
+	6,  // 1: payeet.payeet_auth.RefreshToken:input_type -> payeet.RefreshTokenRequest
+	0,  // 2: payeet.payeet_auth.Register:input_type -> payeet.RegisterRequest
+	9,  // 3: payeet.payeet.GetUserInfo:input_type -> payeet.UserInfoRequest
+	2,  // 4: payeet.payeet.GetBalance:input_type -> payeet.BalanceRequest
+	4,  // 5: payeet.payeet.TransferBalance:input_type -> payeet.TransferRequest
+	8,  // 6: payeet.payeet_auth.Login:output_type -> payeet.LoginResponse
+	8,  // 7: payeet.payeet_auth.RefreshToken:output_type -> payeet.LoginResponse
+	1,  // 8: payeet.payeet_auth.Register:output_type -> payeet.StatusResponse
+	10, // 9: payeet.payeet.GetUserInfo:output_type -> payeet.UserInfoResponse
+	3,  // 10: payeet.payeet.GetBalance:output_type -> payeet.BalanceResponse
+	1,  // 11: payeet.payeet.TransferBalance:output_type -> payeet.StatusResponse
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_payeet_proto_init() }
@@ -736,42 +725,6 @@ func file_payeet_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_payeet_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginRequest_S); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_payeet_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_payeet_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_payeet_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RegisterRequest); i {
 			case 0:
 				return &v.state
@@ -783,7 +736,7 @@ func file_payeet_proto_init() {
 				return nil
 			}
 		}
-		file_payeet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_payeet_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StatusResponse); i {
 			case 0:
 				return &v.state
@@ -795,7 +748,7 @@ func file_payeet_proto_init() {
 				return nil
 			}
 		}
-		file_payeet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_payeet_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*BalanceRequest); i {
 			case 0:
 				return &v.state
@@ -807,7 +760,7 @@ func file_payeet_proto_init() {
 				return nil
 			}
 		}
-		file_payeet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_payeet_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*BalanceResponse); i {
 			case 0:
 				return &v.state
@@ -819,7 +772,7 @@ func file_payeet_proto_init() {
 				return nil
 			}
 		}
-		file_payeet_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_payeet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TransferRequest); i {
 			case 0:
 				return &v.state
@@ -831,8 +784,68 @@ func file_payeet_proto_init() {
 				return nil
 			}
 		}
-		file_payeet_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_payeet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HistoryRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RefreshTokenRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LoginRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LoginResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserInfoRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -849,14 +862,13 @@ func file_payeet_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_payeet_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   9,
+			NumEnums:      0,
+			NumMessages:   11,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_payeet_proto_goTypes,
 		DependencyIndexes: file_payeet_proto_depIdxs,
-		EnumInfos:         file_payeet_proto_enumTypes,
 		MessageInfos:      file_payeet_proto_msgTypes,
 	}.Build()
 	File_payeet_proto = out.File
@@ -873,13 +885,155 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
+// PayeetAuthClient is the client API for PayeetAuth service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type PayeetAuthClient interface {
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+}
+
+type payeetAuthClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewPayeetAuthClient(cc grpc.ClientConnInterface) PayeetAuthClient {
+	return &payeetAuthClient{cc}
+}
+
+func (c *payeetAuthClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/payeet.payeet_auth/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *payeetAuthClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/payeet.payeet_auth/RefreshToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *payeetAuthClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, "/payeet.payeet_auth/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// PayeetAuthServer is the server API for PayeetAuth service.
+type PayeetAuthServer interface {
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	RefreshToken(context.Context, *RefreshTokenRequest) (*LoginResponse, error)
+	Register(context.Context, *RegisterRequest) (*StatusResponse, error)
+}
+
+// UnimplementedPayeetAuthServer can be embedded to have forward compatible implementations.
+type UnimplementedPayeetAuthServer struct {
+}
+
+func (*UnimplementedPayeetAuthServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (*UnimplementedPayeetAuthServer) RefreshToken(context.Context, *RefreshTokenRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (*UnimplementedPayeetAuthServer) Register(context.Context, *RegisterRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+
+func RegisterPayeetAuthServer(s *grpc.Server, srv PayeetAuthServer) {
+	s.RegisterService(&_PayeetAuth_serviceDesc, srv)
+}
+
+func _PayeetAuth_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PayeetAuthServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payeet.payeet_auth/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PayeetAuthServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PayeetAuth_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PayeetAuthServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payeet.payeet_auth/RefreshToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PayeetAuthServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PayeetAuth_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PayeetAuthServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payeet.payeet_auth/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PayeetAuthServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _PayeetAuth_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "payeet.payeet_auth",
+	HandlerType: (*PayeetAuthServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Login",
+			Handler:    _PayeetAuth_Login_Handler,
+		},
+		{
+			MethodName: "RefreshToken",
+			Handler:    _PayeetAuth_RefreshToken_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _PayeetAuth_Register_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "payeet.proto",
+}
+
 // PayeetClient is the client API for Payeet service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type PayeetClient interface {
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	LoginS(ctx context.Context, in *LoginRequest_S, opts ...grpc.CallOption) (*LoginResponse, error)
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	GetUserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	GetBalance(ctx context.Context, in *BalanceRequest, opts ...grpc.CallOption) (*BalanceResponse, error)
 	TransferBalance(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
@@ -892,27 +1046,9 @@ func NewPayeetClient(cc grpc.ClientConnInterface) PayeetClient {
 	return &payeetClient{cc}
 }
 
-func (c *payeetClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/payeet.payeet/Login", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *payeetClient) LoginS(ctx context.Context, in *LoginRequest_S, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/payeet.payeet/LoginS", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *payeetClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/payeet.payeet/Register", in, out, opts...)
+func (c *payeetClient) GetUserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
+	out := new(UserInfoResponse)
+	err := c.cc.Invoke(ctx, "/payeet.payeet/GetUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -939,9 +1075,7 @@ func (c *payeetClient) TransferBalance(ctx context.Context, in *TransferRequest,
 
 // PayeetServer is the server API for Payeet service.
 type PayeetServer interface {
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	LoginS(context.Context, *LoginRequest_S) (*LoginResponse, error)
-	Register(context.Context, *RegisterRequest) (*StatusResponse, error)
+	GetUserInfo(context.Context, *UserInfoRequest) (*UserInfoResponse, error)
 	GetBalance(context.Context, *BalanceRequest) (*BalanceResponse, error)
 	TransferBalance(context.Context, *TransferRequest) (*StatusResponse, error)
 }
@@ -950,14 +1084,8 @@ type PayeetServer interface {
 type UnimplementedPayeetServer struct {
 }
 
-func (*UnimplementedPayeetServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (*UnimplementedPayeetServer) LoginS(context.Context, *LoginRequest_S) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginS not implemented")
-}
-func (*UnimplementedPayeetServer) Register(context.Context, *RegisterRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+func (*UnimplementedPayeetServer) GetUserInfo(context.Context, *UserInfoRequest) (*UserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
 func (*UnimplementedPayeetServer) GetBalance(context.Context, *BalanceRequest) (*BalanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBalance not implemented")
@@ -970,56 +1098,20 @@ func RegisterPayeetServer(s *grpc.Server, srv PayeetServer) {
 	s.RegisterService(&_Payeet_serviceDesc, srv)
 }
 
-func _Payeet_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+func _Payeet_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PayeetServer).Login(ctx, in)
+		return srv.(PayeetServer).GetUserInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/payeet.payeet/Login",
+		FullMethod: "/payeet.payeet/GetUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PayeetServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Payeet_LoginS_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest_S)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PayeetServer).LoginS(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/payeet.payeet/LoginS",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PayeetServer).LoginS(ctx, req.(*LoginRequest_S))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Payeet_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PayeetServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/payeet.payeet/Register",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PayeetServer).Register(ctx, req.(*RegisterRequest))
+		return srv.(PayeetServer).GetUserInfo(ctx, req.(*UserInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1065,16 +1157,8 @@ var _Payeet_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*PayeetServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
-			Handler:    _Payeet_Login_Handler,
-		},
-		{
-			MethodName: "LoginS",
-			Handler:    _Payeet_LoginS_Handler,
-		},
-		{
-			MethodName: "Register",
-			Handler:    _Payeet_Register_Handler,
+			MethodName: "GetUserInfo",
+			Handler:    _Payeet_GetUserInfo_Handler,
 		},
 		{
 			MethodName: "GetBalance",

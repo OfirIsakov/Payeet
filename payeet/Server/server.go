@@ -1,10 +1,11 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net"
 
+	"galil-maaravi-802-payeet/payeet/Server/services"
+	"galil-maaravi-802-payeet/payeet/Server/util"
 	pb "galil-maaravi-802-payeet/payeet/protos/go"
 
 	"google.golang.org/grpc"
@@ -12,52 +13,73 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	port = ":6969"
-)
+func seedUsers(userStore services.UserStore) error {
+	err := createUser(userStore, "admin1", "admin", "admin@admin.admin", "secret", "admin")
+	if err != nil {
+		return err
+	}
+	return createUser(userStore, "user1", "user", "user@user.user", "secret", "user")
+}
 
-type server struct {
-	pb.UnimplementedPayeetServer
+func createUser(userStore services.UserStore, firstName string, lastName string, email string, password string, Role string) error {
+	user, err := services.NewUser(firstName, lastName, email, password, Role)
+	if err != nil {
+		return err
+	}
+
+	return userStore.AddUser(user)
+}
+
+func accessibleRoles() map[string][]string {
+	const path = "/payeet.payeet/"
+	return map[string][]string{
+		path + "GetUserInfo":     {"user"},
+		path + "TransferBalance": {"user"},
+		path + "GetBalance":      {"user"},
+	}
+
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	log.Printf("Loading config...")
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Panic("cannot load config")
+	}
+
+	log.Printf("Starting server on port [%s]", config.Port)
+
+	userStore := services.NewMemoryUserStore()
+	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
-	srv := grpc.NewServer()
-	pb.RegisterPayeetServer(srv, &server{})
+	authServer := services.NewAuthServer(userStore, jwtManger)
+	logic := services.NewPayeetServer()
+
+	if seedUsers(userStore) != nil {
+		log.Panic("cannot seed users")
+	}
+
+	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
+	srv := grpc.NewServer(
+		grpc.UnaryInterceptor(interceptor.Unary()),
+	)
+
+	pb.RegisterPayeetAuthServer(srv, authServer)
+	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
+
+	lis, err := net.Listen("tcp", config.Port)
+	if err != nil {
+		log.Panic(err)
+	}
+
 	log.Printf("Serving... ")
 	if e := srv.Serve(lis); e != nil {
-		panic(e)
+		log.Panic(e)
 	}
 
-}
-
-func (s *server) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
-	log.Printf("login")
-	return &pb.LoginResponse{FirstName: "aa", LastName: "aa", Session: "aa", User_ID: "aa"}, nil
-}
-
-func (s *server) LoginS(ctx context.Context, in *pb.LoginRequest_S) (*pb.LoginResponse, error) {
-
-	return &pb.LoginResponse{}, nil
-}
-
-func (s *server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.StatusResponse, error) {
-
-	return &pb.StatusResponse{}, nil
-}
-
-func (s *server) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*pb.BalanceResponse, error) {
-
-	return &pb.BalanceResponse{}, nil
-}
-
-func (s *server) TransferBalance(ctx context.Context, in *pb.TransferRequest) (*pb.StatusResponse, error) {
-
-	return &pb.StatusResponse{}, nil
 }

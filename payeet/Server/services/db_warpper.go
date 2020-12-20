@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"sync"
 )
 
@@ -10,8 +11,10 @@ type UserStore interface {
 	// save a new user to the storge.
 	AddUser(user *User) error
 
-	// find a user in storge.
-	Find(uuid string) (*User, error)
+	SetRefreshToken(uuid string, refreshToken string) error
+
+	FindWithMail(uuid string) (*User, error)
+	FindWithUUID(uuid string) (*User, error)
 }
 
 // InMemoryUserStore stores users in memory.
@@ -20,39 +23,69 @@ type InMemoryUserStore struct {
 	users map[string]*User
 }
 
-// this function makes a new InMemoryUserStore
+// NewMemoryUserStore makes a new InMemoryUserStore
 func NewMemoryUserStore() *InMemoryUserStore {
 	return &InMemoryUserStore{
 		users: make(map[string]*User),
 	}
 }
 
-// save a new user to the storge.
+// AddUser save a new user to the storge.
 func (store *InMemoryUserStore) AddUser(user *User) error {
 	store.mutex.Lock()
 	defer store.mutex.Unlock()
 
-	if store.User[user.uuid] != nil {
-		return ErrAlreadyExists
+	if store.users[user.uuid] != nil {
+		return errors.New("ErrAlreadyExists")
 	}
 
-	store.User[user.uuid] = user.Clone()
+	store.users[user.uuid] = user.Clone()
 
 	return nil
 
 }
 
-// find a user in storge.
-func (store *InMemoryUserStore) Find(uuid string) (*User, error) {
+// SetRefreshToken save a new user to the storge.
+func (store *InMemoryUserStore) SetRefreshToken(uuid string, refreshToken string) error {
 	store.mutex.Lock()
 	defer store.mutex.Unlock()
 
-	d := store.users[user.uuid]
+	if store.users[uuid] == nil {
+		return errors.New("user doesnt exists")
+	}
+
+	store.users[uuid].refreshToken = refreshToken
+
+	return nil
+
+}
+
+//FindWithUUID finds a user in storge.
+func (store *InMemoryUserStore) FindWithUUID(uuid string) (*User, error) {
+	store.mutex.Lock()
+	defer store.mutex.Unlock()
+
+	d := store.users[uuid]
 
 	if d == nil {
 		return nil, nil
 	}
 
-	return user.Clone(), nil
+	return d.Clone(), nil
+
+}
+
+//FindWithMail finds a user in storge.
+func (store *InMemoryUserStore) FindWithMail(mail string) (*User, error) {
+	store.mutex.Lock()
+	defer store.mutex.Unlock()
+
+	for _, usr := range store.users {
+		if usr.email == mail {
+			return usr.Clone(), nil
+		}
+	}
+
+	return nil, nil
 
 }
