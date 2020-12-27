@@ -21,8 +21,8 @@ the UserClaims is part of the JWT token.
 */
 type UserClaims struct {
 	jwt.StandardClaims
-	UUID string `json:"uuid"`
-	Role string `json:"role"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 }
 
 // NewJWTManager creates a new JWTManager.
@@ -62,8 +62,8 @@ func (manager *JWTManager) Generate(user *User, t time.Duration, key string) (st
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(t).Unix(),
 		},
-		UUID: user.uuid,
-		Role: user.Role,
+		Email: user.Email,
+		Role:  user.Role,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // change this to a more secure method!!

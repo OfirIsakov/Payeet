@@ -22,9 +22,8 @@ func NewAuthServer(userStore UserStore, jwtManager *JWTManager) *AuthServer {
 
 // Login function
 func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-
 	// find the user in the database.
-	user, err := server.userStore.FindWithMail(req.GetMail())
+	user, err := server.userStore.GetUserByEmail(req.GetMail())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
 	}
@@ -53,7 +52,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	}
 
 	// save the refresh token in the database.
-	if server.userStore.SetRefreshToken(user.uuid, refreshToken) != nil {
+	if server.userStore.SetRefreshToken(user.Email, refreshToken) != nil {
 		return nil, status.Errorf(codes.Internal, "cannot set refresh token for user")
 	}
 
@@ -72,13 +71,13 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 	}
 
 	// get the user from the userclaims.
-	user, err := server.userStore.FindWithUUID(userClaims.UUID)
+	user, err := server.userStore.GetUserByEmail(userClaims.Email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
 	}
 
 	// verify refresh token against database.
-	if user.refreshToken != req.GetRefreshToken() {
+	if user.RefreshToken != req.GetRefreshToken() {
 		return nil, status.Errorf(codes.Internal, "refresh tokens do not match")
 	}
 
@@ -108,7 +107,6 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 
 // Register creates a new user.
 func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
-
 	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
 
 	// add checks for password requirements
@@ -117,6 +115,10 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		return nil, err
 	}
 
-	server.userStore.AddUser(user)
+	err = server.userStore.AddUser(user)
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.StatusResponse{}, nil
 }
