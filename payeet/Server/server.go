@@ -27,18 +27,18 @@ func main() {
 
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Panic("cannot load config : ", err)
+		log.Fatal("❌\n", err)
 	}
 
-	log.Printf("Starting server on port [%s]", config.Port)
-
 	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.CollectionName)
+	log.Printf("Connecting to DB...")
 	userStore.Connect()
 	defer userStore.Disconnect()
+	userStore.CheckConnection()
 	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
-		log.Panic(err)
+		log.Fatal("❌\n", err)
 	}
 
 	authServer := services.NewAuthServer(userStore, jwtManger)
@@ -53,15 +53,17 @@ func main() {
 	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
 
+	log.Printf("Starting server on port [%s]", config.Port)
+
 	lis, err := net.Listen("tcp", config.Port)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 	log.Printf("Done! ✅")
 
 	log.Printf("Serving... 🥳")
 	if e := srv.Serve(lis); e != nil {
-		log.Panic(e)
+		log.Fatal("❌\n", e)
 	}
 
 }

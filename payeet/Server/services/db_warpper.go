@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -58,6 +60,17 @@ func NewMongoUserStore(ConnectionString, DBName, CollectionName string) *MongoUs
 		UsersCollection: client.Database(DBName).Collection(CollectionName),
 		Client:          client,
 	}
+}
+
+// CheckConnection pings the database.
+func (store *MongoUserStore) CheckConnection() {
+
+	err := store.Client.Ping(context.TODO(), readpref.Primary())
+	if err != nil {
+		log.Fatalf("DB Connection failed.. ❌\n %v", err)
+	}
+
+	log.Printf("Connected to DB successfully ✅")
 }
 
 // Connect makes a connection to the database.
