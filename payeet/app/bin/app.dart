@@ -2,13 +2,18 @@ import 'package:grpc/grpc.dart';
 
 import '../../protos/dart/payeet.pb.dart';
 import '../../protos/dart/payeet.pbgrpc.dart';
+import 'payeetChannel.dart';
 
+//TODO: Implement a client class to save the refreshToken and do the client logic
 
 Future<void> main(List<String> args) async {
-  final channel = ClientChannel(
+  
+  final channel = PayeetChannel(
+    ClientChannel(
     'localhost',
     port: 6969,
     options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+    ),
   );
   
   final authStub = payeet_authClient(channel);
@@ -21,9 +26,13 @@ Future<void> main(List<String> args) async {
 
     print('---------------------------------------------------------------');
 
+    // when logging in we get the access token and we need to send it with every request
     print('sendLoginRequest...');
-    var user = await sendLoginRequest(authStub);
+    var user = await sendLoginRequest(authStub); 
     print('Login response recieved:\n${user}');
+
+    // once we get the token we can attach it to the payeetChannel type we implemented
+    channel.addAccessTokenMetadata(user.accessToken);
 
     print('---------------------------------------------------------------');
 
@@ -32,10 +41,8 @@ Future<void> main(List<String> args) async {
     print('RefreshToken response recieved:\n${user}');
 
     print('---------------------------------------------------------------');
-
-    final jwt = <String, String>{};
-    jwt['authorization'] = user.accessToken;
-    final normalStub = payeetClient(channel, options: CallOptions(metadata: jwt));
+    final normalStub = payeetClient(channel);
+    
 
     print('sendBalanceRequest...');
     print('Balance response recieved:\n${await sendBalanceRequest(normalStub)}');
