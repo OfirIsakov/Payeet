@@ -1,10 +1,14 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	codes "google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 // JWTManager handels the JWT actions.
@@ -21,8 +25,8 @@ the UserClaims is part of the JWT token.
 */
 type UserClaims struct {
 	jwt.StandardClaims
-	UUID string `json:"uuid"`
-	Role string `json:"role"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 }
 
 // NewJWTManager creates a new JWTManager.
@@ -62,8 +66,8 @@ func (manager *JWTManager) Generate(user *User, t time.Duration, key string) (st
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(t).Unix(),
 		},
-		UUID: user.uuid,
-		Role: user.Role,
+		Email: user.Email,
+		Role:  user.Role,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // change this to a more secure method!!
@@ -137,4 +141,25 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 
 	return claims, nil
 
+}
+
+// ExtractClaims gets the email field from the ctx.
+func (manager *JWTManager) ExtractClaims(ctx context.Context) (*UserClaims, error) {
+	metaData, ok := metadata.FromIncomingContext(ctx) // extract metadata form ctx
+	if !ok {
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "metadata not provided")
+	}
+
+	values := metaData["authorization"] // check if the user provided a token
+	if len(values) == 0 {
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
+	}
+
+	accessToken := values[0]                              // the access token is always in the first cell
+	claims, err := manager.VerifyAccessToken(accessToken) // check if the token is valid
+	if err != nil {
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "access token is invalid %v", err)
+	}
+
+	return claims, nil
 }

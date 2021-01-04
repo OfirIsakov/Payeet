@@ -1,89 +1,76 @@
 package services
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"errors"
+	"fmt"
 
-	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User struct conains user info.
 type User struct {
-	uuid         string
-	firstName    string
-	lastName     string
-	salt         string
-	email        string
-	password     string
-	Role         string
-	refreshToken string
+	FirstName    string `bson:"FirstName" json:"FirstName"`
+	LastName     string `bson:"LastName" json:"LastName"`
+	Email        string `bson:"Email" json:"Email"`
+	Password     string `bson:"Password" json:"Password"`
+	Role         string `bson:"Role" json:"Role"`
+	Balance      int    `bson:"Balance" json:"Balance"`
+	RefreshToken string `bson:"RefreshToken" json:"RefreshToken"`
 }
 
 // NewUser returns a new user.
 func NewUser(firstName string, lastName string, email string, password string, Role string) (*User, error) {
-	salt := genSalt()
 
-	hp := hashPassword(password, salt)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("cannot hash password: %w", err)
+	}
 
 	user := &User{
-		uuid:         getUUID(),
-		firstName:    firstName,
-		lastName:     lastName,
-		salt:         salt,
-		email:        email,
-		password:     hp,
+		FirstName:    firstName,
+		LastName:     lastName,
+		Email:        email,
+		Password:     string(hashedPassword),
 		Role:         Role,
-		refreshToken: ""}
+		Balance:      0,
+		RefreshToken: ""}
 
 	return user, nil
 
 }
 
-func genSalt() string {
-	salt := uuid.New().String()
-
-	return salt
-}
-
-func getUUID() string {
-	u := uuid.New().String()
-	// check if the uuid is being used already
-
-	// if you are genarting one uuid every sec you will need 1 billion years for it to dupe.
-
-	// if not return it
-	return u
-}
-
-func hashPassword(password string, salt string) string {
-
-	h := sha256.New()
-	h.Write([]byte(password))
-	h.Write([]byte(salt)) // adding the salt to the password.
-
-	return hex.EncodeToString(h.Sum(nil))
-
-}
-
 func (user *User) validatePassword(password string) error {
 
-	if hashPassword(password, user.salt) == user.password {
-		return nil
-	}
-	return errors.New("passwords do not match")
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	return err
 
 }
 
 // Clone returns a clone of a user.
 func (user *User) Clone() *User {
 	return &User{
-		uuid:         user.uuid,
-		firstName:    user.firstName,
-		lastName:     user.lastName,
-		email:        user.email,
-		salt:         user.salt,
-		password:     user.password,
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
+		Email:        user.Email,
+		Password:     user.Password,
 		Role:         user.Role,
-		refreshToken: user.refreshToken}
+		Balance:      user.Balance,
+		RefreshToken: user.RefreshToken}
+}
+
+// ToBson truns a user object into bson
+func (user *User) ToBson() bson.D {
+
+	a := bson.D{
+		{Key: "FirstName", Value: user.FirstName},
+		{Key: "LastName", Value: user.LastName},
+		{Key: "Email", Value: user.Email},
+		{Key: "Password", Value: user.Password},
+		{Key: "Role", Value: user.Role},
+		{Key: "Balance", Value: user.Balance},
+		{Key: "RefreshToken", Value: user.RefreshToken},
+	}
+
+	return a
 }

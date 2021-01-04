@@ -6,7 +6,6 @@ import (
 
 	"google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -65,20 +64,9 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string
 		return nil
 	}
 
-	metaData, ok := metadata.FromIncomingContext(ctx) // extract metadata form ctx
-	if !ok {
-		return status.Errorf(codes.Unauthenticated, "metadata not provided")
-	}
-
-	values := metaData["authorization"] // check if the user provided a token
-	if len(values) == 0 {
-		return status.Errorf(codes.Unauthenticated, "authorization token is not provided")
-	}
-
-	accessToken := values[0]                                             // the access token is always in the first cell
-	claims, err := interceptor.jwtManager.VerifyAccessToken(accessToken) // check if the token is valid
+	claims, err := interceptor.jwtManager.ExtractClaims(ctx)
 	if err != nil {
-		return status.Errorf(codes.Unauthenticated, "access token is invalid %v", err)
+		return err
 	}
 
 	// check if the user has a role

@@ -13,23 +13,6 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-func seedUsers(userStore services.UserStore) error {
-	err := createUser(userStore, "admin1", "admin", "admin@admin.admin", "secret", "admin")
-	if err != nil {
-		return err
-	}
-	return createUser(userStore, "user1", "user", "user@user.user", "secret", "user")
-}
-
-func createUser(userStore services.UserStore, firstName string, lastName string, email string, password string, Role string) error {
-	user, err := services.NewUser(firstName, lastName, email, password, Role)
-	if err != nil {
-		return err
-	}
-
-	return userStore.AddUser(user)
-}
-
 func accessibleRoles() map[string][]string {
 	const path = "/payeet.payeet/"
 	return map[string][]string{
@@ -41,27 +24,25 @@ func accessibleRoles() map[string][]string {
 }
 
 func main() {
-	log.Printf("Loading config...")
+
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Panic("cannot load config")
+		log.Fatal("❌\n", err)
 	}
 
-	log.Printf("Starting server on port [%s]", config.Port)
-
-	userStore := services.NewMemoryUserStore()
+	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.CollectionName)
+	log.Printf("Connecting to DB...")
+	userStore.Connect()
+	defer userStore.Disconnect()
+	userStore.CheckConnection()
 	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
-		log.Panic(err)
+		log.Fatal("❌\n", err)
 	}
 
 	authServer := services.NewAuthServer(userStore, jwtManger)
-	logic := services.NewPayeetServer()
-
-	if seedUsers(userStore) != nil {
-		log.Panic("cannot seed users")
-	}
+	logic := services.NewPayeetServer(userStore, jwtManger)
 
 	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
 	srv := grpc.NewServer(
@@ -72,14 +53,17 @@ func main() {
 	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
 
+	log.Printf("Starting server on port [%s]", config.Port)
+
 	lis, err := net.Listen("tcp", config.Port)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
+	log.Printf("Done! ✅")
 
-	log.Printf("Serving... ")
+	log.Printf("Serving... 🥳")
 	if e := srv.Serve(lis); e != nil {
-		log.Panic(e)
+		log.Fatal("❌\n", e)
 	}
 
 }
