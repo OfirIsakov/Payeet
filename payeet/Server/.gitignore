@@ -14,9 +14,6 @@
 # config
 *.env
 
-# Dependency directories (remove the comment below to include it)
-vendor/
-
 # OS generated files #
 ######################
 .DS_Store
@@ -26,3 +23,6 @@ vendor/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Dependency directories (remove the comment below to include it)
+vendor/

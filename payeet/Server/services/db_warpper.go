@@ -15,10 +15,21 @@ import (
 type UserStore interface {
 
 	// save a new user to the storge.
-	AddUser(user *User) error
+
+	// Add a Transaction
+
+	// get all transactions of the receiver
+	// get all transactions of the sender.
+
+	// get all transactions of user. (Sender or Receiver)
+	// |---> the tansactions from the functions above and sort them by time.
 
 	Connect() error
 	Disconnect() error
+
+	AddUser(user *User) error
+	AddTransaction(t *Transaction) error
+
 	GetUserByEmail(mail string) (*User, error)
 	GetAllUsers() (a []*User, err error)
 
@@ -28,28 +39,17 @@ type UserStore interface {
 }
 
 // MongoUserStore is a warpper for mongodb
-type MongoUserStore struct {
-	UsersCollection *mongo.Collection
-	Client          *mongo.Client
-}
+type MongoUserStore struct { // change name to db wapper or something
 
-// AddUser adds a new user to the database.
-func (store *MongoUserStore) AddUser(user *User) error {
+	// add collection for transactions.
 
-	_, err := store.UsersCollection.InsertOne(
-		context.TODO(),
-		user.ToBson(),
-	)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	TransactionsCollection *mongo.Collection
+	UsersCollection        *mongo.Collection
+	Client                 *mongo.Client
 }
 
 // NewMongoUserStore d
-func NewMongoUserStore(ConnectionString, DBName, CollectionName string) *MongoUserStore {
+func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionCollection string) *MongoUserStore {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(ConnectionString))
 	if err != nil {
@@ -57,8 +57,9 @@ func NewMongoUserStore(ConnectionString, DBName, CollectionName string) *MongoUs
 	}
 
 	return &MongoUserStore{
-		UsersCollection: client.Database(DBName).Collection(CollectionName),
-		Client:          client,
+		TransactionsCollection: client.Database(DBName).Collection(TransactionCollection),
+		UsersCollection:        client.Database(DBName).Collection(UserCollection),
+		Client:                 client,
 	}
 }
 
@@ -88,6 +89,36 @@ func (store *MongoUserStore) Connect() error {
 func (store *MongoUserStore) Disconnect() error {
 
 	err := store.Client.Disconnect(context.TODO())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddUser adds a new user to the database.
+func (store *MongoUserStore) AddUser(user *User) error {
+
+	_, err := store.UsersCollection.InsertOne(
+		context.TODO(),
+		user.ToBson(),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddTransaction adds a new transaction to the transaction collection.
+func (store *MongoUserStore) AddTransaction(t *Transaction) error {
+
+	_, err := store.TransactionsCollection.InsertOne(
+		context.TODO(),
+		t.ToBson(),
+	)
+
 	if err != nil {
 		return err
 	}

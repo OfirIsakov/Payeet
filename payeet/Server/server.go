@@ -30,7 +30,7 @@ func main() {
 		log.Fatal("❌\n", err)
 	}
 
-	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.CollectionName)
+	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection)
 	log.Printf("Connecting to DB...")
 	userStore.Connect()
 	defer userStore.Disconnect()

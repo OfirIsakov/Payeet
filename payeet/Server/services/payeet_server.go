@@ -41,6 +41,44 @@ func (s *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*
 // TransferBalance moves balance from one user to another.
 func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferRequest) (*pb.StatusResponse, error) {
 
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "%v", err)
+	}
+
+	// get the balance of the user with the email from claims.
+	senderBalance, err := s.userStore.GetBalance(claims.Email)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cant get balance %v", err)
+	}
+
+	if senderBalance >= int(in.GetAmount()) {
+
+		recvBalance, err := s.userStore.GetBalance(in.GetReceiverMail())
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "cant get balance %v", err)
+		}
+
+		senderBalance = senderBalance - int(in.GetAmount())
+		recvBalance = recvBalance + int(in.GetAmount())
+
+		// create a doc in the transaction collecion.
+		t := &Transaction{
+			Sender:   claims.Email,
+			Receiver: in.GetReceiverMail(),
+			Amount:   int(in.GetAmount())}
+
+		s.userStore.AddTransaction(t)
+
+		// update the fields.
+		s.userStore.SetBalance(in.GetReceiverMail(), recvBalance)
+		s.userStore.SetBalance(claims.Email, senderBalance)
+
+	} else {
+		return nil, status.Errorf(codes.Aborted, "insufficient balance")
+	}
+
 	return &pb.StatusResponse{}, nil
 }
 
