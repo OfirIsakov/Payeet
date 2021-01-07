@@ -18,13 +18,10 @@ class PayeetClient {
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
 
-<<<<<<< HEAD
   String _firstName;
   String _lastName;
   String _mail;
-
-=======
->>>>>>> 11aa974caf9fde510cdbb9c6c361052e3a48530b
+  
   PayeetClient(this.channel); // ctor
 
   set accessToken(String token){
