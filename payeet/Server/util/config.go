@@ -8,14 +8,15 @@ import (
 
 // Config holds the config data
 type Config struct {
-	Port                 string `mapstructure:"PORT"`
-	AccessTokenKey       string `mapstructure:"ACCESS_TOKEN_KEY"`
-	RefreshTokenKey      string `mapstructure:"REFRESH_TOKEN_KEY"`
-	AccessTokenDuration  string `mapstructure:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration string `mapstructure:"REFRESH_TOKEN_DURATION"`
-	ConnectionString     string `mapstructure:"CONNECTION_STRING"`
-	DBName               string `mapstructure:"DB_NAME"`
-	CollectionName       string `mapstructure:"COLLECTION_NAME"`
+	Port                  string `mapstructure:"PORT"`
+	AccessTokenKey        string `mapstructure:"ACCESS_TOKEN_KEY"`
+	RefreshTokenKey       string `mapstructure:"REFRESH_TOKEN_KEY"`
+	AccessTokenDuration   string `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration  string `mapstructure:"REFRESH_TOKEN_DURATION"`
+	ConnectionString      string `mapstructure:"CONNECTION_STRING"`
+	DBName                string `mapstructure:"DB_NAME"`
+	UserCollection        string `mapstructure:"USER_COLLECTION"`
+	TransactionCollection string `mapstructure:"TRANSACTION_COLLECTION"`
 }
 
 // LoadConfig is used to load the config from the config file.

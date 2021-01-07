@@ -179,7 +179,7 @@ class BalanceResponse extends $pb.GeneratedMessage {
 class TransferRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TransferRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ReceiverMail', protoName: 'ReceiverMail')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'SenderID', protoName: 'SenderID')
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Amount', $pb.PbFieldType.O3, protoName: 'Amount')
     ..hasRequiredFields = false
   ;
 
@@ -216,13 +216,13 @@ class TransferRequest extends $pb.GeneratedMessage {
   void clearReceiverMail() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get senderID => $_getSZ(1);
+  $core.int get amount => $_getIZ(1);
   @$pb.TagNumber(2)
-  set senderID($core.String v) { $_setString(1, v); }
+  set amount($core.int v) { $_setSignedInt32(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasSenderID() => $_has(1);
+  $core.bool hasAmount() => $_has(1);
   @$pb.TagNumber(2)
-  void clearSenderID() => clearField(2);
+  void clearAmount() => clearField(2);
 }
 
 class historyRequest extends $pb.GeneratedMessage {

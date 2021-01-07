@@ -21,7 +21,7 @@ message BalanceResponse{
 
 message TransferRequest{
     string ReceiverMail = 1;
-    string SenderID = 2;
+    int32 Amount = 2;
 }
 
 message historyRequest{

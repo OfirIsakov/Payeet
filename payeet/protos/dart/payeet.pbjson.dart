@@ -34,7 +34,7 @@ const TransferRequest$json = const {
   '1': 'TransferRequest',
   '2': const [
     const {'1': 'ReceiverMail', '3': 1, '4': 1, '5': 9, '10': 'ReceiverMail'},
-    const {'1': 'SenderID', '3': 2, '4': 1, '5': 9, '10': 'SenderID'},
+    const {'1': 'Amount', '3': 2, '4': 1, '5': 5, '10': 'Amount'},
   ],
 };
 
