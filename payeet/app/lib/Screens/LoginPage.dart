@@ -18,12 +18,16 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _loading = false;
 
-  Future<String> _handleSignIn() => Future.delayed(
-        Duration(
-          milliseconds: 500,
-        ),
-        () => "fff",
-      );
+  Future<Void> _handleSignIn(String email, String password) async {
+    print('sendLoginRequest(Correct)...');
+    var user = await Globals.client.login(email, password);
+    print('Login response recieved:\n${user}');
+
+    Globals.client.accessToken = user.accessToken;
+    Globals.client.refreshToken = user.refreshToken;
+    Globals.client.createAuthenticatedClient(); 
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +76,13 @@ class _LoginPageState extends State<LoginPage> {
           //   },
           // );
 
-          context.read(Globals.email).state = emailControler.text;
-
+          //context.read(Globals.email).state = emailControler.text;
+          
           setState(() {
             _loading = true;
           });
-
-          _handleSignIn()
+          
+          _handleSignIn(emailControler.text, passwordControler.text)
               .whenComplete(() => Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) {
                       return AppBase();
