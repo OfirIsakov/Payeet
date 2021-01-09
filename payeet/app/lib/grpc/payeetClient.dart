@@ -5,8 +5,8 @@ import 'package:grpc/service_api.dart' as $grpc;
 
 import 'dart:async';
 
-import '../../protos/dart/payeet.pb.dart';
-import '../../protos/dart/payeet.pbgrpc.dart';
+import 'protos/payeet.pb.dart';
+import 'protos/payeet.pbgrpc.dart';
 
 
 class PayeetClient {

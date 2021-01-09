@@ -4,9 +4,9 @@ import (
 	"log"
 	"net"
 
+	pb "galil-maaravi-802-payeet/payeet/Server/protos"
 	"galil-maaravi-802-payeet/payeet/Server/services"
 	"galil-maaravi-802-payeet/payeet/Server/util"
-	pb "galil-maaravi-802-payeet/payeet/protos/go"
 
 	"google.golang.org/grpc"
 

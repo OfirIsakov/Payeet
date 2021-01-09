@@ -22,23 +22,17 @@ Future<void> main(List<String> args) async {
       print('registering israel@israeli.co.il');
       print(
           'Register response recieved:\n${await client.register('isarel', 'israeli', 'israel@israeli.co.il', '2hard2guess')}');
-    }
-     catch (e) {
+    } catch (e) {
       print(e);
     }
-
 
     try {
       print('registering To@who.com');
       print(
           'Register response recieved:\n${await client.register('dr', 'who', 'To@who.com', '2hard2guess')}');
-    }
-     catch (e) {
+    } catch (e) {
       print(e);
     }
-
-
-
 
     print('---------------------------------------------------------------');
 

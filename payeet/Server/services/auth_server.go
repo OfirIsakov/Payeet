@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 
-	pb "galil-maaravi-802-payeet/payeet/protos/go"
+	pb "galil-maaravi-802-payeet/payeet/Server/protos"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
