@@ -96,9 +96,11 @@ class PayeetClient {
     return response;
   }
 
-  Future<StatusResponse> transferBalance(String mail, double amount) async {
+  Future<StatusResponse> transferBalance(String mail, int amount) async {
     final response = await authenticatedClient.transferBalance(
       TransferRequest()
+      ..receiverMail = mail
+      ..amount = amount
     );
 
     return response;

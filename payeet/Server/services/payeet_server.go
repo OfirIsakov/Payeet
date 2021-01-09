@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/protos/go"
+	"time"
 
 	codes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -67,7 +68,8 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 		t := &Transaction{
 			Sender:   claims.Email,
 			Receiver: in.GetReceiverMail(),
-			Amount:   int(in.GetAmount())}
+			Amount:   int(in.GetAmount()),
+			Time:     time.Now().Unix()}
 
 		s.userStore.AddTransaction(t)
 

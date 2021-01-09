@@ -1,8 +1,6 @@
 package services
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -14,19 +12,6 @@ type Transaction struct {
 	Time     int64  `bson:"Time" json:"Time"`
 }
 
-// NewTransaction returns a new Transaction.
-func NewTransaction(Sender string, Receiver string, Amount int) (*Transaction, error) {
-
-	Transaction := &Transaction{
-		Sender:   Sender,
-		Receiver: Receiver,
-		Amount:   0,
-		Time:     time.Now().Unix()}
-
-	return Transaction, nil
-
-}
-
 // ToBson truns a Transaction object into bson
 func (Transaction *Transaction) ToBson() bson.D {
 
@@ -34,6 +19,7 @@ func (Transaction *Transaction) ToBson() bson.D {
 		{Key: "Sender", Value: Transaction.Sender},
 		{Key: "Receiver", Value: Transaction.Receiver},
 		{Key: "Amount", Value: Transaction.Amount},
+		{Key: "Time", Value: Transaction.Time},
 	}
 
 	return a
