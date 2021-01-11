@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -86,7 +85,7 @@ func (manager *JWTManager) VerifyAccessToken(accessToken string) (*UserClaims, e
 			_, ok := token.Method.(*jwt.SigningMethodHMAC) // change this to a more secure method!!
 
 			if !ok {
-				return nil, fmt.Errorf("wrong signing method used")
+				return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 			}
 
 			return []byte(manager.AccessTokenKey), nil
@@ -96,13 +95,13 @@ func (manager *JWTManager) VerifyAccessToken(accessToken string) (*UserClaims, e
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("invalid token: %w", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 
 	if !ok {
-		return nil, fmt.Errorf("invalid token claims: %w", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 	}
 
 	return claims, nil
@@ -120,7 +119,7 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 			_, ok := token.Method.(*jwt.SigningMethodHMAC) // change this to a more secure method!!
 
 			if !ok {
-				return nil, fmt.Errorf("wrong signing method used")
+				return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 			}
 
 			return []byte(manager.RefreshTokenKey), nil
@@ -130,13 +129,13 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("invalid token: %w", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 
 	if !ok {
-		return nil, fmt.Errorf("invalid token claims: %w", err)
+		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
 	}
 
 	return claims, nil
@@ -158,7 +157,7 @@ func (manager *JWTManager) ExtractClaims(ctx context.Context) (*UserClaims, erro
 	accessToken := values[0]                              // the access token is always in the first cell
 	claims, err := manager.VerifyAccessToken(accessToken) // check if the token is valid
 	if err != nil {
-		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "access token is invalid %v", err)
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "invalid access token")
 	}
 
 	return claims, nil

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
+	"log"
 	"time"
 
 	codes "google.golang.org/grpc/codes"
@@ -51,14 +52,14 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 	// get the balance of the user with the email from claims.
 	senderBalance, err := s.userStore.GetBalance(claims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cant get balance %v", err)
+		return nil, status.Errorf(codes.Internal, "cant get balance")
 	}
 
 	if senderBalance >= int(in.GetAmount()) {
 
 		recvBalance, err := s.userStore.GetBalance(in.GetReceiverMail())
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "cant get balance %v", err)
+			return nil, status.Errorf(codes.Internal, "cant get balance")
 		}
 
 		senderBalance = senderBalance - int(in.GetAmount())
@@ -77,7 +78,11 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 		s.userStore.SetBalance(in.GetReceiverMail(), recvBalance)
 		s.userStore.SetBalance(claims.Email, senderBalance)
 
+		log.Println("⎇ transfered " + string(in.GetAmount()) + " " + claims.Email + "--➡️" + in.GetReceiverMail())
+
 	} else {
+		log.Println("Transfer aborted insufficient balance in " + claims.Email + "'s account")
+
 		return nil, status.Errorf(codes.Aborted, "insufficient balance")
 	}
 
@@ -90,12 +95,12 @@ func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) 
 	// get the claims from ctx.
 	claims, err := s.jwtManager.ExtractClaims(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "%v", err)
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	user, err := s.userStore.GetUserByEmail(claims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "%v", err)
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil

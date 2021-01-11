@@ -25,7 +25,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	// find the user in the database.
 	user, err := server.userStore.GetUserByEmail(req.GetMail())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
+		return nil, status.Errorf(codes.Internal, "invalid username or password")
 	}
 
 	// check if the password is correct
@@ -36,24 +36,24 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	// generate JWT token
 	accessToken, err := server.jwtManager.GenerateAccessToken(user) // create a new token
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot generate access token")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// generate refresh toke
 	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot generate refresh token")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// get userclaims from the token so we could get the expire time.
 	userClaims, err := server.jwtManager.VerifyAccessToken(accessToken)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot get claims from accessToken")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// save the refresh token in the database.
 	if server.userStore.SetRefreshToken(user.Email, refreshToken) != nil {
-		return nil, status.Errorf(codes.Internal, "cannot set refresh token for user")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// sending a new JWT token, expire time, new refresh token.
@@ -67,36 +67,36 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 	// get the userclims from the refresh token
 	userClaims, err := server.jwtManager.VerifyRefreshToken(req.GetRefreshToken())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot verify refresh token")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// get the user from the userclaims.
 	user, err := server.userStore.GetUserByEmail(userClaims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot find user: %v", err)
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// verify refresh token against database.
 	if user.RefreshToken != req.GetRefreshToken() {
-		return nil, status.Errorf(codes.Internal, "refresh tokens do not match")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// generate JWT token
 	accessToken, err := server.jwtManager.GenerateAccessToken(user)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot generate access token")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// generate refresh token
 	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot generate refresh token")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// get the userclims from the accessToken token
 	userClaims, err = server.jwtManager.VerifyAccessToken(accessToken)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot get userclaims")
+		return nil, status.Errorf(codes.Internal, "")
 	}
 
 	// sending a new JWT token, expire time, new refresh token.
