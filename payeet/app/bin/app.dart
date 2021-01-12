@@ -3,15 +3,15 @@ import 'package:grpc/grpc.dart';
 import 'payeetClient.dart';
 
 Future<void> main(List<String> args) async {
-  var client = PayeetClient(PayeetChannel(
-    ClientChannel(
-      'localhost',
-      port: 6969,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-    ),
-  ));
-
-  client.createUnauthenticatedClient();
+  var client = PayeetClient(
+    PayeetChannel(
+      ClientChannel(
+        'localhost',
+        port: 6969,
+        options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+      ),
+    )
+  );
 
   try {
     print('---------------------------------------------------------------');
@@ -27,7 +27,8 @@ Future<void> main(List<String> args) async {
       print(e);
     }
 
-
+    print('---------------------------------------------------------------');
+    
     try {
       print('registering To@who.com');
       print(
@@ -37,38 +38,36 @@ Future<void> main(List<String> args) async {
       print(e);
     }
 
-
-
-
     print('---------------------------------------------------------------');
 
     print('sendLoginRequest(Incorrect)...');
     try {
-      print(
-          'Login response recieved:\n${await client.login('incorrect@user.wrong', '213374u')}');
+      print('Login response recieved:\n${await client.login('incorrect@user.wrong', '213374u')}');
     } catch (e) {
       print(e);
+      e.toString();
     }
 
     print('---------------------------------------------------------------');
 
     // when logging in we get the auth tokens and we need to send the access token with every request
     print('sendLoginRequest(Correct)...');
-    var user = await client.login('israel@israeli.co.il', '2hard2guess');
-    print('Login response recieved:\n${user}');
+    try {
+      print('Login response recieved:\n${await client.login('israel@israeli.co.il', '2hard2guess')}');
+    } catch (e) {
+      print(e);
+      e.toString();
+    }
 
     // once we get the tokens we can attach it to the payeetClient's channel we implemented
-    client.accessToken = user.accessToken;
-    client.refreshToken = user.refreshToken;
-    client.createAuthenticatedClient(); // create the authenticated channel
 
     print('---------------------------------------------------------------');
 
     print('sendRefreshRequest...');
-    user = await client.refreshAccessToken();
-    print('RefreshToken response recieved:\n${user}');
+    print('RefreshToken response recieved:\n${await client.refreshAccessToken()}');
 
     print('---------------------------------------------------------------');
+    
 
     print('sendBalanceRequest...');
     print('Balance response recieved:\n${await client.getBalance()}');
@@ -81,8 +80,7 @@ Future<void> main(List<String> args) async {
     print('---------------------------------------------------------------');
 
     print('sendTransferRequest...');
-    print(
-        'Transfer response recieved:\n${await client.transferBalance('To@who.com', 1337)}');
+    print('Transfer response recieved:\n${await client.transferBalance('To@who.com', 1337)}');
 
     print('---------------------------------------------------------------');
   } catch (e) {
