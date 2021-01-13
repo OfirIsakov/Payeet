@@ -18,8 +18,11 @@ class PayeetClient {
 
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
+  
+  bool _cachedBalance; // this is true when the client class has cached the user's balance
+  String _balance;
 
-  bool _cachedInfo; // this is true when the client class has cached the user info frtom the server
+  bool _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
   String _userID;
@@ -30,10 +33,13 @@ class PayeetClient {
     _unauthenticatedClient = payeet_authClient(channel);
   } 
 
-  payeet_authClient get unauthenticatedClient => _unauthenticatedClient;
-  payeetClient get authenticatedClient => _authenticatedClient;
+  bool get cachedBalance => _cachedBalance;
+  String get getCachedBalance => _balance;
 
   bool get cachedInfo => _cachedInfo;
+  String get getCachedFirstName => _firstName;
+  String get getCachedLastName => _lastName;
+  String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
@@ -77,7 +83,7 @@ class PayeetClient {
   }
 
   Future<LoginResponse> refreshAccessToken() async {
-    final response = await unauthenticatedClient.refreshToken(
+    final response = await _unauthenticatedClient.refreshToken(
       RefreshTokenRequest()
       ..refreshToken = _refreshToken
     );
@@ -90,15 +96,18 @@ class PayeetClient {
   }
   
   Future<BalanceResponse> getBalance() async {
-    final response = await authenticatedClient.getBalance(
+    final response = await _authenticatedClient.getBalance(
       BalanceRequest()
     );
+    
+    _cachedBalance = true;
+    _balance = response.balance;
 
     return response;
   }
   
   Future<UserInfoResponse> getUserInfo() async {
-    final response = await authenticatedClient.getUserInfo(
+    final response = await _authenticatedClient.getUserInfo(
       UserInfoRequest()
     );
     
@@ -111,7 +120,7 @@ class PayeetClient {
   }
 
   Future<StatusResponse> transferBalance(String mail, int amount) async {
-    final response = await authenticatedClient.transferBalance(
+    final response = await _authenticatedClient.transferBalance(
       TransferRequest()
       ..receiverMail = mail
       ..amount = amount
