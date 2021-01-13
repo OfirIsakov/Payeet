@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Payeet/Screens/Home.dart';
 import 'package:Payeet/Screens/UserPage.dart';
 import 'package:Payeet/screens/LoginPage.dart';
-import 'package:Payeet/Screens/transactionsPage.dart';
+import 'package:Payeet/Screens/StatsPage.dart';
+import 'package:Payeet/Screens/TransferPage.dart';
+
 
 import 'package:Payeet/globals.dart';
 
@@ -25,9 +27,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       darkTheme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.cyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         highlightColor: Colors.white,
         bottomAppBarColor: const Color(0xff162130),
@@ -111,11 +113,8 @@ class AppBase extends StatelessWidget {
         'Index 2: search',
         style: Theme.of(context).textTheme.headline2,
       ),
-      Text(
-        'Index 3: Transfer',
-        style: Theme.of(context).textTheme.headline2,
-      ),
-      TransactionsPage(),
+      TransferPage(),
+      StatsPage(),
       UserPage(),
     ];
     void _onItemTapped(int index) {

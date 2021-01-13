@@ -1,6 +1,8 @@
 # See https://www.dartlang.org/guides/libraries/private-files
 
 # Files and directories created by pub
+
+.DS_Store
 .dart_tool/
 .packages
 build/
@@ -23,12 +25,5 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-# OS generated files #
-######################
-*.DS_Store
-*.DS_Store?
-*._*
-*.Spotlight-V100
-*.Trashes
-ehthumbs.db
-Thumbs.db
+
+

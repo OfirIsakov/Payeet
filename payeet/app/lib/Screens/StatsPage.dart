@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Payeet/UI_Elements/linechart.dart';
 
-class TransactionsPage extends StatefulWidget {
+class StatsPage extends StatefulWidget {
   @override
-  _TransactionsPageState createState() => _TransactionsPageState();
+  _StatsPageState createState() => _StatsPageState();
 }
 
-class _TransactionsPageState extends State<TransactionsPage> {
+class _StatsPageState extends State<StatsPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(slivers: <Widget>[
