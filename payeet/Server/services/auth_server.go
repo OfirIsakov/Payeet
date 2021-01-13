@@ -25,7 +25,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	// find the user in the database.
 	user, err := server.userStore.GetUserByEmail(req.GetMail())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "invalid username or password")
+		return nil, err
 	}
 
 	// check if the password is correct

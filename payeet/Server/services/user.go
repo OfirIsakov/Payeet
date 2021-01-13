@@ -23,7 +23,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("cannot hash password: %w", err)
+		return nil, fmt.Errorf("cannot hash password")
 	}
 
 	user := &User{

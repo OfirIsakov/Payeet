@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	codes "google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -132,8 +134,9 @@ func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
 	result := &User{}
 
 	err := store.UsersCollection.FindOne(context.TODO(), bson.M{"Email": mail}).Decode(&result)
+
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "invalid username or password")
 	}
 
 	return result, nil

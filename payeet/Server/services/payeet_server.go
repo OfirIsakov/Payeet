@@ -78,7 +78,7 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 		s.userStore.SetBalance(in.GetReceiverMail(), recvBalance)
 		s.userStore.SetBalance(claims.Email, senderBalance)
 
-		log.Println("⎇ transfered " + string(in.GetAmount()) + " " + claims.Email + "--➡️" + in.GetReceiverMail())
+		log.Printf("➤ transfered $%v \n %s --> %s", in.GetAmount(), claims.Email, in.GetReceiverMail())
 
 	} else {
 		log.Println("Transfer aborted insufficient balance in " + claims.Email + "'s account")
