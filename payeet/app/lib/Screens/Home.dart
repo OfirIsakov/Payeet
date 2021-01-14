@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   Future<String> _getBalance() async {
     var f = await Globals.client.getBalance();
     await new Future.delayed(const Duration(seconds : 2));
+    context.read(Globals.balance).state = int.parse(f.balance);
     return f.balance;
   }
 
@@ -44,16 +45,19 @@ class _HomePageState extends State<HomePage> {
                     style: Theme.of(context).textTheme.bodyText1,
                     textAlign: TextAlign.center,
                     child: FutureBuilder<String>(
+
                       future:
                           _getBalance(), // a previously-obtained Future<String> or null
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         List<Widget> children;
                         if (snapshot.hasData) {
-                          children = <Widget>[
+                            children = <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(top: 16),
-                              child: Text('\$ ${snapshot.data}'),
+                              child: 
+                                  Text("\$ ${snapshot.data} "),
+                                
                             ),
                             Icon(
                               Icons.check_circle_outline,
@@ -62,6 +66,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                             
                           ];
+
+                          
                           
 
 
