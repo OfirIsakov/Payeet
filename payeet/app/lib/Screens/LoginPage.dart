@@ -62,13 +62,6 @@ class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
-  Future<Void> _handleSignIn(String email, String password) async {
-    var user = await Globals.client.login(email, password);
-
-    Globals.client.accessToken = user.accessToken;
-    Globals.client.refreshToken = user.refreshToken;
-    Globals.client.createAuthenticatedClient();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +139,7 @@ class _MyFormState extends State<MyForm> {
                       setState(() {
                         _loading = true;
                       });
-                      await _handleSignIn(
+                      await Globals.client.login(
                           emailControler.text, passwordControler.text);
 
                       Navigator.of(context).pushReplacement(

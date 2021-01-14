@@ -16,7 +16,6 @@ import 'package:Payeet/globals.dart';
 
 
 void main() {
-  Globals.client.createUnauthenticatedClient();
   runApp(
     ProviderScope(child: MyApp()),
   );

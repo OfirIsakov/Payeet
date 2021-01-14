@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'package:fixnum/fixnum.dart';
 
 import 'package:grpc/grpc.dart';
 import 'package:grpc/service_api.dart' as $grpc;
@@ -13,44 +13,52 @@ class PayeetClient {
   final PayeetChannel channel;
 
   String _accessToken;
-  String refreshToken;
+  Int64 tokenExpiresOn;
+  String _refreshToken;
 
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
+  
+  bool _cachedBalance; // this is true when the client class has cached the user's balance
+  String _balance;
 
+  bool _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
-  String _mail;
+  String _userID;
   
-  PayeetClient(this.channel); // ctor
-
-  set accessToken(String token){
-    _accessToken = token;
-    channel.setAccessTokenMetadata(_accessToken);
-  }
-
-  payeet_authClient get unauthenticatedClient => _unauthenticatedClient;
-
-  payeetClient get authenticatedClient => _authenticatedClient;
-
-  void createUnauthenticatedClient(){
+  // ctor
+  PayeetClient(this.channel) {
+    _cachedInfo = false;
     _unauthenticatedClient = payeet_authClient(channel);
-  }
+  } 
 
-  void createAuthenticatedClient(){
-    // only create the channel is theres an auth token
-    if (_accessToken == '') {
-      return;
-    }
-    _authenticatedClient = payeetClient(channel);
-  }
+  bool get cachedBalance => _cachedBalance;
+  String get getCachedBalance => _balance;
+
+  bool get cachedInfo => _cachedInfo;
+  String get getCachedFirstName => _firstName;
+  String get getCachedLastName => _lastName;
+  String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
-    final response = await _unauthenticatedClient.login(
-      LoginRequest()
-      ..mail = mail
-      ..password = password
-    );
+    LoginResponse response;
+    try {
+      response = await _unauthenticatedClient.login(
+        LoginRequest()
+        ..mail = mail
+        ..password = password
+      );
+    } catch (e) {
+      rethrow; // cant login so throw the error
+    }
+
+    _accessToken = response.accessToken;
+    tokenExpiresOn = response.expiresOn;
+    _refreshToken = response.refreshToken;
+    
+    channel.setAccessTokenMetadata(_accessToken);
+    _authenticatedClient = payeetClient(channel); // create the authenticated client
 
     return response;
   }
@@ -67,37 +75,52 @@ class PayeetClient {
     return response;
   }
 
+  Future<LoginResponse> getTransferHistory() async {
+    //TODO
+    //NOTE: this should be a stream
+
+    return null;
+  }
+
   Future<LoginResponse> refreshAccessToken() async {
-    final response = await unauthenticatedClient.refreshToken(
+    final response = await _unauthenticatedClient.refreshToken(
       RefreshTokenRequest()
-      ..refreshToken = refreshToken
+      ..refreshToken = _refreshToken
     );
+
+    _accessToken = response.accessToken;
+    tokenExpiresOn = response.expiresOn;
+    _refreshToken = response.refreshToken;
 
     return response;
   }
   
   Future<BalanceResponse> getBalance() async {
-    final response = await authenticatedClient.getBalance(
+    final response = await _authenticatedClient.getBalance(
       BalanceRequest()
     );
+    
+    _cachedBalance = true;
+    _balance = response.balance;
 
     return response;
   }
   
   Future<UserInfoResponse> getUserInfo() async {
-    final response = await authenticatedClient.getUserInfo(
+    final response = await _authenticatedClient.getUserInfo(
       UserInfoRequest()
     );
     
+    // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    // _mail = response.mail;
+    _userID = response.userID;
 
     return response;
   }
 
   Future<StatusResponse> transferBalance(String mail, int amount) async {
-    final response = await authenticatedClient.transferBalance(
+    final response = await _authenticatedClient.transferBalance(
       TransferRequest()
       ..receiverMail = mail
       ..amount = amount
