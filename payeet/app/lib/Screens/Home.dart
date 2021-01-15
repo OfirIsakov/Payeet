@@ -80,7 +80,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 16),
-                              child: Text('Error: ${snapshot.error}'),
+                              child: 
+                              Text('${snapshot.error.toString().replaceAll(',', '\n')}', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),),
+                              
+                              
                             )
                           ];
                         } else {

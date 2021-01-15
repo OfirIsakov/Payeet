@@ -22,17 +22,18 @@ class _TransferPageState extends State<TransferPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(child: Container()),
-              
-                Container(
-                  child: Consumer(builder: (context, watch, _) {
-                    final balance = watch(Globals.balance).state;
-                    return Text(
-                      "${balance}",
-                      style: Theme.of(context).textTheme.headline1.copyWith(color: Theme.of(context).highlightColor),
-                    );
-                  }),
-                ),
-              
+              Container(
+                child: Consumer(builder: (context, watch, _) {
+                  final balance = watch(Globals.balance).state;
+                  return Text(
+                    "${balance}",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1
+                        .copyWith(color: Theme.of(context).highlightColor),
+                  );
+                }),
+              ),
               Expanded(child: Container()),
               MyForm(),
               Expanded(child: Container()),
@@ -59,6 +60,13 @@ class _MyFormState extends State<MyForm> {
     emailControler.dispose();
     amountControler.dispose();
     super.dispose();
+  }
+
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -98,6 +106,7 @@ class _MyFormState extends State<MyForm> {
           TextFormField(
             controller: amountControler,
             style: style,
+            keyboardType: TextInputType.number,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 hintText: "Amount",
@@ -108,6 +117,15 @@ class _MyFormState extends State<MyForm> {
               if (value.isEmpty) {
                 return 'Please enter the amount you would like to transfer';
               }
+
+              if (!isNumeric(value)) {
+                return 'Please enter a number';
+              }
+
+              if (num.parse(value) < 0) {
+                return 'Amount must be above 0';
+              }
+
               return null;
             },
           ),
@@ -160,7 +178,7 @@ class _MyFormState extends State<MyForm> {
                       setState(() {
                         _loading = false;
                       });
-
+                      print(e.runtimeType);
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('[${e.codeName}] ${e.message}'),
                         backgroundColor: Colors.red,
