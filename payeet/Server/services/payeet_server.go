@@ -49,17 +49,25 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}
 
+	if in.GetReceiverMail() == claims.Email {
+		return nil, status.Errorf(codes.InvalidArgument, "same mail used.")
+	}
+
 	// get the balance of the user with the email from claims.
 	senderBalance, err := s.userStore.GetBalance(claims.Email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cant get balance")
 	}
 
+	if int(in.GetAmount()) < 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "amount cant be below zero")
+	}
+
 	if senderBalance >= int(in.GetAmount()) {
 
 		recvBalance, err := s.userStore.GetBalance(in.GetReceiverMail())
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "cant get balance")
+			return nil, status.Errorf(codes.InvalidArgument, "no such user.")
 		}
 
 		senderBalance = senderBalance - int(in.GetAmount())
