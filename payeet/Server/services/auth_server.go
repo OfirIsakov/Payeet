@@ -3,6 +3,9 @@ package services
 import (
 	"context"
 
+	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
+
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
 
 	"google.golang.org/grpc/codes"
@@ -55,6 +58,9 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	if server.userStore.SetRefreshToken(user.Email, refreshToken) != nil {
 		return nil, status.Errorf(codes.Internal, "")
 	}
+
+	log.WithFields(logrus.Fields{
+		"email": user.Email}).Info("Login")
 
 	// sending a new JWT token, expire time, new refresh token.
 	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: userClaims.ExpiresAt, RefreshToken: refreshToken}

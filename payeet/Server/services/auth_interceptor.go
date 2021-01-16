@@ -2,7 +2,8 @@ package services
 
 import (
 	"context"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -29,9 +30,10 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
 
-		log.Println("[DEBUG] Call to RPC --→ ", info.FullMethod)
+		log.Debug("Call to RPC --→ ", info.FullMethod)
 		err := interceptor.authorize(ctx, info.FullMethod)
 		if err != nil {
+			log.Debug(err)
 			return nil, err
 		}
 

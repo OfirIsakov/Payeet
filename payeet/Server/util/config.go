@@ -1,7 +1,7 @@
 package util
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 )
@@ -21,7 +21,7 @@ type Config struct {
 
 // LoadConfig is used to load the config from the config file.
 func LoadConfig(path string) (config Config, err error) {
-	log.Printf("Loading config...")
+	log.Infof("Loading config...")
 	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.SetConfigType("env")
@@ -33,7 +33,7 @@ func LoadConfig(path string) (config Config, err error) {
 	}
 
 	err = viper.Unmarshal(&config)
-	log.Printf("Done! ✅")
+	log.Infof("Done! ✅")
 	return
 
 }

@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	codes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,9 +35,10 @@ func (s *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*
 	// get the balance of the user with the email from claims.
 	balance, err := s.userStore.GetBalance(claims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cant get balance %v", err)
+		return nil, status.Errorf(codes.Internal, "cant get balance")
 	}
 
+	log.WithFields(log.Fields{"balance": balance, "user": claims.Email}).Info()
 	return &pb.BalanceResponse{Balance: fmt.Sprint(balance)}, nil
 }
 
@@ -86,7 +88,9 @@ func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferReque
 		s.userStore.SetBalance(in.GetReceiverMail(), recvBalance)
 		s.userStore.SetBalance(claims.Email, senderBalance)
 
-		log.Printf("➤ transfered $%v \n %s --> %s", in.GetAmount(), claims.Email, in.GetReceiverMail())
+		log.WithFields(log.Fields{"ReceiverBalance": recvBalance, "SenderBalance": senderBalance, "Sender": claims.Email, "Receiver": in.GetReceiverMail()}).Infof("transfered $%v", in.GetAmount())
+
+		//log.Infof("➤ transfered $%v \n%s --> %s", in.GetAmount(), claims.Email, in.GetReceiverMail())
 
 	} else {
 		log.Println("Transfer aborted insufficient balance in " + claims.Email + "'s account")
