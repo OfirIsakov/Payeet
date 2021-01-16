@@ -1,12 +1,13 @@
 package main
 
 import (
-	"log"
 	"net"
 
+	log "github.com/sirupsen/logrus"
+
+	pb "galil-maaravi-802-payeet/payeet/Server/protos"
 	"galil-maaravi-802-payeet/payeet/Server/services"
 	"galil-maaravi-802-payeet/payeet/Server/util"
-	pb "galil-maaravi-802-payeet/payeet/protos/go"
 
 	"google.golang.org/grpc"
 
@@ -24,14 +25,14 @@ func accessibleRoles() map[string][]string {
 }
 
 func main() {
-
+	log.SetLevel(log.DebugLevel)
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
 	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection)
-	log.Printf("Connecting to DB...")
+	log.Info("Connecting to DB...")
 	userStore.Connect()
 	defer userStore.Disconnect()
 	userStore.CheckConnection()
@@ -53,15 +54,15 @@ func main() {
 	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
 
-	log.Printf("Starting server on port [%s]", config.Port)
+	log.Infof("Starting server on port [%s]", config.Port)
 
 	lis, err := net.Listen("tcp", config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Done! ✅")
+	log.Info("Done! ✅")
 
-	log.Printf("Serving... 🥳")
+	log.Info("Serving... 🥳")
 	if e := srv.Serve(lis); e != nil {
 		log.Fatal("❌\n", e)
 	}
