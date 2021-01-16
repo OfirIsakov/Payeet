@@ -11,9 +11,7 @@ import 'package:Payeet/screens/LoginPage.dart';
 import 'package:Payeet/Screens/StatsPage.dart';
 import 'package:Payeet/Screens/TransferPage.dart';
 
-
 import 'package:Payeet/globals.dart';
-
 
 void main() {
   runApp(
@@ -25,55 +23,66 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.system,
-      darkTheme: ThemeData(
-        primarySwatch: Colors.cyan,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        highlightColor: Colors.white,
-        bottomAppBarColor: const Color(0xff162130),
-        textTheme: TextTheme(
-            headline2: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-            headline6: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-            bodyText1: TextStyle(
-                fontSize: 30, fontWeight: FontWeight.w300, color: Colors.white),
-            subtitle1: TextStyle(
-                color: Color(0xff7589a2),
-                fontWeight: FontWeight.bold,
-                fontSize: 14)),
-        backgroundColor: const Color(0xff2c4260),
-      ),
-      theme: ThemeData(
-          highlightColor: Colors.black,
-          bottomAppBarColor: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          currentFocus.focusedChild.unfocus();
+        }
+      },
+      child: MaterialApp(
+        themeMode: ThemeMode.system,
+        darkTheme: ThemeData(
+          primarySwatch: Colors.cyan,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          highlightColor: Colors.white,
+          bottomAppBarColor: const Color(0xff162130),
           textTheme: TextTheme(
               headline2: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: Colors.black,
+                color: Colors.white,
               ),
               headline6: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black),
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
               bodyText1: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w300,
-                  color: Colors.black),
+                  color: Colors.white),
               subtitle1: TextStyle(
                   color: Color(0xff7589a2),
                   fontWeight: FontWeight.bold,
                   fontSize: 14)),
-          backgroundColor: Colors.white),
-      home: LoginPage(),
+          backgroundColor: const Color(0xff2c4260),
+        ),
+        theme: ThemeData(
+            highlightColor: Colors.black,
+            bottomAppBarColor: Colors.white,
+            textTheme: TextTheme(
+                headline2: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+                headline6: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black),
+                bodyText1: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black),
+                subtitle1: TextStyle(
+                    color: Color(0xff7589a2),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14)),
+            backgroundColor: Colors.white),
+        home: LoginPage(),
+      ),
     );
   }
 }
@@ -118,7 +127,7 @@ class AppBase extends StatelessWidget {
     ];
     void _onItemTapped(int index) {
       context.read(Globals.selectedIndex).state = index;
-    } 
+    }
 
     return Consumer(builder: (context, watch, _) {
       final index = watch(Globals.selectedIndex).state;
@@ -132,12 +141,22 @@ class AppBase extends StatelessWidget {
           centerTitle: false,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: (index == 0
+          actions: (
+            index == 0
               ? [
                   IconButton(
                       icon: Icon(
                         CupertinoIcons.chat_bubble_text,
-                        color:  Theme.of(context).highlightColor,
+                        color: Theme.of(context).highlightColor,
+                      ),
+                      onPressed: () {})
+                ]
+              : index == 4
+              ? [
+                  IconButton(
+                      icon: Icon(
+                        Icons.more_horiz,
+                        color: Theme.of(context).highlightColor,
                       ),
                       onPressed: () {})
                 ]

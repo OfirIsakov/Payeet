@@ -1,5 +1,7 @@
+import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:Payeet/globals.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -9,14 +11,77 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
+    TextStyle style = TextStyle(
+        fontFamily: 'Montserrat',
+        fontSize: 20.0,
+        color: Theme.of(context).highlightColor);
+    // return CustomScrollView(
+    //   slivers: <Widget>[
 
+    //     //
 
+    //   ],
+    // );
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Column(
+        children: [
+          CircleAvatar(
+            radius: 51,
+            backgroundColor: Theme.of(context).highlightColor,
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('assets/images/avatar.png'),
+            ),
+          ),
+          Text("${Globals.client.getCachedFirstName} ${Globals.client.getCachedLastName}", style: Theme.of(context).textTheme.bodyText1),
 
+          Text(Globals.client.getCachedUserID,style: Theme.of(context).textTheme.subtitle1),
 
-        
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Material(
+              elevation: 5.0,
+              borderRadius: BorderRadius.circular(30.0),
+              color: Color(0xff01A0C7),
+              child: MaterialButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) {
+                        return LoginPage();
+                      }),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(
+                        Icons.exit_to_app,
+                        color: Theme.of(context).highlightColor,
+                      ),
+                      Text("Logout",
+                          textAlign: TextAlign.center,
+                          style: style.copyWith(
+                              color: Colors.white, fontWeight: FontWeight.bold))
+                    ],
+                  )),
+            ),
+          ),
+
+          // CloseButton(
+          //   onPressed: () {
+          //     Navigator.of(context).pushReplacement(
+          //       MaterialPageRoute(builder: (context) {
+          //         return LoginPage();
+          //       }),
+          //     );
+          //   },
+          //   color: Colors.red,
+          // ),
+        ],
+      ),
     );
   }
 }

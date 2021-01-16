@@ -62,7 +62,6 @@ class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
-
   @override
   Widget build(BuildContext context) {
     TextStyle style = TextStyle(
@@ -139,9 +138,11 @@ class _MyFormState extends State<MyForm> {
                       setState(() {
                         _loading = true;
                       });
-                      await Globals.client.login(
-                          emailControler.text, passwordControler.text);
-
+                      print(emailControler.text);
+                      print(passwordControler.text);
+                      await Globals.client
+                          .login(emailControler.text, passwordControler.text);
+                      context.read(Globals.selectedIndex).state = 0;
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
                           return AppBase();
@@ -152,8 +153,11 @@ class _MyFormState extends State<MyForm> {
                         _loading = false;
                       });
 
-                      Scaffold.of(context)
-                         .showSnackBar(SnackBar(content: Text('[${e.codeName}] ${e.message}'), backgroundColor: Colors.red,));
+                      await Globals.client.getUserInfo();
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('[${e.codeName}] ${e.message}'),
+                        backgroundColor: Colors.red,
+                      ));
                     }
                     // If the form is valid, display a Snackbar.
                     // Scaffold.of(context)

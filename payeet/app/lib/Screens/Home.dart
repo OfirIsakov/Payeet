@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<String> _getBalance() async {
     var f = await Globals.client.getBalance();
-    await new Future.delayed(const Duration(seconds : 2));
+    await new Future.delayed(const Duration(seconds : 0));
     context.read(Globals.balance).state = int.parse(f.balance);
     return f.balance;
   }

@@ -15,30 +15,40 @@ class _TransferPageState extends State<TransferPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(36.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(child: Container()),
-              Container(
-                child: Consumer(builder: (context, watch, _) {
-                  final balance = watch(Globals.balance).state;
-                  return Text(
-                    "${balance}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1
-                        .copyWith(color: Theme.of(context).highlightColor),
-                  );
-                }),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(flex: 5, child: Container()),
+            Padding(
+              padding: const EdgeInsets.only(left: 36.0, right: 36.0),
+              child: Column(
+                children: [
+                  Container(
+                    child: Consumer(builder: (context, watch, _) {
+                      final balance = watch(Globals.balance).state;
+                      return Text(
+                        "${balance}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1
+                            .copyWith(color: Theme.of(context).highlightColor),
+                      );
+                    }),
+                  ),
+                  MyForm(),
+                ],
               ),
-              Expanded(child: Container()),
-              MyForm(),
-              Expanded(child: Container()),
-            ],
-          ),
+            ),
+            Expanded(flex: 5, child: Container()),
+
+            //Expanded(child: Container() ,flex: 5,),
+            // Expanded(child:  ,flex: 30,),
+            // Expanded(
+            //   child: Container(),
+            //   flex: 20,
+            // ),
+          ],
         ),
       ),
     );
