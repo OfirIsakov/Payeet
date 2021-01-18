@@ -143,6 +143,7 @@ class _MyFormState extends State<MyForm> {
                       await Globals.client
                           .login(emailControler.text, passwordControler.text);
                       context.read(Globals.selectedIndex).state = 0;
+                      await Globals.client.getUserInfo();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
                           return AppBase();
@@ -153,11 +154,11 @@ class _MyFormState extends State<MyForm> {
                         _loading = false;
                       });
 
-                      await Globals.client.getUserInfo();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('[${e.codeName}] ${e.message}'),
                         backgroundColor: Colors.red,
                       ));
+                      
                     }
                     // If the form is valid, display a Snackbar.
                     // Scaffold.of(context)

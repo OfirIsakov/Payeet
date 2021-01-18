@@ -94,18 +94,23 @@ class AppBase extends StatelessWidget {
   final navItems = [
     BottomNavigationBarItem(
       icon: Icon(Icons.home),
+      label: "Home",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.search),
+      label: "Search",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.transfer_within_a_station),
+      label: "Transfer",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.bar_chart),
+      label: "Stats",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.account_circle),
+      label: "Profile",
     ),
   ];
 
