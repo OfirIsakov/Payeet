@@ -1,63 +1,70 @@
 package main
 
 import (
-	"context"
-	"log"
 	"net"
 
-	pb "galil-maaravi-802-payeet/payeet/protos/go"
+	log "github.com/sirupsen/logrus"
+
+	pb "galil-maaravi-802-payeet/payeet/Server/protos"
+	"galil-maaravi-802-payeet/payeet/Server/services"
+	"galil-maaravi-802-payeet/payeet/Server/util"
 
 	"google.golang.org/grpc"
 
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	port = ":6969"
-)
+func accessibleRoles() map[string][]string {
+	const path = "/payeet.payeet/"
+	return map[string][]string{
+		path + "GetUserInfo":     {"user"},
+		path + "TransferBalance": {"user"},
+		path + "GetBalance":      {"user"},
+	}
 
-type server struct {
-	pb.UnimplementedPayeetServer
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	log.SetLevel(log.DebugLevel)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("❌\n", err)
+	}
+
+	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection)
+	log.Info("Connecting to DB...")
+	userStore.Connect()
+	defer userStore.Disconnect()
+	userStore.CheckConnection()
+	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
-		panic(err)
+		log.Fatal("❌\n", err)
 	}
 
-	srv := grpc.NewServer()
-	pb.RegisterPayeetServer(srv, &server{})
+	authServer := services.NewAuthServer(userStore, jwtManger)
+	logic := services.NewPayeetServer(userStore, jwtManger)
+
+	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
+	srv := grpc.NewServer(
+		grpc.UnaryInterceptor(interceptor.Unary()),
+	)
+
+	pb.RegisterPayeetAuthServer(srv, authServer)
+	pb.RegisterPayeetServer(srv, logic)
 	reflection.Register(srv)
-	log.Printf("Serving... ")
+
+	log.Infof("Starting server on port [%s]", config.Port)
+
+	lis, err := net.Listen("tcp", config.Port)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Info("Done! ✅")
+
+	log.Info("Serving... 🥳")
 	if e := srv.Serve(lis); e != nil {
-		panic(e)
+		log.Fatal("❌\n", e)
 	}
 
-}
-
-func (s *server) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
-	log.Printf("login")
-	return &pb.LoginResponse{FirstName: "aa", LastName: "aa", Session: "aa", User_ID: "aa"}, nil
-}
-
-func (s *server) LoginS(ctx context.Context, in *pb.LoginRequest_S) (*pb.LoginResponse, error) {
-
-	return &pb.LoginResponse{}, nil
-}
-
-func (s *server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.StatusResponse, error) {
-
-	return &pb.StatusResponse{}, nil
-}
-
-func (s *server) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*pb.BalanceResponse, error) {
-
-	return &pb.BalanceResponse{}, nil
-}
-
-func (s *server) TransferBalance(ctx context.Context, in *pb.TransferRequest) (*pb.StatusResponse, error) {
-
-	return &pb.StatusResponse{}, nil
 }
