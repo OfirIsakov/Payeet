@@ -27,12 +27,12 @@ class _TransferPageState extends State<TransferPage> {
                   Container(
                     child: Consumer(builder: (context, watch, _) {
                       final balance = watch(Globals.balance).state;
-                      return Text(
-                        "${balance}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1
-                            .copyWith(color: Theme.of(context).highlightColor),
+                      return FittedBox(
+                        child: Text(
+                          "${balance}",
+                          style: Theme.of(context).textTheme.headline1.copyWith(
+                              color: Theme.of(context).highlightColor),
+                        ),
                       );
                     }),
                   ),
@@ -98,6 +98,10 @@ class _MyFormState extends State<MyForm> {
             controller: emailControler,
             style: style,
             decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 hintText: "Email",
                 hintStyle: TextStyle(color: Colors.grey),
@@ -118,6 +122,10 @@ class _MyFormState extends State<MyForm> {
             style: style,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 hintText: "Amount",
                 hintStyle: TextStyle(color: Colors.grey),
@@ -158,9 +166,9 @@ class _MyFormState extends State<MyForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Material(
-              elevation: 5.0,
+              elevation: 5,
               borderRadius: BorderRadius.circular(30.0),
-              color: Color(0xff01A0C7),
+              color: Theme.of(context).highlightColor,
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -203,7 +211,8 @@ class _MyFormState extends State<MyForm> {
                     ? Text("Transfer",
                         textAlign: TextAlign.center,
                         style: style.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.bold))
+                            color: Theme.of(context).accentColor,
+                            fontWeight: FontWeight.bold))
                     : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
                     CupertinoActivityIndicator(),
               ),

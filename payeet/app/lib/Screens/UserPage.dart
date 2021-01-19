@@ -39,11 +39,11 @@ class _UserPageState extends State<UserPage> {
           Text(Globals.client.getCachedUserID,style: Theme.of(context).textTheme.subtitle1),
 
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 50),
             child: Material(
               elevation: 5.0,
               borderRadius: BorderRadius.circular(30.0),
-              color: Color(0xff01A0C7),
+              color: Theme.of(context).highlightColor,
               child: MaterialButton(
                   minWidth: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -55,16 +55,16 @@ class _UserPageState extends State<UserPage> {
                     );
                   },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.exit_to_app,
-                        color: Theme.of(context).highlightColor,
+                        color: Theme.of(context).accentColor,
                       ),
                       Text("Logout",
                           textAlign: TextAlign.center,
                           style: style.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.bold))
+                              color: Theme.of(context).accentColor, fontWeight: FontWeight.bold))
                     ],
                   )),
             ),

@@ -2,8 +2,10 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart';
 import '../main.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,9 +29,9 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Container(
                   height: 100,
-                  child: Image(
-                      fit: BoxFit.contain,
-                      image: AssetImage('assets/images/payeet.jpeg')),
+                  child: SvgPicture.asset(
+                    'assets/icon/payeet_icon.svg',
+                  ),
                 ),
                 SizedBox(height: 45.0),
                 MyForm(),
@@ -78,9 +80,16 @@ class _MyFormState extends State<MyForm> {
             controller: emailControler,
             style: style,
             decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 hintText: "Email",
-                border: OutlineInputBorder(
+                hintStyle: style,
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).highlightColor, width: 2.5),
                     borderRadius: BorderRadius.circular(32.0))),
             validator: (value) {
               if (value.isEmpty) {
@@ -96,9 +105,16 @@ class _MyFormState extends State<MyForm> {
             style: style,
             obscureText: true,
             decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                 hintText: "Password",
-                border: OutlineInputBorder(
+                hintStyle: style,
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).highlightColor, width: 2.5),
                     borderRadius: BorderRadius.circular(32.0))),
             validator: (value) {
               if (value.isEmpty) {
@@ -158,7 +174,6 @@ class _MyFormState extends State<MyForm> {
                         content: Text('[${e.codeName}] ${e.message}'),
                         backgroundColor: Colors.red,
                       ));
-                      
                     }
                     // If the form is valid, display a Snackbar.
                     // Scaffold.of(context)
