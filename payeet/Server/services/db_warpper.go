@@ -2,8 +2,7 @@ package services
 
 import (
 	"context"
-
-	log "github.com/sirupsen/logrus"
+	"log"
 
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	codes "google.golang.org/grpc/codes"
@@ -14,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// UserStore is an interface handels storing users.
+// UserStore is an interface that handles storing users.
 type UserStore interface {
 
 	// save a new user to the storge.
@@ -26,6 +25,9 @@ type UserStore interface {
 
 	// get all transactions of user. (Sender or Receiver)
 	// |---> the tansactions from the functions above and sort them by time.
+
+	// Add a friend
+	// Remove a friend
 
 	Connect() error
 	Disconnect() error
@@ -39,6 +41,9 @@ type UserStore interface {
 	SetRefreshToken(email string, refreshToken string) error
 	SetBalance(email string, balance int) error
 	GetBalance(email string) (int, error)
+
+	AddFriend(mail, friendMail string) error
+	RemoveFriend(mail, friendMail string) error
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -74,7 +79,7 @@ func (store *MongoUserStore) CheckConnection() {
 		log.Fatalf("DB Connection failed.. ❌\n %v", err)
 	}
 
-	log.Info("Connected to DB successfully ✅")
+	log.Printf("Connected to DB successfully ✅")
 }
 
 // Connect makes a connection to the database.
@@ -135,9 +140,8 @@ func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
 	result := &User{}
 
 	err := store.UsersCollection.FindOne(context.TODO(), bson.M{"Email": mail}).Decode(&result)
-
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "invalid username or password")
+		return nil, err
 	}
 
 	return result, nil
@@ -210,4 +214,67 @@ func (store *MongoUserStore) GetBalance(email string) (int, error) {
 	balance := user.Balance
 
 	return balance, nil
+}
+
+// AddFriend gets user's mail and adds the firend mail to the friend list
+func (store *MongoUserStore) AddFriend(mail, friendMail string) error {
+
+	// check if tries to add itself
+	if mail == friendMail {
+		return status.Errorf(codes.Aborted, "Cannot add yourself as friend")
+	}
+
+	// check to see if the friend exists
+	_, err := store.GetUserByEmail(friendMail)
+	if err != nil {
+		return status.Errorf(codes.NotFound, "Invalid mail")
+	}
+
+	user, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return status.Errorf(codes.Internal, "")
+	}
+
+	// check if already a friend with them
+	for _, friend := range user.Friends {
+		if friend == friendMail {
+			return status.Errorf(codes.Aborted, "Aleardy friends!")
+		}
+	}
+
+	user.Friends = append(user.Friends, friendMail)
+
+	err = store.ChangeFieldValue(mail, "Friends", user.Friends)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveFriend gets user's mail and removes the firend mail from the friend list
+func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
+
+	user, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return status.Errorf(codes.Internal, "")
+	}
+
+	// find the index of the friend mail and remove him, if not found return error
+	for i, friend := range user.Friends {
+		if friend == friendMail {
+			// in order to remove the friend we swap the last element in the friend list with the index we found and discard the last element
+			user.Friends[len(user.Friends)-1], user.Friends[i] = user.Friends[i], user.Friends[len(user.Friends)-1]
+			user.Friends = user.Friends[:len(user.Friends)-1]
+
+			err = store.ChangeFieldValue(mail, "Friends", user.Friends)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}
+	}
+
+	return status.Errorf(codes.NotFound, "No such friend")
 }

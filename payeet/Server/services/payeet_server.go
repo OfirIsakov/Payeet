@@ -117,3 +117,37 @@ func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) 
 
 	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
 }
+
+// AddFriend adds a friend to the user
+func (s *PayeetServer) AddFriend(ctx context.Context, in *pb.AddFriendRequest) (*pb.StatusResponse, error) {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.userStore.AddFriend(claims.Email, in.GetMail())
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.StatusResponse{}, nil
+}
+
+// RemoveFriend removes a friend from the user
+func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequest) (*pb.StatusResponse, error) {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.userStore.RemoveFriend(claims.Email, in.GetMail())
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.StatusResponse{}, nil
+}

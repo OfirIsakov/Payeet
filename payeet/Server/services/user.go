@@ -9,13 +9,14 @@ import (
 
 // User struct conains user info.
 type User struct {
-	FirstName    string `bson:"FirstName" json:"FirstName"`
-	LastName     string `bson:"LastName" json:"LastName"`
-	Email        string `bson:"Email" json:"Email"`
-	Password     string `bson:"Password" json:"Password"`
-	Role         string `bson:"Role" json:"Role"`
-	Balance      int    `bson:"Balance" json:"Balance"`
-	RefreshToken string `bson:"RefreshToken" json:"RefreshToken"`
+	FirstName    string   `bson:"FirstName" json:"FirstName"`
+	LastName     string   `bson:"LastName" json:"LastName"`
+	Email        string   `bson:"Email" json:"Email"`
+	Password     string   `bson:"Password" json:"Password"`
+	Role         string   `bson:"Role" json:"Role"`
+	Balance      int      `bson:"Balance" json:"Balance"`
+	RefreshToken string   `bson:"RefreshToken" json:"RefreshToken"`
+	Friends      []string `bson:"Friends" json:"Friends"`
 }
 
 // NewUser returns a new user.
@@ -33,7 +34,8 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Password:     string(hashedPassword),
 		Role:         Role,
 		Balance:      0,
-		RefreshToken: ""}
+		RefreshToken: "",
+		Friends:      []string{}}
 
 	return user, nil
 
@@ -56,7 +58,8 @@ func (user *User) Clone() *User {
 		Password:     user.Password,
 		Role:         user.Role,
 		Balance:      user.Balance,
-		RefreshToken: user.RefreshToken}
+		RefreshToken: user.RefreshToken,
+		Friends:      user.Friends}
 }
 
 // ToBson truns a user object into bson
@@ -70,6 +73,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Role", Value: user.Role},
 		{Key: "Balance", Value: user.Balance},
 		{Key: "RefreshToken", Value: user.RefreshToken},
+		{Key: "Friends", Value: user.Friends},
 	}
 
 	return a

@@ -56,6 +56,14 @@ message UserInfoResponse{
     string User_ID = 3;
 }
 
+message AddFriendRequest{
+    string Mail = 1;
+}
+
+message RemoveFriendRequest{
+    string Mail = 1;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
@@ -69,4 +77,7 @@ service payeet{
     rpc GetBalance (BalanceRequest) returns (BalanceResponse);
     
     rpc TransferBalance (TransferRequest) returns (StatusResponse);
+
+    rpc AddFriend (AddFriendRequest) returns (StatusResponse);
+    rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
 }
