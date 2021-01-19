@@ -2,7 +2,8 @@ package services
 
 import (
 	"context"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	codes "google.golang.org/grpc/codes"
@@ -79,7 +80,7 @@ func (store *MongoUserStore) CheckConnection() {
 		log.Fatalf("DB Connection failed.. ❌\n %v", err)
 	}
 
-	log.Printf("Connected to DB successfully ✅")
+	log.Info("Connected to DB successfully ✅")
 }
 
 // Connect makes a connection to the database.
