@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
+import 'package:intl/intl.dart';
 
 class TransferPage extends StatefulWidget {
   @override
@@ -27,9 +27,10 @@ class _TransferPageState extends State<TransferPage> {
                   Container(
                     child: Consumer(builder: (context, watch, _) {
                       final balance = watch(Globals.balance).state;
+                      final formatCurrency = new NumberFormat.simpleCurrency(decimalDigits: 0);
                       return FittedBox(
                         child: Text(
-                          "${balance}",
+                          "${formatCurrency.format(balance)}",
                           style: Theme.of(context).textTheme.headline1.copyWith(
                               color: Theme.of(context).highlightColor),
                         ),
