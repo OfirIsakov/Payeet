@@ -454,7 +454,8 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UserInfoResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
+    ..pPS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Friends', protoName: 'Friends')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
     ..hasRequiredFields = false
   ;
 
@@ -500,13 +501,16 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   void clearLastName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get userID => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set userID($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasUserID() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearUserID() => clearField(3);
+  $core.List<$core.String> get friends => $_getList(2);
+
+  @$pb.TagNumber(4)
+  $core.String get userID => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set userID($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasUserID() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearUserID() => clearField(4);
 }
 
 class AddFriendRequest extends $pb.GeneratedMessage {

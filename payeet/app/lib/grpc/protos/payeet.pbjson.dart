@@ -79,7 +79,8 @@ const UserInfoResponse$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'User_ID', '3': 3, '4': 1, '5': 9, '10': 'UserID'},
+    const {'1': 'Friends', '3': 3, '4': 3, '5': 9, '10': 'Friends'},
+    const {'1': 'User_ID', '3': 4, '4': 1, '5': 9, '10': 'UserID'},
   ],
 };
 

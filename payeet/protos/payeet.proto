@@ -53,7 +53,8 @@ message UserInfoRequest{
 message UserInfoResponse{
     string FirstName = 1;
     string LastName = 2;
-    string User_ID = 3;
+    repeated string Friends = 3;
+    string User_ID = 4;
 }
 
 message AddFriendRequest{

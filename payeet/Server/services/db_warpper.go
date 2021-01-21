@@ -142,7 +142,7 @@ func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
 
 	err := store.UsersCollection.FindOne(context.TODO(), bson.M{"Email": mail}).Decode(&result)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
 	return result, nil
@@ -228,18 +228,18 @@ func (store *MongoUserStore) AddFriend(mail, friendMail string) error {
 	// check to see if the friend exists
 	_, err := store.GetUserByEmail(friendMail)
 	if err != nil {
-		return status.Errorf(codes.NotFound, "Invalid mail")
+		return err
 	}
 
 	user, err := store.GetUserByEmail(mail)
 	if err != nil {
-		return status.Errorf(codes.Internal, "")
+		return err
 	}
 
 	// check if already a friend with them
 	for _, friend := range user.Friends {
 		if friend == friendMail {
-			return status.Errorf(codes.Aborted, "Aleardy friends!")
+			return status.Errorf(codes.Aborted, "Already friends!")
 		}
 	}
 

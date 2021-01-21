@@ -115,7 +115,7 @@ func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) 
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Friends: user.Friends, User_ID: user.Email}, nil
 }
 
 // AddFriend adds a friend to the user
