@@ -25,6 +25,7 @@ class PayeetClient {
       _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
+  List<String> _friends;
   String _userID;
 
   // ctor
@@ -39,6 +40,7 @@ class PayeetClient {
   bool get cachedInfo => _cachedInfo;
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
+  List<String> get getCachedFriends => _friends;
   String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
@@ -111,6 +113,7 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
+    _friends = response.friends;
     _userID = response.userID;
 
     return response;
@@ -121,6 +124,20 @@ class PayeetClient {
         await _authenticatedClient.transferBalance(TransferRequest()
           ..receiverMail = mail
           ..amount = amount);
+
+    return response;
+  }
+  Future<StatusResponse> addFriend(String mail) async {
+    final response =
+        await _authenticatedClient.addFriend(AddFriendRequest()
+          ..mail = mail);
+
+    return response;
+  }
+  Future<StatusResponse> removeFriend(String mail) async {
+    final response =
+        await _authenticatedClient.removeFriend(RemoveFriendRequest()
+          ..mail = mail);
 
     return response;
   }

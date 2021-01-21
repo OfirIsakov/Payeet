@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.7
+// @dart = 2.3
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -120,6 +120,16 @@ class payeetClient extends $grpc.Client {
           '/payeet.payeet/TransferBalance',
           ($0.TransferRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
+  static final _$addFriend =
+      $grpc.ClientMethod<$0.AddFriendRequest, $0.StatusResponse>(
+          '/payeet.payeet/AddFriend',
+          ($0.AddFriendRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
+  static final _$removeFriend =
+      $grpc.ClientMethod<$0.RemoveFriendRequest, $0.StatusResponse>(
+          '/payeet.payeet/RemoveFriend',
+          ($0.RemoveFriendRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
       {$grpc.CallOptions options,
@@ -141,6 +151,17 @@ class payeetClient extends $grpc.Client {
       $0.TransferRequest request,
       {$grpc.CallOptions options}) {
     return $createUnaryCall(_$transferBalance, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.StatusResponse> addFriend($0.AddFriendRequest request,
+      {$grpc.CallOptions options}) {
+    return $createUnaryCall(_$addFriend, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.StatusResponse> removeFriend(
+      $0.RemoveFriendRequest request,
+      {$grpc.CallOptions options}) {
+    return $createUnaryCall(_$removeFriend, request, options: options);
   }
 }
 
@@ -169,6 +190,21 @@ abstract class payeetServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.TransferRequest.fromBuffer(value),
         ($0.StatusResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.AddFriendRequest, $0.StatusResponse>(
+        'AddFriend',
+        addFriend_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.AddFriendRequest.fromBuffer(value),
+        ($0.StatusResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.RemoveFriendRequest, $0.StatusResponse>(
+        'RemoveFriend',
+        removeFriend_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.RemoveFriendRequest.fromBuffer(value),
+        ($0.StatusResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
@@ -186,10 +222,24 @@ abstract class payeetServiceBase extends $grpc.Service {
     return transferBalance(call, await request);
   }
 
+  $async.Future<$0.StatusResponse> addFriend_Pre($grpc.ServiceCall call,
+      $async.Future<$0.AddFriendRequest> request) async {
+    return addFriend(call, await request);
+  }
+
+  $async.Future<$0.StatusResponse> removeFriend_Pre($grpc.ServiceCall call,
+      $async.Future<$0.RemoveFriendRequest> request) async {
+    return removeFriend(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(
       $grpc.ServiceCall call, $0.BalanceRequest request);
   $async.Future<$0.StatusResponse> transferBalance(
       $grpc.ServiceCall call, $0.TransferRequest request);
+  $async.Future<$0.StatusResponse> addFriend(
+      $grpc.ServiceCall call, $0.AddFriendRequest request);
+  $async.Future<$0.StatusResponse> removeFriend(
+      $grpc.ServiceCall call, $0.RemoveFriendRequest request);
 }

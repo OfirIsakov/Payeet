@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.7
+// @dart = 2.3
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:core' as $core;
@@ -20,27 +20,7 @@ class RegisterRequest extends $pb.GeneratedMessage {
   ;
 
   RegisterRequest._() : super();
-  factory RegisterRequest({
-    $core.String firstName,
-    $core.String lastName,
-    $core.String mail,
-    $core.String password,
-  }) {
-    final _result = create();
-    if (firstName != null) {
-      _result.firstName = firstName;
-    }
-    if (lastName != null) {
-      _result.lastName = lastName;
-    }
-    if (mail != null) {
-      _result.mail = mail;
-    }
-    if (password != null) {
-      _result.password = password;
-    }
-    return _result;
-  }
+  factory RegisterRequest() => create();
   factory RegisterRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory RegisterRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -164,15 +144,7 @@ class BalanceResponse extends $pb.GeneratedMessage {
   ;
 
   BalanceResponse._() : super();
-  factory BalanceResponse({
-    $core.String balance,
-  }) {
-    final _result = create();
-    if (balance != null) {
-      _result.balance = balance;
-    }
-    return _result;
-  }
+  factory BalanceResponse() => create();
   factory BalanceResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory BalanceResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -212,19 +184,7 @@ class TransferRequest extends $pb.GeneratedMessage {
   ;
 
   TransferRequest._() : super();
-  factory TransferRequest({
-    $core.String receiverMail,
-    $core.int amount,
-  }) {
-    final _result = create();
-    if (receiverMail != null) {
-      _result.receiverMail = receiverMail;
-    }
-    if (amount != null) {
-      _result.amount = amount;
-    }
-    return _result;
-  }
+  factory TransferRequest() => create();
   factory TransferRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory TransferRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -273,19 +233,7 @@ class historyRequest extends $pb.GeneratedMessage {
   ;
 
   historyRequest._() : super();
-  factory historyRequest({
-    $core.int index,
-    $core.String senderID,
-  }) {
-    final _result = create();
-    if (index != null) {
-      _result.index = index;
-    }
-    if (senderID != null) {
-      _result.senderID = senderID;
-    }
-    return _result;
-  }
+  factory historyRequest() => create();
   factory historyRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory historyRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -333,15 +281,7 @@ class RefreshTokenRequest extends $pb.GeneratedMessage {
   ;
 
   RefreshTokenRequest._() : super();
-  factory RefreshTokenRequest({
-    $core.String refreshToken,
-  }) {
-    final _result = create();
-    if (refreshToken != null) {
-      _result.refreshToken = refreshToken;
-    }
-    return _result;
-  }
+  factory RefreshTokenRequest() => create();
   factory RefreshTokenRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory RefreshTokenRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -381,19 +321,7 @@ class LoginRequest extends $pb.GeneratedMessage {
   ;
 
   LoginRequest._() : super();
-  factory LoginRequest({
-    $core.String mail,
-    $core.String password,
-  }) {
-    final _result = create();
-    if (mail != null) {
-      _result.mail = mail;
-    }
-    if (password != null) {
-      _result.password = password;
-    }
-    return _result;
-  }
+  factory LoginRequest() => create();
   factory LoginRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory LoginRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -443,23 +371,7 @@ class LoginResponse extends $pb.GeneratedMessage {
   ;
 
   LoginResponse._() : super();
-  factory LoginResponse({
-    $core.String accessToken,
-    $fixnum.Int64 expiresOn,
-    $core.String refreshToken,
-  }) {
-    final _result = create();
-    if (accessToken != null) {
-      _result.accessToken = accessToken;
-    }
-    if (expiresOn != null) {
-      _result.expiresOn = expiresOn;
-    }
-    if (refreshToken != null) {
-      _result.refreshToken = refreshToken;
-    }
-    return _result;
-  }
+  factory LoginResponse() => create();
   factory LoginResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory LoginResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -542,28 +454,13 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UserInfoResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
-    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
+    ..pPS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Friends', protoName: 'Friends')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
     ..hasRequiredFields = false
   ;
 
   UserInfoResponse._() : super();
-  factory UserInfoResponse({
-    $core.String firstName,
-    $core.String lastName,
-    $core.String userID,
-  }) {
-    final _result = create();
-    if (firstName != null) {
-      _result.firstName = firstName;
-    }
-    if (lastName != null) {
-      _result.lastName = lastName;
-    }
-    if (userID != null) {
-      _result.userID = userID;
-    }
-    return _result;
-  }
+  factory UserInfoResponse() => create();
   factory UserInfoResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory UserInfoResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
@@ -604,12 +501,93 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   void clearLastName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get userID => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set userID($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasUserID() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearUserID() => clearField(3);
+  $core.List<$core.String> get friends => $_getList(2);
+
+  @$pb.TagNumber(4)
+  $core.String get userID => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set userID($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasUserID() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearUserID() => clearField(4);
+}
+
+class AddFriendRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddFriendRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..hasRequiredFields = false
+  ;
+
+  AddFriendRequest._() : super();
+  factory AddFriendRequest() => create();
+  factory AddFriendRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFriendRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddFriendRequest clone() => AddFriendRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddFriendRequest copyWith(void Function(AddFriendRequest) updates) => super.copyWith((message) => updates(message as AddFriendRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddFriendRequest create() => AddFriendRequest._();
+  AddFriendRequest createEmptyInstance() => create();
+  static $pb.PbList<AddFriendRequest> createRepeated() => $pb.PbList<AddFriendRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddFriendRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFriendRequest>(create);
+  static AddFriendRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get mail => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set mail($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMail() => clearField(1);
+}
+
+class RemoveFriendRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RemoveFriendRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..hasRequiredFields = false
+  ;
+
+  RemoveFriendRequest._() : super();
+  factory RemoveFriendRequest() => create();
+  factory RemoveFriendRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RemoveFriendRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RemoveFriendRequest clone() => RemoveFriendRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RemoveFriendRequest copyWith(void Function(RemoveFriendRequest) updates) => super.copyWith((message) => updates(message as RemoveFriendRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RemoveFriendRequest create() => RemoveFriendRequest._();
+  RemoveFriendRequest createEmptyInstance() => create();
+  static $pb.PbList<RemoveFriendRequest> createRepeated() => $pb.PbList<RemoveFriendRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RemoveFriendRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RemoveFriendRequest>(create);
+  static RemoveFriendRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get mail => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set mail($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMail() => clearField(1);
 }
 
