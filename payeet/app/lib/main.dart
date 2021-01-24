@@ -3,7 +3,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:Payeet/Screens/Home.dart';
@@ -11,6 +10,9 @@ import 'package:Payeet/Screens/UserPage.dart';
 import 'package:Payeet/screens/LoginPage.dart';
 import 'package:Payeet/Screens/StatsPage.dart';
 import 'package:Payeet/Screens/TransferPage.dart';
+import 'package:Payeet/Screens/FriendsPage.dart';
+
+
 
 import 'package:Payeet/globals.dart';
 
@@ -122,8 +124,8 @@ class AppBase extends StatelessWidget {
       label: "Home",
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.search),
-      label: "Search",
+      icon: Icon(Icons.people),
+      label: "Friends",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.transfer_within_a_station),
@@ -140,17 +142,14 @@ class AppBase extends StatelessWidget {
   ];
 
   // this will show in the top of every page.
-  final pageNames = ["Overview", "Search", "Transfer", "Stats", "Profile"];
+  final pageNames = ["Overview", "Friends", "Transfer", "Stats", "Profile"];
 
   @override
   Widget build(BuildContext context) {
     // _widgetOptions holds the pages
     final List<Widget> _widgetOptions = <Widget>[
       HomePage(),
-      Text(
-        'Index 2: search',
-        style: Theme.of(context).textTheme.headline2,
-      ),
+      FriendsPage(),
       TransferPage(),
       StatsPage(),
       UserPage(),
