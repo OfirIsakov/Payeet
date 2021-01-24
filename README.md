@@ -17,10 +17,18 @@ CONNECTION_STRING= ''
 DB_NAME= <name>
 TRANSACTION_COLLECTION= <name>
 USER_COLLECTION= <name>
+
+SERVER_CERTIFICATE= "certificate/server-cert.pem"
+SERVER_KEY= "certificate/server-key.pem"
 ```
 
 
 ## How to run:
+
+Generate server certifiactes with
+```
+certificate/generate.sh
+```
 
 ```
 go run server.go
@@ -29,3 +37,4 @@ go run server.go
 ```
 evans -rp 6969
 ```
+

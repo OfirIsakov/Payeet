@@ -1,14 +1,17 @@
+import 'dart:io';
+
 import 'package:grpc/grpc.dart';
 
 import 'payeetClient.dart';
 
 Future<void> main(List<String> args) async {
+  List<int> trustedCert = File('../../../Server/certificate/ca-cert.pem').readAsBytesSync();
   var client = PayeetClient(
     PayeetChannel(
       ClientChannel(
         'localhost',
         port: 6969,
-        options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+        options: ChannelOptions(credentials: ChannelCredentials.secure(certificates: trustedCert)),
       ),
     )
   );

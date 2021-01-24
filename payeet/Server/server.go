@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"net"
 
 	log "github.com/sirupsen/logrus"
@@ -11,6 +12,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -22,6 +24,22 @@ func accessibleRoles() map[string][]string {
 		path + "GetBalance":      {"user"},
 	}
 
+}
+
+func loadTLSCredentials(certFile, keyFile string) (credentials.TransportCredentials, error) {
+	// Load server's certificate and private key
+	serverCert, err := tls.LoadX509KeyPair("certificate/server-cert.pem", "certificate/server-key.pem")
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the credentials and return it
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+
+	return credentials.NewTLS(config), nil
 }
 
 func main() {
@@ -45,8 +63,16 @@ func main() {
 	authServer := services.NewAuthServer(userStore, jwtManger)
 	logic := services.NewPayeetServer(userStore, jwtManger)
 
+	// Load the server TLS authentication certificate
+	tlsCredentials, err := loadTLSCredentials(config.ServerCretificate, config.ServerKey)
+	if err != nil {
+		log.Fatal("❌ Cannot load TLS credentials: ", err)
+	}
+	log.Info("Loaded TLS certificates ✅")
+
 	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
 	srv := grpc.NewServer(
+		grpc.Creds(tlsCredentials),
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)
 

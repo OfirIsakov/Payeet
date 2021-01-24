@@ -17,6 +17,8 @@ type Config struct {
 	DBName                string `mapstructure:"DB_NAME"`
 	UserCollection        string `mapstructure:"USER_COLLECTION"`
 	TransactionCollection string `mapstructure:"TRANSACTION_COLLECTION"`
+	ServerCretificate     string `mapstructure:"SERVER_CERTIFICATE"`
+	ServerKey             string `mapstructure:"SERVER_KEY"`
 }
 
 // LoadConfig is used to load the config from the config file.
