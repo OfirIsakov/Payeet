@@ -123,22 +123,6 @@ class _MyFormState extends State<MyForm> {
               return null;
             },
           ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       // Validate returns true if the form is valid, or false
-          //       // otherwise.
-          //       if (_formKey.currentState.validate()) {
-          //         // If the form is valid, display a Snackbar.
-          //         Scaffold.of(context)
-          //             .showSnackBar(SnackBar(content: Text('Processing Data')));
-          //       }
-          //     },
-          //     child: Text('Submit'),
-          //   ),
-          // ),
-
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Material(
@@ -159,6 +143,7 @@ class _MyFormState extends State<MyForm> {
                       await Globals.client
                           .login(emailControler.text, passwordControler.text);
                       context.read(Globals.selectedIndex).state = 0;
+                      context.read(Globals.transfer_email).state = "";
                       await Globals.client.getUserInfo();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {

@@ -27,7 +27,8 @@ class _TransferPageState extends State<TransferPage> {
                   Container(
                     child: Consumer(builder: (context, watch, _) {
                       final balance = watch(Globals.balance).state;
-                      final formatCurrency = new NumberFormat.simpleCurrency(decimalDigits: 0);
+                      final formatCurrency =
+                          new NumberFormat.simpleCurrency(decimalDigits: 0);
                       return FittedBox(
                         child: Text(
                           "${formatCurrency.format(balance)}",
@@ -89,6 +90,10 @@ class _MyFormState extends State<MyForm> {
         fontFamily: 'Montserrat',
         fontSize: 20.0,
         color: Theme.of(context).highlightColor);
+
+    if (emailControler.text == "") {
+      emailControler.text = context.read(Globals.transfer_email).state;
+    }
 
     return Form(
       key: _formKey,
@@ -189,8 +194,9 @@ class _MyFormState extends State<MyForm> {
 
                       context.read(Globals.balance).state -=
                           int.parse(amountControler.text);
-
                       setState(() {
+                        context.read(Globals.transfer_email).state = "";
+
                         _loading = false;
                       });
                     } catch (e) {

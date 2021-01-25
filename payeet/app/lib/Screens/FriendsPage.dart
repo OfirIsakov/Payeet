@@ -33,8 +33,6 @@ class _FriendsPageState extends State<FriendsPage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               "Add friend",
@@ -112,9 +110,6 @@ class _FriendsPageState extends State<FriendsPage> {
                                       backgroundColor: Colors.red,
                                     ));
                                   }
-                                  // If the form is valid, display a Snackbar.
-                                  // Scaffold.of(context)
-                                  //     .showSnackBar(SnackBar(content: Text('Processing Data')));
                                 }
                               },
                               child: !_loading
@@ -139,82 +134,6 @@ class _FriendsPageState extends State<FriendsPage> {
               textAlign: TextAlign.left,
               style: Theme.of(context).textTheme.headline6,
             ),
-            // LimitedBox(
-            //   maxHeight: 200,
-            //   child: FutureBuilder(
-            //       future: Globals.client.getUserInfo(),
-            //       builder: (context, snapshot) {
-            //         if (snapshot.connectionState == ConnectionState.done) {
-            //           if (snapshot.data == null) {
-            //             return Text(
-            //               "ERROR",
-            //               style: Theme.of(context).textTheme.bodyText1,
-            //             );
-            //           }
-
-            //           return CustomScrollView(slivers: <Widget>[
-            //             SliverFixedExtentList(
-            //               itemExtent: 75.0,
-            //               delegate: SliverChildBuilderDelegate(
-            //                 (BuildContext context, int index) {
-            //                   return Padding(
-            //                       padding: const EdgeInsets.only(bottom: 5),
-            //                       child: Row(
-            //                         mainAxisAlignment: MainAxisAlignment.center,
-            //                         children: [
-            //                           Stack(
-            //                             alignment: Alignment.center,
-            //                             overflow: Overflow.visible,
-            //                             children: [
-            //                               Positioned(
-            //                                 child: Container(
-            //                                   child: CircleAvatar(
-            //                                     radius: 20,
-            //                                     backgroundImage: AssetImage(
-            //                                         'assets/images/avatar.png'),
-            //                                   ),
-            //                                 ),
-            //                                 left: -60,
-            //                               ),
-            //                               RichText(
-            //                                   text: TextSpan(
-            //                                 style: Theme.of(context)
-            //                                     .textTheme
-            //                                     .headline2,
-            //                                 text:
-            //                                     "${snapshot.data.friends[index]}\n",
-            //                                 children: <TextSpan>[
-            //                                   TextSpan(
-            //                                       text:
-            //                                           "${snapshot.data.friends[index]}@email.com",
-            //                                       style: Theme.of(context)
-            //                                           .textTheme
-            //                                           .subtitle1),
-            //                                 ],
-            //                               )),
-            //                             ],
-            //                           ),
-            //                           SizedBox(),
-            //                         ],
-            //                       ));
-            //                 },
-            //                 childCount: snapshot.data.friends.length,
-            //               ),
-            //             )
-            //           ]);
-            //         } else {
-            //           return CircularProgressIndicator();
-            //         }
-            //       }),
-
-            //   //Expanded(child: Container() ,flex: 5,),
-            //   // Expanded(child:  ,flex: 30,),
-            //   // Expanded(
-            //   //   child: Container(),
-            //   //   flex: 20,
-            //   // ),
-            // ),
-
             LimitedBox(
               maxHeight: 200,
               child: CustomScrollView(slivers: <Widget>[
@@ -228,9 +147,8 @@ class _FriendsPageState extends State<FriendsPage> {
                               confirmDismiss: (direction) async {
                                 if (direction == DismissDirection.endToStart) {
                                   print("transfer to friend.");
-
+                                  context.read(Globals.transfer_email).state = Globals.client.getCachedFriends[index];
                                   context.read(Globals.selectedIndex).state++;
-                                  //return false;
                                 }
 
                                 // remove friend.
@@ -285,13 +203,6 @@ class _FriendsPageState extends State<FriendsPage> {
                                     ),
                                   );
 
-                                  // setState(() {
-                                  //   Globals.client.removeFriend(
-                                  //       Globals.client.getCachedFriends[index]);
-
-                                  //   Globals.client.getCachedFriends
-                                  //       .removeAt(index);
-                                  // });
                                 }
 
                                 return false;
@@ -315,26 +226,6 @@ class _FriendsPageState extends State<FriendsPage> {
                                     width:
                                         MediaQuery.of(context).size.width / 4,
                                   ),
-                                  // CircleAvatar(
-                                  //   radius: 20,
-                                  //   backgroundImage:
-                                  //       AssetImage('assets/images/avatar.png'),
-                                  // ),
-                                  // RichText(
-                                  //     text: TextSpan(
-                                  //   style: Theme.of(context).textTheme.headline2,
-                                  //   text:
-                                  //       "${Globals.client.getCachedFriends[index]}\n",
-                                  //   children: <TextSpan>[
-                                  //     TextSpan(
-                                  //         text:
-                                  //             "${Globals.client.getCachedFriends[index]}@email.com",
-                                  //         style: Theme.of(context)
-                                  //             .textTheme
-                                  //             .subtitle1),
-                                  //   ],
-                                  // )),
-
                                   Stack(
                                     alignment: Alignment.center,
                                     overflow: Overflow.visible,
@@ -381,17 +272,3 @@ class _FriendsPageState extends State<FriendsPage> {
     );
   }
 }
-
-// class MyForm extends StatefulWidget {
-//   @override
-//   _MyFormState createState() => _MyFormState();
-// }
-
-// class _MyFormState extends State<MyForm> {
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return ;
-//   }
-// }
