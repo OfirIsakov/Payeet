@@ -259,15 +259,24 @@ class _FriendsPageState extends State<FriendsPage> {
                                         ),
                                         TextButton(
                                           child: Text('Approve'),
-                                          onPressed: () {
-                                            setState(() {
-                                              Globals.client.removeFriend(
+                                          onPressed: () async {
+                                            try {
+                                              await Globals.client.removeFriend(
                                                   Globals.client
                                                       .getCachedFriends[index]);
+                                              setState(() {
+                                                Globals.client.getCachedFriends
+                                                    .removeAt(index);
+                                              });
+                                            } catch (e) {
+                                              Scaffold.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    '[${e.codeName}] ${e.message}'),
+                                                backgroundColor: Colors.red,
+                                              ));
+                                            }
 
-                                              Globals.client.getCachedFriends
-                                                  .removeAt(index);
-                                            });
                                             Navigator.of(context).pop();
                                             return true;
                                           },
