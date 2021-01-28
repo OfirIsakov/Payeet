@@ -91,7 +91,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "First Name",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
@@ -115,7 +115,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "Last Name",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
@@ -139,7 +139,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "Email",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
@@ -163,7 +163,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "Confirm Email",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
@@ -192,7 +192,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "Password",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
@@ -217,7 +217,7 @@ class _MyFormState extends State<MyForm> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     hintText: "Confirm Password",
                     hintStyle: style,
-                    focusedBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).highlightColor,
                             width: 2.5),
