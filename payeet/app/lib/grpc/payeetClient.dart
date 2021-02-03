@@ -79,11 +79,12 @@ class PayeetClient {
     return response;
   }
 
-  Future<LoginResponse> getTransferHistory() async {
-    //TODO
-    //NOTE: this should be a stream
+  ResponseStream<HistoryResponse> getTransferHistory(String mail) {
+    final response = _authenticatedClient.getFullSelfHistory(HistoryRequest()
+          ..senderMail = mail
+        );
 
-    return null;
+    return response;
   }
 
   Future<LoginResponse> refreshAccessToken() async {

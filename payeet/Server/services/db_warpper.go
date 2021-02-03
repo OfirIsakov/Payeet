@@ -45,6 +45,8 @@ type UserStore interface {
 
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
+
+	GetHistory(mail string) ([]*Transaction, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -278,4 +280,25 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	}
 
 	return status.Errorf(codes.NotFound, "No such friend")
+}
+
+// GetHistory will fetch all of the transaction history of a given mail
+func (store *MongoUserStore) GetHistory(mail string) ([]*Transaction, error) {
+
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	results := []*Transaction{}
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		return results, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	}
+
+	return results, nil
 }
