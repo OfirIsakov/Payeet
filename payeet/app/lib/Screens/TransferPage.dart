@@ -286,7 +286,7 @@ class _TransferPageState extends State<TransferPage> {
                         ],
                       )
                     : LimitedBox(
-                        maxHeight: 100,
+                        maxHeight: 105,
                         child: showCubes
                             ? ListView.separated(
                                 scrollDirection: Axis.horizontal,
@@ -294,53 +294,39 @@ class _TransferPageState extends State<TransferPage> {
                                   onLongPress: () {
                                     showDialog(
                                       context: context,
-                                      builder: (_) => AlertDialog(
-                                        title: Text(
-                                          'Delete ${Globals.client.getCachedFriends[index]}?',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                        ),
-                                        backgroundColor:
-                                            Theme.of(context).backgroundColor,
-                                        actions: [
-                                          TextButton(
-                                            child: Text('Cancel'),
-                                            onPressed: () {
-                                              setState(() {
-                                                Globals.client.getCachedFriends;
-                                              });
-                                              Navigator.of(context).pop();
-                                              return false;
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: Text('Approve'),
-                                            onPressed: () async {
-                                              try {
-                                                await Globals.client
-                                                    .removeFriend(Globals.client
-                                                            .getCachedFriends[
-                                                        index]);
-                                                setState(() {
-                                                  Globals
-                                                      .client.getCachedFriends
-                                                      .removeAt(index);
-                                                });
-                                              } catch (e) {
-                                                Scaffold.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      '[${e.codeName}] ${e.message}'),
-                                                  backgroundColor: Colors.red,
-                                                ));
-                                              }
+                                      builder: (_) => ConfirmDialog(
+                                        danger: true,
+                                        title:
+                                            'Delete ${Globals.client.getCachedFriends[index]}?',
+                                        cancelFunction: () {
+                                          setState(() {
+                                            Globals.client.getCachedFriends;
+                                          });
+                                          Navigator.of(context).pop();
+                                          return false;
+                                        },
+                                        actionText: Text('Approve'),
+                                        actionFunction: () async {
+                                          try {
+                                            await Globals.client.removeFriend(
+                                                Globals.client
+                                                    .getCachedFriends[index]);
+                                            setState(() {
+                                              Globals.client.getCachedFriends
+                                                  .removeAt(index);
+                                            });
+                                          } catch (e) {
+                                            Scaffold.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  '[${e.codeName}] ${e.message}'),
+                                              backgroundColor: Colors.red,
+                                            ));
+                                          }
 
-                                              Navigator.of(context).pop();
-                                              return true;
-                                            },
-                                          ),
-                                        ],
+                                          Navigator.of(context).pop();
+                                          return true;
+                                        },
                                       ),
                                     );
                                   },
@@ -416,28 +402,22 @@ class _TransferPageState extends State<TransferPage> {
                               )
                             : ListView.separated(
                                 itemBuilder: (_, index) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
+                                    padding: const EdgeInsets.only(bottom: 3),
                                     child: Dismissible(
                                         confirmDismiss: (direction) async {
                                           if (direction ==
                                               DismissDirection.endToStart) {
-                                            print("transfer to friend.");
-                                            context
-                                                    .read(Globals.transfer_email)
-                                                    .state =
-                                                Globals.client
-                                                    .getCachedFriends[index];
-
-                                            // context
-                                            //     .read(Globals.selectedIndex)
-                                            //     .state++;
-
-                                            context
-                                                    .read(Globals.transfer_email)
-                                                    .state =
-                                                Globals.client
-                                                    .getCachedFriends[index];
-                                            selected_index = index;
+                                            setState(() {
+                                              print(Globals.client
+                                                  .getCachedFriends[index]);
+                                              //emailControler.text = Globals.client.getCachedFriends[index];
+                                              context
+                                                  .read(Globals.transfer_email)
+                                                  .state = Globals
+                                                      .client.getCachedFriends[
+                                                  index];
+                                              selected_index = index;
+                                            });
                                           }
 
                                           // remove friend.
@@ -445,61 +425,40 @@ class _TransferPageState extends State<TransferPage> {
                                               DismissDirection.startToEnd) {
                                             showDialog(
                                               context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  'Delete ${Globals.client.getCachedFriends[index]}?',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                                ),
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .backgroundColor,
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text('Cancel'),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        Globals.client
-                                                            .getCachedFriends;
-                                                      });
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      return false;
-                                                    },
-                                                  ),
-                                                  TextButton(
-                                                    child: Text('Approve'),
-                                                    onPressed: () async {
-                                                      try {
-                                                        await Globals.client
-                                                            .removeFriend(Globals
-                                                                    .client
-                                                                    .getCachedFriends[
-                                                                index]);
-                                                        setState(() {
-                                                          Globals.client
-                                                              .getCachedFriends
-                                                              .removeAt(index);
-                                                        });
-                                                      } catch (e) {
-                                                        Scaffold.of(context)
-                                                            .showSnackBar(
-                                                                SnackBar(
-                                                          content: Text(
-                                                              '[${e.codeName}] ${e.message}'),
-                                                          backgroundColor:
-                                                              Colors.red,
-                                                        ));
-                                                      }
+                                              builder: (_) => ConfirmDialog(
+                                        danger: true,
+                                        title:
+                                            'Delete ${Globals.client.getCachedFriends[index]}?',
+                                        cancelFunction: () {
+                                          setState(() {
+                                            Globals.client.getCachedFriends;
+                                          });
+                                          Navigator.of(context).pop();
+                                          return false;
+                                        },
+                                        actionText: Text('Approve'),
+                                        actionFunction: () async {
+                                          try {
+                                            await Globals.client.removeFriend(
+                                                Globals.client
+                                                    .getCachedFriends[index]);
+                                            setState(() {
+                                              Globals.client.getCachedFriends
+                                                  .removeAt(index);
+                                            });
+                                          } catch (e) {
+                                            Scaffold.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  '[${e.codeName}] ${e.message}'),
+                                              backgroundColor: Colors.red,
+                                            ));
+                                          }
 
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      return true;
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
+                                          Navigator.of(context).pop();
+                                          return true;
+                                        },
+                                      ),
                                             );
                                           }
 
@@ -519,52 +478,37 @@ class _TransferPageState extends State<TransferPage> {
                                         ),
                                         key: ValueKey(Globals
                                             .client.getCachedFriends[index]),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                            ),
-                                            Stack(
-                                              alignment: Alignment.center,
-                                              overflow: Overflow.visible,
-                                              children: [
-                                                Positioned(
-                                                  child: Container(
-                                                    child: CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundImage: AssetImage(
-                                                          'assets/images/avatar.png'),
-                                                    ),
-                                                  ),
-                                                  left: -60,
-                                                ),
-                                                RichText(
-                                                    text: TextSpan(
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline2,
-                                                  text:
-                                                      "${Globals.client.getCachedFriends[index]}\n",
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                        text:
-                                                            "${Globals.client.getCachedFriends[index]}@email.com",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .subtitle1),
-                                                  ],
-                                                )),
-                                              ],
-                                            ),
-                                          ],
+                                        child: ListTile(
+                                          onTap: () async {
+                                            setState(() {
+                                              print(Globals.client
+                                                  .getCachedFriends[index]);
+                                              //emailControler.text = Globals.client.getCachedFriends[index];
+                                              context
+                                                  .read(Globals.transfer_email)
+                                                  .state = Globals
+                                                      .client.getCachedFriends[
+                                                  index];
+                                              selected_index = index;
+                                            });
+                                          },
+                                          selected: selected_index == index,
+                                          leading: CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                                'assets/images/avatar.png'),
+                                          ),
+                                          dense: false,
+                                          enabled: true,
+                                          title: Text(
+                                            "${Globals.client.getCachedFriends[index]}\n",
+                                          ),
+                                          subtitle: Text(
+                                              "${Globals.client.getCachedFriends[index]}@email.com"),
+                                          trailing: Icon(
+                                              Icons.transfer_within_a_station),
                                         ))),
                                 separatorBuilder: (_, index) => SizedBox(
-                                  height: 10,
+                                  height: 0,
                                 ),
                                 itemCount:
                                     Globals.client.getCachedFriends.length,
