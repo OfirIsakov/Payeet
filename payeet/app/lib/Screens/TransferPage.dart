@@ -146,6 +146,7 @@ class _TransferPageState extends State<TransferPage> {
                                   },
                                   icon: Icon(
                                     Icons.view_week,
+                                    color: Theme.of(context).highlightColor,
                                   ),
                                 ),
                                 IconButton(
@@ -154,7 +155,10 @@ class _TransferPageState extends State<TransferPage> {
                                       showCubes = false;
                                     });
                                   },
-                                  icon: Icon(Icons.list),
+                                  icon: Icon(
+                                    Icons.list,
+                                    color: Theme.of(context).highlightColor,
+                                  ),
                                 ),
                               ],
                             )
