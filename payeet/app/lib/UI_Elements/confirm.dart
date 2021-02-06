@@ -14,7 +14,7 @@ class ConfirmDialog extends StatelessWidget {
   }) : super(key: key);
 
   final bool danger;
-  final Text title;
+  final String title;
   final Text actionText;
   final Text content;
   final Function() cancelFunction;
@@ -28,8 +28,9 @@ class ConfirmDialog extends StatelessWidget {
 
     if (isIOS) {
       return CupertinoAlertDialog(
-        title: title,
-        content: Text("Are you sure you want to log out?"),
+
+        title: Text(title, style: TextStyle(color: Colors.black)),
+        content: content,
         actions: <Widget>[
           CupertinoDialogAction(
               isDefaultAction: true,
@@ -45,7 +46,7 @@ class ConfirmDialog extends StatelessWidget {
       );
     } else {
       return AlertDialog(
-        title: this.title,
+        title: Center(child:Text(this.title, style: TextStyle(color: Theme.of(context).highlightColor))),
         backgroundColor: Theme.of(context).backgroundColor,
         actions: [
 
