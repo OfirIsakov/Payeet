@@ -45,6 +45,8 @@ type UserStore interface {
 
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
+
+	GetMailsByStart(search string) ([]string, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -278,4 +280,26 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	}
 
 	return status.Errorf(codes.NotFound, "No such friend")
+}
+
+// GetMailsByStart will get the emails of the users for a user by his search
+func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + search}})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	tempResults := []*User{}
+
+	if err = cursor.All(context.TODO(), &tempResults); err != nil {
+		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to user")
+	}
+
+	results := []string{}
+
+	for _, email := range tempResults {
+		results = append(results, email.Email)
+	}
+
+	return results, nil
 }

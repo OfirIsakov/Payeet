@@ -65,6 +65,14 @@ message RemoveFriendRequest{
     string Mail = 1;
 }
 
+message SearchFriendRequest{
+    string search = 1;
+}
+
+message SearchFriendResponse{
+    string Mail = 1;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
@@ -81,4 +89,6 @@ service payeet{
 
     rpc AddFriend (AddFriendRequest) returns (StatusResponse);
     rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
+    
+    rpc SearchFriend (SearchFriendRequest) returns (stream SearchFriendResponse);
 }

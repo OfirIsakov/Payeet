@@ -151,3 +151,17 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 
 	return &pb.StatusResponse{}, nil
 }
+
+// SearchFriend gets a sub mail and returns a stream of mails
+func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
+	mails, err := s.userStore.GetMailsByStart(in.GetSearch())
+	if err != nil {
+		return err
+	}
+
+	for _, mail := range mails {
+		stream.Send(&pb.SearchFriendResponse{Mail: mail})
+	}
+
+	return nil
+}

@@ -591,3 +591,81 @@ class RemoveFriendRequest extends $pb.GeneratedMessage {
   void clearMail() => clearField(1);
 }
 
+class SearchFriendRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SearchFriendRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'search')
+    ..hasRequiredFields = false
+  ;
+
+  SearchFriendRequest._() : super();
+  factory SearchFriendRequest() => create();
+  factory SearchFriendRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SearchFriendRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SearchFriendRequest clone() => SearchFriendRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SearchFriendRequest copyWith(void Function(SearchFriendRequest) updates) => super.copyWith((message) => updates(message as SearchFriendRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SearchFriendRequest create() => SearchFriendRequest._();
+  SearchFriendRequest createEmptyInstance() => create();
+  static $pb.PbList<SearchFriendRequest> createRepeated() => $pb.PbList<SearchFriendRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SearchFriendRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SearchFriendRequest>(create);
+  static SearchFriendRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get search => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set search($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSearch() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSearch() => clearField(1);
+}
+
+class SearchFriendResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SearchFriendResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..hasRequiredFields = false
+  ;
+
+  SearchFriendResponse._() : super();
+  factory SearchFriendResponse() => create();
+  factory SearchFriendResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SearchFriendResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SearchFriendResponse clone() => SearchFriendResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SearchFriendResponse copyWith(void Function(SearchFriendResponse) updates) => super.copyWith((message) => updates(message as SearchFriendResponse)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SearchFriendResponse create() => SearchFriendResponse._();
+  SearchFriendResponse createEmptyInstance() => create();
+  static $pb.PbList<SearchFriendResponse> createRepeated() => $pb.PbList<SearchFriendResponse>();
+  @$core.pragma('dart2js:noInline')
+  static SearchFriendResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SearchFriendResponse>(create);
+  static SearchFriendResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get mail => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set mail($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMail() => clearField(1);
+}
+
