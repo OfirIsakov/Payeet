@@ -115,7 +115,7 @@ func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) 
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Friends: user.Friends, User_ID: user.Email}, nil
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
 }
 
 // AddFriend adds a friend to the user
@@ -150,4 +150,28 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 	}
 
 	return &pb.StatusResponse{}, nil
+}
+
+// GetFriends returns all the user's friends as a stream
+func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_GetFriendsServer) error {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return status.Errorf(codes.Internal, err.Error())
+	}
+
+	user, err := s.userStore.GetUserByEmail(claims.Email)
+	if err != nil {
+		return status.Errorf(codes.Internal, err.Error())
+	}
+
+	for _, friend := range user.Friends {
+		err = stream.Send(&pb.GetFriendsResponse{Mail: friend})
+		if err != nil {
+			return status.Errorf(codes.Internal, "Could not send friend")
+		}
+	}
+
+	return nil
 }
