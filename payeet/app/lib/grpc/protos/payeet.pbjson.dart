@@ -98,3 +98,14 @@ const RemoveFriendRequest$json = const {
   ],
 };
 
+const GetFollowersRequest$json = const {
+  '1': 'GetFollowersRequest',
+};
+
+const GetFollowersResponse$json = const {
+  '1': 'GetFollowersResponse',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+

@@ -130,6 +130,12 @@ class payeetClient extends $grpc.Client {
           '/payeet.payeet/RemoveFriend',
           ($0.RemoveFriendRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
+  static final _$getFollowers =
+      $grpc.ClientMethod<$0.GetFollowersRequest, $0.GetFollowersResponse>(
+          '/payeet.payeet/GetFollowers',
+          ($0.GetFollowersRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.GetFollowersResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
       {$grpc.CallOptions options,
@@ -162,6 +168,14 @@ class payeetClient extends $grpc.Client {
       $0.RemoveFriendRequest request,
       {$grpc.CallOptions options}) {
     return $createUnaryCall(_$removeFriend, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.GetFollowersResponse> getFollowers(
+      $0.GetFollowersRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$getFollowers, $async.Stream.fromIterable([request]),
+        options: options);
   }
 }
 
@@ -205,6 +219,15 @@ abstract class payeetServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.RemoveFriendRequest.fromBuffer(value),
         ($0.StatusResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.GetFollowersRequest, $0.GetFollowersResponse>(
+            'GetFollowers',
+            getFollowers_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.GetFollowersRequest.fromBuffer(value),
+            ($0.GetFollowersResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
@@ -232,6 +255,12 @@ abstract class payeetServiceBase extends $grpc.Service {
     return removeFriend(call, await request);
   }
 
+  $async.Stream<$0.GetFollowersResponse> getFollowers_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.GetFollowersRequest> request) async* {
+    yield* getFollowers(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(
@@ -242,4 +271,6 @@ abstract class payeetServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.AddFriendRequest request);
   $async.Future<$0.StatusResponse> removeFriend(
       $grpc.ServiceCall call, $0.RemoveFriendRequest request);
+  $async.Stream<$0.GetFollowersResponse> getFollowers(
+      $grpc.ServiceCall call, $0.GetFollowersRequest request);
 }

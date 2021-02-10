@@ -591,3 +591,71 @@ class RemoveFriendRequest extends $pb.GeneratedMessage {
   void clearMail() => clearField(1);
 }
 
+class GetFollowersRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GetFollowersRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  GetFollowersRequest._() : super();
+  factory GetFollowersRequest() => create();
+  factory GetFollowersRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetFollowersRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  GetFollowersRequest clone() => GetFollowersRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  GetFollowersRequest copyWith(void Function(GetFollowersRequest) updates) => super.copyWith((message) => updates(message as GetFollowersRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static GetFollowersRequest create() => GetFollowersRequest._();
+  GetFollowersRequest createEmptyInstance() => create();
+  static $pb.PbList<GetFollowersRequest> createRepeated() => $pb.PbList<GetFollowersRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetFollowersRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetFollowersRequest>(create);
+  static GetFollowersRequest _defaultInstance;
+}
+
+class GetFollowersResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GetFollowersResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..hasRequiredFields = false
+  ;
+
+  GetFollowersResponse._() : super();
+  factory GetFollowersResponse() => create();
+  factory GetFollowersResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetFollowersResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  GetFollowersResponse clone() => GetFollowersResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  GetFollowersResponse copyWith(void Function(GetFollowersResponse) updates) => super.copyWith((message) => updates(message as GetFollowersResponse)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static GetFollowersResponse create() => GetFollowersResponse._();
+  GetFollowersResponse createEmptyInstance() => create();
+  static $pb.PbList<GetFollowersResponse> createRepeated() => $pb.PbList<GetFollowersResponse>();
+  @$core.pragma('dart2js:noInline')
+  static GetFollowersResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetFollowersResponse>(create);
+  static GetFollowersResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get mail => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set mail($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMail() => clearField(1);
+}
+

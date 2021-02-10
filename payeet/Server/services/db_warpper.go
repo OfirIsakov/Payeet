@@ -45,6 +45,8 @@ type UserStore interface {
 
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
+
+	GetFollowers(mail string) ([]string, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -278,4 +280,26 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	}
 
 	return status.Errorf(codes.NotFound, "No such friend")
+}
+
+// GetFollowers fetches all the emails the follow the user
+func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
+
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Friends": mail})
+	if err != nil {
+		return nil, err
+	}
+
+	followers := []*User{}
+
+	if err = cursor.All(context.TODO(), &followers); err != nil {
+		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to string")
+	}
+
+	followersMail := []string{}
+	for _, follower := range followers {
+		followersMail = append(followersMail, follower.Email)
+	}
+
+	return followersMail, nil
 }
