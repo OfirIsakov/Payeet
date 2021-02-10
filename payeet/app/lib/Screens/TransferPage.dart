@@ -426,39 +426,44 @@ class _TransferPageState extends State<TransferPage> {
                                             showDialog(
                                               context: context,
                                               builder: (_) => ConfirmDialog(
-                                        danger: true,
-                                        title:
-                                            'Delete ${Globals.client.getCachedFriends[index]}?',
-                                        cancelFunction: () {
-                                          setState(() {
-                                            Globals.client.getCachedFriends;
-                                          });
-                                          Navigator.of(context).pop();
-                                          return false;
-                                        },
-                                        actionText: Text('Approve'),
-                                        actionFunction: () async {
-                                          try {
-                                            await Globals.client.removeFriend(
-                                                Globals.client
-                                                    .getCachedFriends[index]);
-                                            setState(() {
-                                              Globals.client.getCachedFriends
-                                                  .removeAt(index);
-                                            });
-                                          } catch (e) {
-                                            Scaffold.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  '[${e.codeName}] ${e.message}'),
-                                              backgroundColor: Colors.red,
-                                            ));
-                                          }
+                                                danger: true,
+                                                title:
+                                                    'Delete ${Globals.client.getCachedFriends[index]}?',
+                                                cancelFunction: () {
+                                                  setState(() {
+                                                    Globals.client
+                                                        .getCachedFriends;
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                  return false;
+                                                },
+                                                actionText: Text('Approve'),
+                                                actionFunction: () async {
+                                                  try {
+                                                    await Globals.client
+                                                        .removeFriend(Globals
+                                                                .client
+                                                                .getCachedFriends[
+                                                            index]);
+                                                    setState(() {
+                                                      Globals.client
+                                                          .getCachedFriends
+                                                          .removeAt(index);
+                                                    });
+                                                  } catch (e) {
+                                                    Scaffold.of(context)
+                                                        .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          '[${e.codeName}] ${e.message}'),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                    ));
+                                                  }
 
-                                          Navigator.of(context).pop();
-                                          return true;
-                                        },
-                                      ),
+                                                  Navigator.of(context).pop();
+                                                  return true;
+                                                },
+                                              ),
                                             );
                                           }
 
@@ -503,7 +508,11 @@ class _TransferPageState extends State<TransferPage> {
                                             "${Globals.client.getCachedFriends[index]}\n",
                                           ),
                                           subtitle: Text(
-                                              "${Globals.client.getCachedFriends[index]}@email.com"),
+                                            "${Globals.client.getCachedFriends[index]}@email.com",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .highlightColor),
+                                          ),
                                           trailing: Icon(
                                               Icons.transfer_within_a_station),
                                         ))),
