@@ -107,3 +107,17 @@ const RemoveFriendRequest$json = const {
   ],
 };
 
+const SearchFriendRequest$json = const {
+  '1': 'SearchFriendRequest',
+  '2': const [
+    const {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+  ],
+};
+
+const SearchFriendResponse$json = const {
+  '1': 'SearchFriendResponse',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+
