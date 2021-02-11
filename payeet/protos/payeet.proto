@@ -24,9 +24,15 @@ message TransferRequest{
     int32 Amount = 2;
 }
 
-message historyRequest{
-    int32 Index = 1;
-    string SenderID = 2;
+message HistoryRequest{
+    string SenderMail = 1;
+}
+
+message HistoryResponse{
+    string SenderMail = 1;
+    string ReceiverMail = 2;
+    int32 Amount = 3;
+    int64 Time = 4;
 }
 
 message RefreshTokenRequest{
@@ -71,6 +77,14 @@ message GetFriendsResponse{
     string Mail = 1;
 }
 
+message SearchFriendRequest{
+    string search = 1;
+}
+
+message SearchFriendResponse{
+    string Mail = 1;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
@@ -87,5 +101,10 @@ service payeet{
 
     rpc AddFriend (AddFriendRequest) returns (StatusResponse);
     rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
+    
     rpc GetFriends (GetFriendsRequest) returns (stream GetFriendsResponse);
+    
+    rpc SearchFriend (SearchFriendRequest) returns (stream SearchFriendResponse);
+
+    rpc GetFullSelfHistory (HistoryRequest) returns (stream HistoryResponse);
 }

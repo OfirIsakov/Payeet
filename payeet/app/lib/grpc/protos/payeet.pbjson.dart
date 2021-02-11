@@ -38,11 +38,20 @@ const TransferRequest$json = const {
   ],
 };
 
-const historyRequest$json = const {
-  '1': 'historyRequest',
+const HistoryRequest$json = const {
+  '1': 'HistoryRequest',
   '2': const [
-    const {'1': 'Index', '3': 1, '4': 1, '5': 5, '10': 'Index'},
-    const {'1': 'SenderID', '3': 2, '4': 1, '5': 9, '10': 'SenderID'},
+    const {'1': 'SenderMail', '3': 2, '4': 1, '5': 9, '10': 'SenderMail'},
+  ],
+};
+
+const HistoryResponse$json = const {
+  '1': 'HistoryResponse',
+  '2': const [
+    const {'1': 'SenderMail', '3': 1, '4': 1, '5': 9, '10': 'SenderMail'},
+    const {'1': 'ReceiverMail', '3': 2, '4': 1, '5': 9, '10': 'ReceiverMail'},
+    const {'1': 'Amount', '3': 3, '4': 1, '5': 5, '10': 'Amount'},
+    const {'1': 'Time', '3': 4, '4': 1, '5': 3, '10': 'Time'},
   ],
 };
 

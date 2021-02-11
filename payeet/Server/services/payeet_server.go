@@ -152,6 +152,73 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 	return &pb.StatusResponse{}, nil
 }
 
+// SearchFriend gets a sub mail and returns a stream of mails
+func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
+	mails, err := s.userStore.GetMailsByStart(in.GetSearch())
+	if err != nil {
+		return err
+	}
+
+	for _, mail := range mails {
+		stream.Send(&pb.SearchFriendResponse{Mail: mail})
+	}
+
+	return nil
+
+// GetFullSelfHistory is a function that sends the full message history of the user in a stream
+func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	user, err := s.userStore.GetUserByEmail(claims.Email)
+	if err != nil {
+		return err
+	}
+
+	// check if the person wants their own history
+	if claims.Email != in.SenderMail {
+		// check if the person wants the history of someone they follow
+		isFriend := false
+
+		for _, friend := range user.Friends {
+			if in.SenderMail == friend {
+				isFriend = true
+				break
+			}
+		}
+
+		if !isFriend {
+			return status.Errorf(codes.Unauthenticated, "Sorry, you must follow the person to get their history!")
+		}
+	}
+
+	// get the full history of the user
+	senderTransfers, senderErr := s.userStore.GetSenderHistory(in.SenderMail)
+	receiverTransfers, receiverErr := s.userStore.GetReceiverHistory(in.SenderMail)
+
+	// if both of the functions gave an error return the first one
+	if senderErr != nil && receiverErr != nil {
+		return senderErr
+	}
+
+	// send the history of the functions that succeeded
+	if senderErr == nil {
+		for _, transfer := range senderTransfers {
+			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+		}
+	}
+	if receiverErr == nil {
+		for _, transfer := range receiverTransfers {
+			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+		}
+	}
+	return nil
+}
+
 // GetFriends returns all the user's friends as a stream
 func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_GetFriendsServer) error {
 
@@ -175,3 +242,4 @@ func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_Get
 
 	return nil
 }
+
