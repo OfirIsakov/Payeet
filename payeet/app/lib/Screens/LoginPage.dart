@@ -84,6 +84,7 @@ class _MyFormState extends State<MyForm> {
           await Globals.client
               .login(emailControler.text, passwordControler.text);
           context.read(Globals.selectedIndex).state = 0;
+          context.read(Globals.radioIndex).state = 1;
           context.read(Globals.transfer_email).state = "";
           await Globals.client.getUserInfo();
           Navigator.of(context).pushReplacement(
