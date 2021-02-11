@@ -70,6 +70,13 @@ message RemoveFriendRequest{
     string Mail = 1;
 }
 
+message GetFollowersRequest{
+}
+
+message GetFollowersResponse{
+    string Mail = 1;
+}
+
 message GetFriendsRequest{
 }
 
@@ -101,6 +108,8 @@ service payeet{
 
     rpc AddFriend (AddFriendRequest) returns (StatusResponse);
     rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
+
+    rpc GetFollowers (GetFollowersRequest) returns (stream GetFollowersResponse);
     
     rpc GetFriends (GetFriendsRequest) returns (stream GetFriendsResponse);
     

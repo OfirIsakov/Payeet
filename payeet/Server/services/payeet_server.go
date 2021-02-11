@@ -152,6 +152,7 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 	return &pb.StatusResponse{}, nil
 }
 
+
 // SearchFriend gets a sub mail and returns a stream of mails
 func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
 	mails, err := s.userStore.GetMailsByStart(in.GetSearch())
@@ -164,6 +165,7 @@ func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet
 	}
 
 	return nil
+}
 
 // GetFullSelfHistory is a function that sends the full message history of the user in a stream
 func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
@@ -237,6 +239,30 @@ func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_Get
 		err = stream.Send(&pb.GetFriendsResponse{Mail: friend})
 		if err != nil {
 			return status.Errorf(codes.Internal, "Could not send friend")
+		}
+	}
+
+	return nil
+}
+
+// GetFollowers returns a stream of all the users that follow the requeseter
+func (s *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet_GetFollowersServer) error {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	followers, err := s.userStore.GetFollowers(claims.Email)
+	if err != nil {
+		return err
+	}
+
+	for _, follower := range followers {
+		err = stream.Send(&pb.GetFollowersResponse{Mail: follower})
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error while trying to send the stream message")
 		}
 	}
 
