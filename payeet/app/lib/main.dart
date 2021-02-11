@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // this gesture detector allows as to click out side the keyboard to dismiss it.
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -56,7 +57,9 @@ class MyApp extends StatelessWidget {
       },
       child: MaterialApp(
         themeMode: ThemeMode.system,
+        // this is the theme of the app.
         darkTheme: ThemeData(
+          unselectedWidgetColor: Colors.white,
           accentColor: Colors.black,
           primarySwatch: createMaterialColor(Colors.white),
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -85,6 +88,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: const Color(0xff121212),
         ),
         theme: ThemeData(
+            unselectedWidgetColor: Colors.black,
             primarySwatch: createMaterialColor(Colors.black),
             accentColor: Colors.white,
             highlightColor: Colors.black,

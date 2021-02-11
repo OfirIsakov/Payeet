@@ -278,8 +278,7 @@ type HistoryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Index    int32  `protobuf:"varint,1,opt,name=Index,proto3" json:"Index,omitempty"`
-	SenderID string `protobuf:"bytes,2,opt,name=SenderID,proto3" json:"SenderID,omitempty"`
+	SenderMail string `protobuf:"bytes,2,opt,name=SenderMail,proto3" json:"SenderMail,omitempty"`
 }
 
 func (x *HistoryRequest) Reset() {
@@ -314,18 +313,82 @@ func (*HistoryRequest) Descriptor() ([]byte, []int) {
 	return file_payeet_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *HistoryRequest) GetIndex() int32 {
+func (x *HistoryRequest) GetSenderMail() string {
 	if x != nil {
-		return x.Index
+		return x.SenderMail
+	}
+	return ""
+}
+
+type HistoryResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SenderMail   string `protobuf:"bytes,1,opt,name=SenderMail,proto3" json:"SenderMail,omitempty"`
+	ReceiverMail string `protobuf:"bytes,2,opt,name=ReceiverMail,proto3" json:"ReceiverMail,omitempty"`
+	Amount       int32  `protobuf:"varint,3,opt,name=Amount,proto3" json:"Amount,omitempty"`
+	Time         int64  `protobuf:"varint,4,opt,name=Time,proto3" json:"Time,omitempty"`
+}
+
+func (x *HistoryResponse) Reset() {
+	*x = HistoryResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_payeet_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HistoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HistoryResponse) ProtoMessage() {}
+
+func (x *HistoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_payeet_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HistoryResponse.ProtoReflect.Descriptor instead.
+func (*HistoryResponse) Descriptor() ([]byte, []int) {
+	return file_payeet_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *HistoryResponse) GetSenderMail() string {
+	if x != nil {
+		return x.SenderMail
+	}
+	return ""
+}
+
+func (x *HistoryResponse) GetReceiverMail() string {
+	if x != nil {
+		return x.ReceiverMail
+	}
+	return ""
+}
+
+func (x *HistoryResponse) GetAmount() int32 {
+	if x != nil {
+		return x.Amount
 	}
 	return 0
 }
 
-func (x *HistoryRequest) GetSenderID() string {
+func (x *HistoryResponse) GetTime() int64 {
 	if x != nil {
-		return x.SenderID
+		return x.Time
 	}
-	return ""
+	return 0
 }
 
 type RefreshTokenRequest struct {
@@ -339,7 +402,7 @@ type RefreshTokenRequest struct {
 func (x *RefreshTokenRequest) Reset() {
 	*x = RefreshTokenRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[6]
+		mi := &file_payeet_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -352,7 +415,7 @@ func (x *RefreshTokenRequest) String() string {
 func (*RefreshTokenRequest) ProtoMessage() {}
 
 func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[6]
+	mi := &file_payeet_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -365,7 +428,7 @@ func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
 func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{6}
+	return file_payeet_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *RefreshTokenRequest) GetRefreshToken() string {
@@ -387,7 +450,7 @@ type LoginRequest struct {
 func (x *LoginRequest) Reset() {
 	*x = LoginRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[7]
+		mi := &file_payeet_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -400,7 +463,7 @@ func (x *LoginRequest) String() string {
 func (*LoginRequest) ProtoMessage() {}
 
 func (x *LoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[7]
+	mi := &file_payeet_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -413,7 +476,7 @@ func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
 func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{7}
+	return file_payeet_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *LoginRequest) GetMail() string {
@@ -443,7 +506,7 @@ type LoginResponse struct {
 func (x *LoginResponse) Reset() {
 	*x = LoginResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[8]
+		mi := &file_payeet_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -456,7 +519,7 @@ func (x *LoginResponse) String() string {
 func (*LoginResponse) ProtoMessage() {}
 
 func (x *LoginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[8]
+	mi := &file_payeet_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -469,7 +532,7 @@ func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
 func (*LoginResponse) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{8}
+	return file_payeet_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *LoginResponse) GetAccessToken() string {
@@ -502,7 +565,7 @@ type UserInfoRequest struct {
 func (x *UserInfoRequest) Reset() {
 	*x = UserInfoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[9]
+		mi := &file_payeet_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -515,7 +578,7 @@ func (x *UserInfoRequest) String() string {
 func (*UserInfoRequest) ProtoMessage() {}
 
 func (x *UserInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[9]
+	mi := &file_payeet_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -528,7 +591,7 @@ func (x *UserInfoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserInfoRequest.ProtoReflect.Descriptor instead.
 func (*UserInfoRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{9}
+	return file_payeet_proto_rawDescGZIP(), []int{10}
 }
 
 type UserInfoResponse struct {
@@ -536,16 +599,15 @@ type UserInfoResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FirstName string   `protobuf:"bytes,1,opt,name=FirstName,proto3" json:"FirstName,omitempty"`
-	LastName  string   `protobuf:"bytes,2,opt,name=LastName,proto3" json:"LastName,omitempty"`
-	Friends   []string `protobuf:"bytes,3,rep,name=Friends,proto3" json:"Friends,omitempty"`
-	User_ID   string   `protobuf:"bytes,4,opt,name=User_ID,json=UserID,proto3" json:"User_ID,omitempty"`
+	FirstName string `protobuf:"bytes,1,opt,name=FirstName,proto3" json:"FirstName,omitempty"`
+	LastName  string `protobuf:"bytes,2,opt,name=LastName,proto3" json:"LastName,omitempty"`
+	User_ID   string `protobuf:"bytes,4,opt,name=User_ID,json=UserID,proto3" json:"User_ID,omitempty"`
 }
 
 func (x *UserInfoResponse) Reset() {
 	*x = UserInfoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[10]
+		mi := &file_payeet_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -558,7 +620,7 @@ func (x *UserInfoResponse) String() string {
 func (*UserInfoResponse) ProtoMessage() {}
 
 func (x *UserInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[10]
+	mi := &file_payeet_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -571,7 +633,7 @@ func (x *UserInfoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserInfoResponse.ProtoReflect.Descriptor instead.
 func (*UserInfoResponse) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{10}
+	return file_payeet_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UserInfoResponse) GetFirstName() string {
@@ -586,13 +648,6 @@ func (x *UserInfoResponse) GetLastName() string {
 		return x.LastName
 	}
 	return ""
-}
-
-func (x *UserInfoResponse) GetFriends() []string {
-	if x != nil {
-		return x.Friends
-	}
-	return nil
 }
 
 func (x *UserInfoResponse) GetUser_ID() string {
@@ -613,7 +668,7 @@ type AddFriendRequest struct {
 func (x *AddFriendRequest) Reset() {
 	*x = AddFriendRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[11]
+		mi := &file_payeet_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -626,7 +681,7 @@ func (x *AddFriendRequest) String() string {
 func (*AddFriendRequest) ProtoMessage() {}
 
 func (x *AddFriendRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[11]
+	mi := &file_payeet_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -639,7 +694,7 @@ func (x *AddFriendRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddFriendRequest.ProtoReflect.Descriptor instead.
 func (*AddFriendRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{11}
+	return file_payeet_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AddFriendRequest) GetMail() string {
@@ -660,7 +715,7 @@ type RemoveFriendRequest struct {
 func (x *RemoveFriendRequest) Reset() {
 	*x = RemoveFriendRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_payeet_proto_msgTypes[12]
+		mi := &file_payeet_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -673,7 +728,7 @@ func (x *RemoveFriendRequest) String() string {
 func (*RemoveFriendRequest) ProtoMessage() {}
 
 func (x *RemoveFriendRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_payeet_proto_msgTypes[12]
+	mi := &file_payeet_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -686,7 +741,7 @@ func (x *RemoveFriendRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveFriendRequest.ProtoReflect.Descriptor instead.
 func (*RemoveFriendRequest) Descriptor() ([]byte, []int) {
-	return file_payeet_proto_rawDescGZIP(), []int{12}
+	return file_payeet_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RemoveFriendRequest) GetMail() string {
@@ -823,16 +878,21 @@ var file_payeet_proto_rawDesc = []byte{
 	0x73, 0x4f, 0x6e, 0x12, 0x22, 0x0a, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f,
 	0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65,
 	0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x11, 0x0a, 0x0f, 0x55, 0x73, 0x65, 0x72, 0x49,
-	0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x7f, 0x0a, 0x10, 0x55, 0x73,
+	0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x65, 0x0a, 0x10, 0x55, 0x73,
 	0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1c,
 	0x0a, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x09, 0x46, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08,
 	0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x46, 0x72, 0x69, 0x65,
-	0x6e, 0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x46, 0x72, 0x69, 0x65, 0x6e,
-	0x64, 0x73, 0x12, 0x17, 0x0a, 0x07, 0x55, 0x73, 0x65, 0x72, 0x5f, 0x49, 0x44, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x22, 0x26, 0x0a, 0x10, 0x41,
-	0x64, 0x64, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x4c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x55, 0x73, 0x65, 0x72,
+	0x5f, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49,
+	0x44, 0x22, 0x26, 0x0a, 0x10, 0x41, 0x64, 0x64, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x22, 0x29, 0x0a, 0x13, 0x52, 0x65, 0x6d,
+	0x6f, 0x76, 0x65, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x4d, 0x61, 0x69, 0x6c, 0x22, 0x13, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x46, 0x72, 0x69, 0x65, 0x6e,
+	0x64, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x28, 0x0a, 0x12, 0x47, 0x65, 0x74,
+	0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x12, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4d,
 	0x61, 0x69, 0x6c, 0x22, 0x29, 0x0a, 0x13, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x46, 0x72, 0x69,
 	0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x61,
@@ -914,10 +974,10 @@ var file_payeet_proto_goTypes = []interface{}{
 	(*GetFollowersResponse)(nil), // 14: payeet.GetFollowersResponse
 }
 var file_payeet_proto_depIdxs = []int32{
-	7,  // 0: payeet.payeet_auth.Login:input_type -> payeet.LoginRequest
-	6,  // 1: payeet.payeet_auth.RefreshToken:input_type -> payeet.RefreshTokenRequest
+	8,  // 0: payeet.payeet_auth.Login:input_type -> payeet.LoginRequest
+	7,  // 1: payeet.payeet_auth.RefreshToken:input_type -> payeet.RefreshTokenRequest
 	0,  // 2: payeet.payeet_auth.Register:input_type -> payeet.RegisterRequest
-	9,  // 3: payeet.payeet.GetUserInfo:input_type -> payeet.UserInfoRequest
+	10, // 3: payeet.payeet.GetUserInfo:input_type -> payeet.UserInfoRequest
 	2,  // 4: payeet.payeet.GetBalance:input_type -> payeet.BalanceRequest
 	4,  // 5: payeet.payeet.TransferBalance:input_type -> payeet.TransferRequest
 	11, // 6: payeet.payeet.AddFriend:input_type -> payeet.AddFriendRequest
@@ -1018,7 +1078,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RefreshTokenRequest); i {
+			switch v := v.(*HistoryResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1030,7 +1090,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginRequest); i {
+			switch v := v.(*RefreshTokenRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1042,7 +1102,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginResponse); i {
+			switch v := v.(*LoginRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1054,7 +1114,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserInfoRequest); i {
+			switch v := v.(*LoginResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1066,7 +1126,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserInfoResponse); i {
+			switch v := v.(*UserInfoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1078,7 +1138,7 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddFriendRequest); i {
+			switch v := v.(*UserInfoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1090,6 +1150,18 @@ func file_payeet_proto_init() {
 			}
 		}
 		file_payeet_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddFriendRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_payeet_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RemoveFriendRequest); i {
 			case 0:
 				return &v.state

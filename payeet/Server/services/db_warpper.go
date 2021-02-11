@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 
@@ -46,7 +47,12 @@ type UserStore interface {
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
 
+	GetMailsByStart(search string) ([]string, error)
+
 	GetFollowers(mail string) ([]string, error)
+
+	GetSenderHistory(mail string) ([]*Transaction, error)
+	GetReceiverHistory(mail string) ([]*Transaction, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -282,6 +288,67 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	return status.Errorf(codes.NotFound, "No such friend")
 }
 
+
+// GetMailsByStart will get the emails of the users for a user by his search
+func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(search) + ".*@"}})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	tempResults := []*User{}
+
+	if err = cursor.All(context.TODO(), &tempResults); err != nil {
+		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to user")
+	}
+
+	results := []string{}
+
+	for _, email := range tempResults {
+		results = append(results, email.Email)
+
+// GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
+func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, error) {
+
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	senderResults := []*Transaction{}
+	if err = cursor.All(context.TODO(), &senderResults); err != nil {
+		return senderResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	}
+
+	return senderResults, nil
+}
+
+// GetReceiverHistory will fetch all of the transaction history of a given mail where the user is the receiver
+func (store *MongoUserStore) GetReceiverHistory(mail string) ([]*Transaction, error) {
+
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Receiver": mail})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	receiverResults := []*Transaction{}
+	if err = cursor.All(context.TODO(), &receiverResults); err != nil {
+		return receiverResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	}
+
+	return receiverResults, nil
+}
+
 // GetFollowers fetches all the emails the follow the user
 func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
 
@@ -303,3 +370,4 @@ func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
 
 	return followersMail, nil
 }
+
