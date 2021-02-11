@@ -41,7 +41,7 @@ const TransferRequest$json = const {
 const HistoryRequest$json = const {
   '1': 'HistoryRequest',
   '2': const [
-    const {'1': 'SenderMail', '3': 2, '4': 1, '5': 9, '10': 'SenderMail'},
+    const {'1': 'SenderMail', '3': 1, '4': 1, '5': 9, '10': 'SenderMail'},
   ],
 };
 
@@ -112,6 +112,31 @@ const GetFollowersRequest$json = const {
 
 const GetFollowersResponse$json = const {
   '1': 'GetFollowersResponse',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+
+const GetFriendsRequest$json = const {
+  '1': 'GetFriendsRequest',
+};
+
+const GetFriendsResponse$json = const {
+  '1': 'GetFriendsResponse',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+
+const SearchFriendRequest$json = const {
+  '1': 'SearchFriendRequest',
+  '2': const [
+    const {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+  ],
+};
+
+const SearchFriendResponse$json = const {
+  '1': 'SearchFriendResponse',
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
   ],

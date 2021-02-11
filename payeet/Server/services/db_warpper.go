@@ -288,7 +288,6 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	return status.Errorf(codes.NotFound, "No such friend")
 }
 
-
 // GetMailsByStart will get the emails of the users for a user by his search
 func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
 	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(search) + ".*@"}})
@@ -306,6 +305,10 @@ func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
 
 	for _, email := range tempResults {
 		results = append(results, email.Email)
+	}
+
+	return results, nil
+}
 
 // GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
 func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, error) {
@@ -370,4 +373,3 @@ func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
 
 	return followersMail, nil
 }
-
