@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 
@@ -48,6 +49,7 @@ type UserStore interface {
 
 	GetSenderHistory(mail string) ([]*Transaction, error)
 	GetReceiverHistory(mail string) ([]*Transaction, error)
+	GetMailsByStart(search string) ([]string, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -282,6 +284,24 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 
 	return status.Errorf(codes.NotFound, "No such friend")
 }
+
+// GetMailsByStart will get the emails of the users for a user by his search
+func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(search) + ".*@"}})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	tempResults := []*User{}
+
+	if err = cursor.All(context.TODO(), &tempResults); err != nil {
+		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to user")
+	}
+
+	results := []string{}
+
+	for _, email := range tempResults {
+		results = append(results, email.Email)
 
 // GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
 func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, error) {

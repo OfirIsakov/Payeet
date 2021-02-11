@@ -117,43 +117,19 @@ class _FriendsPageState extends State<FriendsPage> {
                           child: Icon(Icons.delete_forever_outlined),
                         ),
                         key: ValueKey(Globals.client.getCachedFriends[index]),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 4,
-                            ),
-                            Stack(
-                              alignment: Alignment.center,
-                              overflow: Overflow.visible,
-                              children: [
-                                Positioned(
-                                  child: Container(
-                                    child: CircleAvatar(
-                                      radius: 20,
-                                      backgroundImage: AssetImage(
-                                          'assets/images/avatar.png'),
-                                    ),
-                                  ),
-                                  left: -60,
-                                ),
-                                RichText(
-                                    text: TextSpan(
-                                  style: Theme.of(context).textTheme.headline2,
-                                  text:
-                                      "${Globals.client.getCachedFriends[index]}\n",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text:
-                                            "${Globals.client.getCachedFriends[index]}@email.com",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1),
-                                  ],
-                                )),
-                              ],
-                            ),
-                          ],
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/avatar.png'),
+                          ),
+                          dense: false,
+                          enabled: true,
+                          title: Text(
+                            "${Globals.client.getCachedFriends[index]}\n",
+                          ),
+                          subtitle: Text(
+                              "${Globals.client.getCachedFriends[index]}@email.com"),
+                        trailing: Icon(Icons.transfer_within_a_station),
                         ))),
                 separatorBuilder: (_, index) => SizedBox(
                   height: 30,
