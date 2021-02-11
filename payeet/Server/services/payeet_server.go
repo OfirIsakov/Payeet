@@ -164,4 +164,13 @@ func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet
 	}
 
 	return nil
+
+// GetFullSelfHistory is a function that sends the full message history of the user in a stream
+func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
+	transfers, err := s.userStore.GetHistory(in.SenderMail)
+	for _, transfer := range transfers {
+		log.Println(transfer)
+		stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+	}
+	return err
 }
