@@ -47,8 +47,9 @@ type UserStore interface {
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
 
+	GetSenderHistory(mail string) ([]*Transaction, error)
+	GetReceiverHistory(mail string) ([]*Transaction, error)
 	GetMailsByStart(search string) ([]string, error)
-	GetHistory(mail string) ([]*Transaction, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -302,8 +303,8 @@ func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
 	for _, email := range tempResults {
 		results = append(results, email.Email)
 
-// GetHistory will fetch all of the transaction history of a given mail
-func (store *MongoUserStore) GetHistory(mail string) ([]*Transaction, error) {
+// GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
+func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, error) {
 
 	_, err := store.GetUserByEmail(mail)
 	if err != nil {
@@ -315,10 +316,31 @@ func (store *MongoUserStore) GetHistory(mail string) ([]*Transaction, error) {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
 
-	results := []*Transaction{}
-	if err = cursor.All(context.TODO(), &results); err != nil {
-		return results, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	senderResults := []*Transaction{}
+	if err = cursor.All(context.TODO(), &senderResults); err != nil {
+		return senderResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
 	}
 
-	return results, nil
+	return senderResults, nil
+}
+
+// GetReceiverHistory will fetch all of the transaction history of a given mail where the user is the receiver
+func (store *MongoUserStore) GetReceiverHistory(mail string) ([]*Transaction, error) {
+
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Receiver": mail})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Wrong mail")
+	}
+
+	receiverResults := []*Transaction{}
+	if err = cursor.All(context.TODO(), &receiverResults); err != nil {
+		return receiverResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	}
+
+	return receiverResults, nil
 }
