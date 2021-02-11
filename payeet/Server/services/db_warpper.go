@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 
@@ -284,7 +285,7 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 
 // GetMailsByStart will get the emails of the users for a user by his search
 func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
-	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + search}})
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(search) + ".*@"}})
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
