@@ -18,7 +18,8 @@ class PayeetClient {
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
 
-  bool _cachedBalance; // this is true when the client class has cached the user's balance
+  bool
+      _cachedBalance; // this is true when the client class has cached the user's balance
   String _balance;
 
   bool
@@ -80,9 +81,8 @@ class PayeetClient {
   }
 
   ResponseStream<HistoryResponse> getTransferHistory(String mail) {
-    final response = _authenticatedClient.getFullSelfHistory(HistoryRequest()
-          ..senderMail = mail
-        );
+    final response = _authenticatedClient
+        .getFullSelfHistory(HistoryRequest()..senderMail = mail);
 
     return response;
   }
@@ -114,7 +114,6 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _friends = response.friends;
     _userID = response.userID;
 
     return response;
@@ -128,19 +127,24 @@ class PayeetClient {
 
     return response;
   }
+
   Future<StatusResponse> addFriend(String mail) async {
     final response =
-        await _authenticatedClient.addFriend(AddFriendRequest()
-          ..mail = mail);
+        await _authenticatedClient.addFriend(AddFriendRequest()..mail = mail);
 
     return response;
   }
+
   Future<StatusResponse> removeFriend(String mail) async {
-    final response =
-        await _authenticatedClient.removeFriend(RemoveFriendRequest()
-          ..mail = mail);
+    final response = await _authenticatedClient
+        .removeFriend(RemoveFriendRequest()..mail = mail);
 
     return response;
+  }
+
+  void getFriends() async{
+    List<GetFriendsResponse> d = await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
+    _friends = d.map((e) => e.mail).toList();
   }
 }
 

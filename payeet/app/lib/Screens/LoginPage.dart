@@ -87,6 +87,7 @@ class _MyFormState extends State<MyForm> {
           context.read(Globals.radioIndex).state = 1;
           context.read(Globals.transfer_email).state = "";
           await Globals.client.getUserInfo();
+          Globals.client.getFriends();
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) {
               return AppBase();
