@@ -11,6 +11,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -23,6 +24,14 @@ func accessibleRoles() map[string][]string {
 		path + "SearchFriend":    {"user"},
 	}
 
+}
+
+// init is invoked before main()
+func init() {
+	// loads values from .env into the system
+	if err := godotenv.Load("config.env"); err != nil {
+		log.Warning("No .env file found")
+	}
 }
 
 func main() {
