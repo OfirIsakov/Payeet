@@ -65,8 +65,7 @@ func main() {
 	reflection.Register(srv)
 
 	log.Infof("Starting server on port [%s]", config.Port)
-
-	lis, err := net.Listen("tcp", config.Port)
+	lis, err := net.Listen("tcp", ":"+config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
