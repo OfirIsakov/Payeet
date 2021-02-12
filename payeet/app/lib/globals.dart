@@ -7,6 +7,11 @@ class Globals {
   // this is the index of the current page.
   static var selectedIndex = StateProvider((ref) => 0);
   static var balance = StateProvider((ref) => 0);
+  static var transfer_email = StateProvider((ref) => "");
+
+  static List<HistoryResponse> transHistory = [];
+  static var radioIndex = StateProvider((ref) => 0);
+
   static var client = PayeetClient(PayeetChannel(
     ClientChannel(
       'localhost',

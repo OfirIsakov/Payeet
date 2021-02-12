@@ -18,13 +18,15 @@ class PayeetClient {
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
 
-  bool _cachedBalance; // this is true when the client class has cached the user's balance
+  bool
+      _cachedBalance; // this is true when the client class has cached the user's balance
   String _balance;
 
   bool
       _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
+  List<String> _friends;
   String _userID;
 
   // ctor
@@ -39,6 +41,7 @@ class PayeetClient {
   bool get cachedInfo => _cachedInfo;
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
+  List<String> get getCachedFriends => _friends;
   String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
@@ -77,11 +80,11 @@ class PayeetClient {
     return response;
   }
 
-  Future<LoginResponse> getTransferHistory() async {
-    //TODO
-    //NOTE: this should be a stream
+  ResponseStream<HistoryResponse> getTransferHistory(String mail) {
+    final response = _authenticatedClient
+        .getFullSelfHistory(HistoryRequest()..senderMail = mail);
 
-    return null;
+    return response;
   }
 
   Future<LoginResponse> refreshAccessToken() async {
@@ -123,6 +126,25 @@ class PayeetClient {
           ..amount = amount);
 
     return response;
+  }
+
+  Future<StatusResponse> addFriend(String mail) async {
+    final response =
+        await _authenticatedClient.addFriend(AddFriendRequest()..mail = mail);
+
+    return response;
+  }
+
+  Future<StatusResponse> removeFriend(String mail) async {
+    final response = await _authenticatedClient
+        .removeFriend(RemoveFriendRequest()..mail = mail);
+
+    return response;
+  }
+
+  void getFriends() async{
+    List<GetFriendsResponse> d = await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
+    _friends = d.map((e) => e.mail).toList();
   }
 }
 

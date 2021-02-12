@@ -10,6 +10,9 @@ import 'package:Payeet/Screens/UserPage.dart';
 import 'package:Payeet/screens/LoginPage.dart';
 import 'package:Payeet/Screens/StatsPage.dart';
 import 'package:Payeet/Screens/TransferPage.dart';
+import 'package:Payeet/Screens/FriendsPage.dart';
+
+
 
 import 'package:Payeet/globals.dart';
 
@@ -21,8 +24,29 @@ void main() {
 
 /// This is the main application widget.
 class MyApp extends StatelessWidget {
+  MaterialColor createMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    Map swatch = <int, Color>{};
+    final int r = color.red, g = color.green, b = color.blue;
+
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+    strengths.forEach((strength) {
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+        1,
+      );
+    });
+    return MaterialColor(color.value, swatch);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // this gesture detector allows as to click out side the keyboard to dismiss it.
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -33,11 +57,14 @@ class MyApp extends StatelessWidget {
       },
       child: MaterialApp(
         themeMode: ThemeMode.system,
+        // this is the theme of the app.
         darkTheme: ThemeData(
-          primarySwatch: Colors.cyan,
+          unselectedWidgetColor: Colors.white,
+          accentColor: Colors.black,
+          primarySwatch: createMaterialColor(Colors.white),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           highlightColor: Colors.white,
-          bottomAppBarColor: const Color(0xff162130),
+          bottomAppBarColor: const Color(0xff141414),
           textTheme: TextTheme(
               headline2: TextStyle(
                 fontSize: 15,
@@ -57,9 +84,13 @@ class MyApp extends StatelessWidget {
                   color: Color(0xff7589a2),
                   fontWeight: FontWeight.bold,
                   fontSize: 14)),
-          backgroundColor: const Color(0xff2c4260),
+          //backgroundColor: const Color(0xff2c4260),
+          backgroundColor: const Color(0xff121212),
         ),
         theme: ThemeData(
+            unselectedWidgetColor: Colors.black,
+            primarySwatch: createMaterialColor(Colors.black),
+            accentColor: Colors.white,
             highlightColor: Colors.black,
             bottomAppBarColor: Colors.white,
             textTheme: TextTheme(
@@ -97,8 +128,8 @@ class AppBase extends StatelessWidget {
       label: "Home",
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.search),
-      label: "Search",
+      icon: Icon(Icons.people),
+      label: "Friends",
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.transfer_within_a_station),
@@ -115,17 +146,14 @@ class AppBase extends StatelessWidget {
   ];
 
   // this will show in the top of every page.
-  final pageNames = ["Overview", "Search", "Transfer", "Stats", "Profile"];
+  final pageNames = ["Overview", "Friends", "Transfer", "Stats", "Profile"];
 
   @override
   Widget build(BuildContext context) {
     // _widgetOptions holds the pages
     final List<Widget> _widgetOptions = <Widget>[
       HomePage(),
-      Text(
-        'Index 2: search',
-        style: Theme.of(context).textTheme.headline2,
-      ),
+      FriendsPage(),
       TransferPage(),
       StatsPage(),
       UserPage(),
@@ -146,8 +174,7 @@ class AppBase extends StatelessWidget {
           centerTitle: false,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: (
-            index == 0
+          actions: (index == 0
               ? [
                   IconButton(
                       icon: Icon(
@@ -157,15 +184,15 @@ class AppBase extends StatelessWidget {
                       onPressed: () {})
                 ]
               : index == 4
-              ? [
-                  IconButton(
-                      icon: Icon(
-                        Icons.more_horiz,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                      onPressed: () {})
-                ]
-              : []),
+                  ? [
+                      IconButton(
+                          icon: Icon(
+                            Icons.more_horiz,
+                            color: Theme.of(context).highlightColor,
+                          ),
+                          onPressed: () {})
+                    ]
+                  : []),
         ),
         body: Center(
           child: _widgetOptions.elementAt(index),
