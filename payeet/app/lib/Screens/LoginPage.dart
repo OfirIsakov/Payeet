@@ -11,6 +11,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// [init] sets values to the globals 
+void init(BuildContext context) async {
+  context.read(Globals.selectedIndex).state = 0;
+  context.read(Globals.radioIndex).state = 1;
+  context.read(Globals.transfer_email).state = "";
+
+  Globals.client.getFriends();
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) {
+      return AppBase();
+    }),
+  );
+}
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -19,6 +33,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    void loginWithRefresh() async {
+      try {
+        await Globals.client.loginWithRefresh();
+
+        init(context);
+      } catch (e) {}
+    }
+
+    loginWithRefresh();
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
@@ -79,20 +103,10 @@ class _MyFormState extends State<MyForm> {
           setState(() {
             _loading = true;
           });
-          print(emailControler.text);
-          print(passwordControler.text);
           await Globals.client
               .login(emailControler.text, passwordControler.text);
-          context.read(Globals.selectedIndex).state = 0;
-          context.read(Globals.radioIndex).state = 1;
-          context.read(Globals.transfer_email).state = "";
-          await Globals.client.getUserInfo();
-          Globals.client.getFriends();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) {
-              return AppBase();
-            }),
-          );
+
+          init(context);
         } catch (e) {
           setState(() {
             _loading = false;
@@ -103,9 +117,6 @@ class _MyFormState extends State<MyForm> {
             backgroundColor: Colors.red,
           ));
         }
-        // If the form is valid, display a Snackbar.
-        // Scaffold.of(context)
-        //     .showSnackBar(SnackBar(content: Text('Processing Data')));
       }
     }
 

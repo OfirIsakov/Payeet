@@ -64,6 +64,7 @@ class _UserPageState extends State<UserPage> {
                           },
                           actionText: Text('logout'),
                           actionFunction: () async {
+                            Globals.client.secureStorage.deleteSecureData('refreshToken');
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) {
                                 return LoginPage();
