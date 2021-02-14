@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
+	"sort"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -152,7 +153,6 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 	return &pb.StatusResponse{}, nil
 }
 
-
 // SearchFriend gets a sub mail and returns a stream of mails
 func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
 	mails, err := s.userStore.GetMailsByStart(in.GetSearch())
@@ -269,3 +269,35 @@ func (s *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet
 	return nil
 }
 
+type ByBalance []User
+
+func (a ByBalance) Len() int           { return len(a) }
+func (a ByBalance) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByBalance) Less(i, j int) bool { return a[i].Balance < a[j].Balance }
+
+// GetTopUsers returns the 3 users with the most balance in the database.
+func (s *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequest) (*pb.TopUsersResponse, error) {
+
+	// // get the claims from ctx.
+	// claims, err := s.jwtManager.ExtractClaims(ctx)
+	// if err != nil {
+	// 	return nil, status.Errorf(codes.Internal, "")
+	// }
+
+	users, err := s.userStore.GetAllUsers()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "")
+	}
+
+	sort.Slice(users, func(i, j int) bool {
+		return users[i].Balance > users[j].Balance
+	})
+
+	respons := []*pb.UserInfoResponse{}
+
+	for i := 0; i < 3; i++ {
+		respons = append(respons, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, User_ID: users[i].Email})
+	}
+
+	return &pb.TopUsersResponse{Users: respons}, nil
+}

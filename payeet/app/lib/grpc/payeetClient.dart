@@ -27,6 +27,9 @@ class PayeetClient {
   String _firstName;
   String _lastName;
   List<String> _friends;
+
+  List<UserInfoResponse> _topUsers;
+
   String _userID;
 
   // ctor
@@ -42,6 +45,7 @@ class PayeetClient {
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
   List<String> get getCachedFriends => _friends;
+  List<UserInfoResponse> get getTopUsers => _topUsers;
   String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
@@ -146,6 +150,15 @@ class PayeetClient {
     List<GetFriendsResponse> d = await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
     _friends = d.map((e) => e.mail).toList();
   }
+
+
+  void fetchTopUsers() async {
+    final response = await _authenticatedClient
+        .getTopUsers(TopUsersRequest());
+
+    this._topUsers = response.users;
+  }
+
 }
 
 // implementing the ClientChannel to have an interceptor to set the authorization
