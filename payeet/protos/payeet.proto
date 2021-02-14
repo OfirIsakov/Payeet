@@ -92,6 +92,14 @@ message SearchFriendResponse{
     string Mail = 1;
 }
 
+message TopUsersResponse{
+    repeated UserInfoResponse users = 1;
+}
+
+message TopUsersRequest{
+
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
@@ -116,4 +124,6 @@ service payeet{
     rpc SearchFriend (SearchFriendRequest) returns (stream SearchFriendResponse);
 
     rpc GetFullSelfHistory (HistoryRequest) returns (stream HistoryResponse);
+
+    rpc GetTopUsers (TopUsersRequest) returns (TopUsersResponse);
 }
