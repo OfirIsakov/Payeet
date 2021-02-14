@@ -8,7 +8,10 @@ import 'dart:async';
 import 'protos/payeet.pb.dart';
 import 'protos/payeet.pbgrpc.dart';
 
+import '../secure_storage.dart';
+
 class PayeetClient {
+  final SecureStorage secureStorage = SecureStorage();
   final PayeetChannel channel;
 
   String _accessToken;
@@ -46,10 +49,39 @@ class PayeetClient {
 
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
+
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
         ..password = password);
+    } catch (e) {
+      rethrow; // cant login so throw the error
+    }
+
+    _accessToken = response.accessToken;
+    tokenExpiresOn = response.expiresOn;
+    _refreshToken = response.refreshToken;
+
+    await secureStorage.writeSecureData('refreshToken', _refreshToken);
+
+    channel.setAccessTokenMetadata(_accessToken);
+    _authenticatedClient =
+        payeetClient(channel); // create the authenticated client
+
+    await getUserInfo();
+
+    return response;
+  }
+
+  Future<LoginResponse> loginWithRefresh() async {
+    _refreshToken = await secureStorage.readSecureData('refreshToken');
+
+    LoginResponse response;
+
+
+    try {
+      response = await _unauthenticatedClient
+          .refreshToken(RefreshTokenRequest()..refreshToken = _refreshToken);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
@@ -142,11 +174,14 @@ class PayeetClient {
     return response;
   }
 
-  void getFriends() async{
-    List<GetFriendsResponse> d = await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
+  void getFriends() async {
+    List<GetFriendsResponse> d =
+        await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
     _friends = d.map((e) => e.mail).toList();
   }
 }
+
+
 
 // implementing the ClientChannel to have an interceptor to set the authorization
 // metadata header when each request is invoked
