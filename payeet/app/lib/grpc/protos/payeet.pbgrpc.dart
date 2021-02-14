@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.3
+// @dart = 2.7
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -154,6 +154,12 @@ class payeetClient extends $grpc.Client {
           ($0.HistoryRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.HistoryResponse.fromBuffer(value));
+  static final _$getTopUsers =
+      $grpc.ClientMethod<$0.TopUsersRequest, $0.TopUsersResponse>(
+          '/payeet.payeet/GetTopUsers',
+          ($0.TopUsersRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.TopUsersResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
       {$grpc.CallOptions options,
@@ -218,6 +224,12 @@ class payeetClient extends $grpc.Client {
     return $createStreamingCall(
         _$getFullSelfHistory, $async.Stream.fromIterable([request]),
         options: options);
+  }
+
+  $grpc.ResponseFuture<$0.TopUsersResponse> getTopUsers(
+      $0.TopUsersRequest request,
+      {$grpc.CallOptions options}) {
+    return $createUnaryCall(_$getTopUsers, request, options: options);
   }
 }
 
@@ -293,6 +305,13 @@ abstract class payeetServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.HistoryRequest.fromBuffer(value),
         ($0.HistoryResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.TopUsersRequest, $0.TopUsersResponse>(
+        'GetTopUsers',
+        getTopUsers_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.TopUsersRequest.fromBuffer(value),
+        ($0.TopUsersResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
@@ -342,6 +361,11 @@ abstract class payeetServiceBase extends $grpc.Service {
     yield* getFullSelfHistory(call, await request);
   }
 
+  $async.Future<$0.TopUsersResponse> getTopUsers_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.TopUsersRequest> request) async {
+    return getTopUsers(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(
@@ -360,4 +384,6 @@ abstract class payeetServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.SearchFriendRequest request);
   $async.Stream<$0.HistoryResponse> getFullSelfHistory(
       $grpc.ServiceCall call, $0.HistoryRequest request);
+  $async.Future<$0.TopUsersResponse> getTopUsers(
+      $grpc.ServiceCall call, $0.TopUsersRequest request);
 }

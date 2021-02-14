@@ -22,6 +22,7 @@ func accessibleRoles() map[string][]string {
 		path + "TransferBalance": {"user"},
 		path + "GetBalance":      {"user"},
 		path + "SearchFriend":    {"user"},
+		path + "GetTopUsers":     {"user"},
 	}
 
 }
