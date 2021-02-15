@@ -507,8 +507,9 @@ class _TransferPageState extends State<TransferPage> {
                                           title: Text(
                                             "${Globals.client.getCachedFriends[index]}\n",
                                           ),
+                                          
                                           subtitle: Text(
-                                            "${Globals.client.getCachedFriends[index]}@email.com",
+                                            "${Globals.client.getCachedFriends[index]}",
                                             style: TextStyle(
                                                 color: Theme.of(context)
                                                     .highlightColor),
@@ -954,7 +955,7 @@ class _MyFormState extends State<MyForm> {
                                 int.parse(amountControler.text);
                             setState(() {
                               context.read(Globals.transfer_email).state = "";
-
+                              
                               _loading = false;
                             });
                           } catch (e) {

@@ -17,7 +17,9 @@ void init(BuildContext context) async {
   context.read(Globals.radioIndex).state = 1;
   context.read(Globals.transfer_email).state = "";
 
-  Globals.client.getFriends();
+  await Globals.client.getFriends();
+  await Globals.client.fetchTopUsers();
+  await Globals.client.fetchFollowers();
   Navigator.of(context).pushReplacement(
     MaterialPageRoute(builder: (context) {
       return AppBase();
