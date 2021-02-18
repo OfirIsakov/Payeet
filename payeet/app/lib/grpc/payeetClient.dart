@@ -30,6 +30,7 @@ class PayeetClient {
   String _firstName;
   String _lastName;
   List<String> _friends;
+  List<String> _followers;
 
   List<UserInfoResponse> _topUsers;
 
@@ -48,6 +49,7 @@ class PayeetClient {
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
   List<String> get getCachedFriends => _friends;
+  List<String> get getCachedFollowers => _followers;
   List<UserInfoResponse> get getTopUsers => _topUsers;
   String get getCachedUserID => _userID;
 
@@ -81,7 +83,6 @@ class PayeetClient {
     _refreshToken = await secureStorage.readSecureData('refreshToken');
 
     LoginResponse response;
-
 
     try {
       response = await _unauthenticatedClient
@@ -178,23 +179,24 @@ class PayeetClient {
     return response;
   }
 
-  void getFriends() async {
+  Future<void> getFriends() async {
     List<GetFriendsResponse> d =
         await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
     _friends = d.map((e) => e.mail).toList();
   }
 
+  Future<void> fetchFollowers() async {
+    var d =
+        await _authenticatedClient.getFollowers(GetFollowersRequest()).toList();
+    _followers = d.map((e) => e.mail).toList();
+  }
 
-  void fetchTopUsers() async {
-    final response = await _authenticatedClient
-        .getTopUsers(TopUsersRequest());
+  Future<void> fetchTopUsers() async {
+    final response = await _authenticatedClient.getTopUsers(TopUsersRequest());
 
     this._topUsers = response.users;
   }
-
 }
-
-
 
 // implementing the ClientChannel to have an interceptor to set the authorization
 // metadata header when each request is invoked
