@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"regexp"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -113,12 +114,22 @@ func (store *MongoUserStore) Disconnect() error {
 	return nil
 }
 
+// formatUser turns the fields in the User struct to lower letters
+func formatUser(user *User) *User {
+
+	user.FirstName = strings.ToLower(user.FirstName)
+	user.LastName = strings.ToLower(user.LastName)
+	user.Email = strings.ToLower(user.Email)
+
+	return user
+}
+
 // AddUser adds a new user to the database.
 func (store *MongoUserStore) AddUser(user *User) error {
 
 	_, err := store.UsersCollection.InsertOne(
 		context.TODO(),
-		user.ToBson(),
+		formatUser(user).ToBson(),
 	)
 
 	if err != nil {
@@ -148,7 +159,7 @@ func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
 
 	result := &User{}
 
-	err := store.UsersCollection.FindOne(context.TODO(), bson.M{"Email": mail}).Decode(&result)
+	err := store.UsersCollection.FindOne(context.TODO(), bson.M{"Email": strings.ToLower(mail)}).Decode(&result)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
@@ -194,7 +205,7 @@ func (store *MongoUserStore) ChangeFieldValue(email string, fieldName string, va
 	_, err := store.UsersCollection.UpdateOne(
 		context.TODO(),
 		bson.D{
-			{Key: "Email", Value: email},
+			{Key: "Email", Value: strings.ToLower(email)},
 		},
 		bson.D{
 			{Key: "$set",
@@ -290,7 +301,7 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 
 // GetMailsByStart will get the emails of the users for a user by his search
 func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
-	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(search) + ".*@"}})
+	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(strings.ToLower(search)) + ".*@"}})
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
