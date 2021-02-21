@@ -53,6 +53,8 @@ type UserStore interface {
 
 	GetSenderHistory(mail string) ([]*Transaction, error)
 	GetReceiverHistory(mail string) ([]*Transaction, error)
+
+	Write(message []byte) (int, error) // we must implement an io.Writer function to log into mongo
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -62,11 +64,12 @@ type MongoUserStore struct { // change name to db wapper or something
 
 	TransactionsCollection *mongo.Collection
 	UsersCollection        *mongo.Collection
+	LogsCollection         *mongo.Collection
 	Client                 *mongo.Client
 }
 
 // NewMongoUserStore d
-func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionCollection string) *MongoUserStore {
+func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionCollection, LogsCollection string) *MongoUserStore {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(ConnectionString))
 	if err != nil {
@@ -76,6 +79,7 @@ func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionColl
 	return &MongoUserStore{
 		TransactionsCollection: client.Database(DBName).Collection(TransactionCollection),
 		UsersCollection:        client.Database(DBName).Collection(UserCollection),
+		LogsCollection:         client.Database(DBName).Collection(LogsCollection),
 		Client:                 client,
 	}
 }
@@ -372,4 +376,24 @@ func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
 	}
 
 	return followersMail, nil
+}
+
+// Write adds a log to the database in the logs collecitons
+func (store *MongoUserStore) Write(message []byte) (int, error) {
+	var info interface{}
+	err := bson.UnmarshalExtJSON(message, true, &info)
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = store.LogsCollection.InsertOne(
+		context.TODO(),
+		info,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return len(message), nil
 }
