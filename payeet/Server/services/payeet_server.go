@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
+	"sort"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -115,7 +116,7 @@ func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) 
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Friends: user.Friends, User_ID: user.Email}, nil
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
 }
 
 // AddFriend adds a friend to the user
@@ -164,13 +165,139 @@ func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet
 	}
 
 	return nil
+}
 
 // GetFullSelfHistory is a function that sends the full message history of the user in a stream
 func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
-	transfers, err := s.userStore.GetHistory(in.SenderMail)
-	for _, transfer := range transfers {
-		log.Println(transfer)
-		stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
 	}
-	return err
+
+	user, err := s.userStore.GetUserByEmail(claims.Email)
+	if err != nil {
+		return err
+	}
+
+	// check if the person wants their own history
+	if claims.Email != in.SenderMail {
+		// check if the person wants the history of someone they follow
+		isFriend := false
+
+		for _, friend := range user.Friends {
+			if in.SenderMail == friend {
+				isFriend = true
+				break
+			}
+		}
+
+		if !isFriend {
+			return status.Errorf(codes.Unauthenticated, "Sorry, you must follow the person to get their history!")
+		}
+	}
+
+	// get the full history of the user
+	senderTransfers, senderErr := s.userStore.GetSenderHistory(in.SenderMail)
+	receiverTransfers, receiverErr := s.userStore.GetReceiverHistory(in.SenderMail)
+
+	// if both of the functions gave an error return the first one
+	if senderErr != nil && receiverErr != nil {
+		return senderErr
+	}
+
+	// send the history of the functions that succeeded
+	if senderErr == nil {
+		for _, transfer := range senderTransfers {
+			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+		}
+	}
+	if receiverErr == nil {
+		for _, transfer := range receiverTransfers {
+			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
+		}
+	}
+	return nil
+}
+
+// GetFriends returns all the user's friends as a stream
+func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_GetFriendsServer) error {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return status.Errorf(codes.Internal, err.Error())
+	}
+
+	user, err := s.userStore.GetUserByEmail(claims.Email)
+	if err != nil {
+		return status.Errorf(codes.Internal, err.Error())
+	}
+
+	for _, friend := range user.Friends {
+		err = stream.Send(&pb.GetFriendsResponse{Mail: friend})
+		if err != nil {
+			return status.Errorf(codes.Internal, "Could not send friend")
+		}
+	}
+
+	return nil
+}
+
+// GetFollowers returns a stream of all the users that follow the requeseter
+func (s *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet_GetFollowersServer) error {
+
+	// get the claims from ctx.
+	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	followers, err := s.userStore.GetFollowers(claims.Email)
+	if err != nil {
+		return err
+	}
+
+	for _, follower := range followers {
+		err = stream.Send(&pb.GetFollowersResponse{Mail: follower})
+		if err != nil {
+			return status.Errorf(codes.Internal, "Error while trying to send the stream message")
+		}
+	}
+
+	return nil
+}
+
+type ByBalance []User
+
+func (a ByBalance) Len() int           { return len(a) }
+func (a ByBalance) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByBalance) Less(i, j int) bool { return a[i].Balance < a[j].Balance }
+
+// GetTopUsers returns the 3 users with the most balance in the database.
+func (s *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequest) (*pb.TopUsersResponse, error) {
+
+	// // get the claims from ctx.
+	// claims, err := s.jwtManager.ExtractClaims(ctx)
+	// if err != nil {
+	// 	return nil, status.Errorf(codes.Internal, "")
+	// }
+
+	users, err := s.userStore.GetAllUsers()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "")
+	}
+
+	sort.Slice(users, func(i, j int) bool {
+		return users[i].Balance > users[j].Balance
+	})
+
+	respons := []*pb.UserInfoResponse{}
+
+	for i := 0; i < 3; i++ {
+		respons = append(respons, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, User_ID: users[i].Email})
+	}
+
+	return &pb.TopUsersResponse{Users: respons}, nil
 }

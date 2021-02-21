@@ -11,6 +11,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -21,8 +22,17 @@ func accessibleRoles() map[string][]string {
 		path + "TransferBalance": {"user"},
 		path + "GetBalance":      {"user"},
 		path + "SearchFriend":    {"user"},
+		path + "GetTopUsers":     {"user"},
 	}
 
+}
+
+// init is invoked before main()
+func init() {
+	// loads values from .env into the system
+	if err := godotenv.Load("config.env"); err != nil {
+		log.Warning("No .env file found")
+	}
 }
 
 func main() {
@@ -56,8 +66,7 @@ func main() {
 	reflection.Register(srv)
 
 	log.Infof("Starting server on port [%s]", config.Port)
-
-	lis, err := net.Listen("tcp", config.Port)
+	lis, err := net.Listen("tcp", ":"+config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}

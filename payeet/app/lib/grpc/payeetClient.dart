@@ -8,7 +8,10 @@ import 'dart:async';
 import 'protos/payeet.pb.dart';
 import 'protos/payeet.pbgrpc.dart';
 
+import '../secure_storage.dart';
+
 class PayeetClient {
+  final SecureStorage secureStorage = SecureStorage();
   final PayeetChannel channel;
 
   String _accessToken;
@@ -18,7 +21,8 @@ class PayeetClient {
   payeet_authClient _unauthenticatedClient;
   payeetClient _authenticatedClient;
 
-  bool _cachedBalance; // this is true when the client class has cached the user's balance
+  bool
+      _cachedBalance; // this is true when the client class has cached the user's balance
   String _balance;
 
   bool
@@ -26,6 +30,10 @@ class PayeetClient {
   String _firstName;
   String _lastName;
   List<String> _friends;
+  List<String> _followers;
+
+  List<UserInfoResponse> _topUsers;
+
   String _userID;
 
   // ctor
@@ -41,14 +49,44 @@ class PayeetClient {
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
   List<String> get getCachedFriends => _friends;
+  List<String> get getCachedFollowers => _followers;
+  List<UserInfoResponse> get getTopUsers => _topUsers;
   String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
+
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
         ..password = password);
+    } catch (e) {
+      rethrow; // cant login so throw the error
+    }
+
+    _accessToken = response.accessToken;
+    tokenExpiresOn = response.expiresOn;
+    _refreshToken = response.refreshToken;
+
+    await secureStorage.writeSecureData('refreshToken', _refreshToken);
+
+    channel.setAccessTokenMetadata(_accessToken);
+    _authenticatedClient =
+        payeetClient(channel); // create the authenticated client
+
+    await getUserInfo();
+
+    return response;
+  }
+
+  Future<LoginResponse> loginWithRefresh() async {
+    _refreshToken = await secureStorage.readSecureData('refreshToken');
+
+    LoginResponse response;
+
+    try {
+      response = await _unauthenticatedClient
+          .refreshToken(RefreshTokenRequest()..refreshToken = _refreshToken);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
@@ -80,9 +118,8 @@ class PayeetClient {
   }
 
   ResponseStream<HistoryResponse> getTransferHistory(String mail) {
-    final response = _authenticatedClient.getFullSelfHistory(HistoryRequest()
-          ..senderMail = mail
-        );
+    final response = _authenticatedClient
+        .getFullSelfHistory(HistoryRequest()..senderMail = mail);
 
     return response;
   }
@@ -114,7 +151,6 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _friends = response.friends;
     _userID = response.userID;
 
     return response;
@@ -128,19 +164,37 @@ class PayeetClient {
 
     return response;
   }
+
   Future<StatusResponse> addFriend(String mail) async {
     final response =
-        await _authenticatedClient.addFriend(AddFriendRequest()
-          ..mail = mail);
+        await _authenticatedClient.addFriend(AddFriendRequest()..mail = mail);
 
     return response;
   }
+
   Future<StatusResponse> removeFriend(String mail) async {
-    final response =
-        await _authenticatedClient.removeFriend(RemoveFriendRequest()
-          ..mail = mail);
+    final response = await _authenticatedClient
+        .removeFriend(RemoveFriendRequest()..mail = mail);
 
     return response;
+  }
+
+  Future<void> getFriends() async {
+    List<GetFriendsResponse> d =
+        await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
+    _friends = d.map((e) => e.mail).toList();
+  }
+
+  Future<void> fetchFollowers() async {
+    var d =
+        await _authenticatedClient.getFollowers(GetFollowersRequest()).toList();
+    _followers = d.map((e) => e.mail).toList();
+  }
+
+  Future<void> fetchTopUsers() async {
+    final response = await _authenticatedClient.getTopUsers(TopUsersRequest());
+
+    this._topUsers = response.users;
   }
 }
 

@@ -1,12 +1,9 @@
 package util
 
 import (
-	"reflect"
-	"strings"
+	"os"
 
 	log "github.com/sirupsen/logrus"
-
-	"github.com/spf13/viper"
 )
 
 // Config holds the config data
@@ -22,39 +19,19 @@ type Config struct {
 	TransactionCollection string `mapstructure:"TRANSACTION_COLLECTION"`
 }
 
-func BindEnvs(iface interface{}, parts ...string) {
-	ifv := reflect.ValueOf(iface)
-	ift := reflect.TypeOf(iface)
-	for i := 0; i < ift.NumField(); i++ {
-		v := ifv.Field(i)
-		t := ift.Field(i)
-		tv, ok := t.Tag.Lookup("mapstructure")
-		if !ok {
-			continue
-		}
-		switch v.Kind() {
-		case reflect.Struct:
-			BindEnvs(v.Interface(), append(parts, tv)...)
-		default:
-			viper.BindEnv(strings.Join(append(parts, tv), "."))
-		}
-	}
-}
-
 // LoadConfig is used to load the config from the config file.
 func LoadConfig(path string) (c Config, err error) {
 	log.Infof("Loading config...")
 
-	viper.AddConfigPath(path)
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	BindEnvs(c)
-	if viper.ReadInConfig() != nil {
-		return
-	}
-	if viper.Unmarshal(&c) != nil {
-		return
-	}
+	c.Port = os.Getenv("PORT")
+	c.AccessTokenKey = os.Getenv("ACCESS_TOKEN_KEY")
+	c.RefreshTokenKey = os.Getenv("REFRESH_TOKEN_KEY")
+	c.AccessTokenDuration = os.Getenv("ACCESS_TOKEN_DURATION")
+	c.RefreshTokenDuration = os.Getenv("REFRESH_TOKEN_DURATION")
+	c.ConnectionString = os.Getenv("CONNECTION_STRING")
+	c.DBName = os.Getenv("DB_NAME")
+	c.UserCollection = os.Getenv("USER_COLLECTION")
+	c.TransactionCollection = os.Getenv("TRANSACTION_COLLECTION")
 
 	log.Infof("Done! ✅")
 	return
