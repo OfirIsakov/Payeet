@@ -33,8 +33,8 @@ class _StatsPageState extends State<StatsPage> {
   @override
   void initState() {
     super.initState();
-
-    if (Globals.transHistory.length == 0) {
+    
+    if (Globals.transHistory.length == 0 || streamController == null) {
       streamController = StreamController.broadcast();
       streamController.stream.listen((msg) {
         setState(() {
@@ -89,6 +89,10 @@ class _StatsPageState extends State<StatsPage> {
       return null;
     }
 
+    bool income = history[index].receiverMail == Globals.client.getCachedUserID;
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool darkModeOn = brightness == Brightness.dark;
+
     return Card(
         color: Theme.of(context).backgroundColor,
         child: ListTile(
@@ -97,15 +101,17 @@ class _StatsPageState extends State<StatsPage> {
           // ),
           dense: false,
           enabled: true,
-          leading: Icon(
+          leading: income ? Icon(
             CupertinoIcons.money_dollar_circle,
             color: Theme.of(context).highlightColor,
             size: 40,
-          ),
+          ) : SizedBox(child: Image(image: darkModeOn ? AssetImage('assets/images/inoutwhite.png') :AssetImage('assets/images/inoutblack.png') ),height: 40,width: 40,),
           title: Text(
-            "To ${history[index].receiverMail}\n",
+            income ? "From ${history[index].senderMail}\n" : "To ${history[index].receiverMail}\n",
             style: Theme.of(context).textTheme.headline2,
           ),
+
+
           subtitle: Text(
             "${readTimestamp(history[index].time.toInt())}",
             style: TextStyle(color: Theme.of(context).highlightColor),

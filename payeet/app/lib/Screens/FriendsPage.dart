@@ -32,9 +32,6 @@ class _FriendsPageState extends State<FriendsPage> {
         fontSize: 20.0,
         color: Theme.of(context).highlightColor);
 
-      Globals.client.fetchTopUsers();
-
-    
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
@@ -172,10 +169,14 @@ class _FriendsPageState extends State<FriendsPage> {
                           enabled: true,
                           title: Text(
                             "${Globals.client.getCachedFriends[index]}\n",
+                            // style:
+                            // TextStyle(color: Theme.of(context).highlightColor),
                           ),
                           subtitle: Text(
-                              "${Globals.client.getCachedFriends[index]}@email.com"),
-                        trailing: Icon(Icons.transfer_within_a_station),
+                              "${Globals.client.getCachedFriends[index]}",style:
+                            TextStyle(color: Theme.of(context).highlightColor),),
+                              
+                        trailing: Icon(Icons.transfer_within_a_station, color: Theme.of(context).highlightColor,),
                         ))),
                 separatorBuilder: (_, index) => SizedBox(
                   height: 30,
