@@ -4,7 +4,7 @@ import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
+import 'dart:async';
 import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
