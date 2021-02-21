@@ -2,12 +2,16 @@ package services
 
 import (
 	"context"
+	"net"
+	"regexp"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
 
+	"github.com/go-passwd/validator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -113,12 +117,22 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 
 // Register creates a new user.
 func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
-	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
 
-	// add checks for password requirements
+	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
 
 	if err != nil {
 		return nil, err
+	}
+
+	passwordValidator := validator.New(validator.MinLength(5, status.Errorf(codes.InvalidArgument, "password is too short")), validator.ContainsAtLeast("~<=>+-@!#$%^&*", 1, status.Errorf(codes.InvalidArgument, "password must contains at least 1 special character")), validator.CommonPassword(nil), validator.Similarity([]string{req.GetFirstName(), req.GetLastName(), req.GetMail()}, nil, nil))
+	err = passwordValidator.Validate(req.GetPassword())
+	if err != nil {
+		//panic(err)
+		return nil, err
+	}
+
+	if !isEmailValid(req.GetMail()) {
+		return nil, status.Errorf(codes.InvalidArgument, "not a valid email")
 	}
 
 	err = server.userStore.AddUser(user)
@@ -127,4 +141,23 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 	}
 
 	return &pb.StatusResponse{}, nil
+}
+
+// isEmailValid checks if the email provided passes the required structure
+// and length test. It also checks the domain has a valid MX record.
+func isEmailValid(e string) bool {
+	var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+	if len(e) < 3 && len(e) > 254 {
+		return false
+	}
+	if !emailRegex.MatchString(e) {
+		return false
+	}
+	parts := strings.Split(e, "@")
+	mx, err := net.LookupMX(parts[1])
+	if err != nil || len(mx) == 0 {
+		return false
+	}
+	return true
 }
