@@ -4,12 +4,33 @@ import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
+import 'dart:async';
 import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// [init] sets values to the globals 
+void init(BuildContext context) async {
+  context.read(Globals.selectedIndex).state = 0;
+  context.read(Globals.radioIndex).state = 1;
+  context.read(Globals.transfer_email).state = "";
+
+  Timer.periodic(Duration(minutes: 5), (timer) async {
+    print('im refreshing');
+    await Globals.client.loginWithRefresh();
+  });
+  await Globals.client.getFriends();
+  await Globals.client.fetchTopUsers();
+  await Globals.client.fetchFollowers();
+
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) {
+      return AppBase();
+    }),
+  );
+}
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,6 +40,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    void loginWithRefresh() async {
+      try {
+        await Globals.client.loginWithRefresh();
+
+        init(context);
+      } catch (e) {}
+    }
+
+    loginWithRefresh();
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
@@ -73,6 +104,29 @@ class _MyFormState extends State<MyForm> {
         fontSize: 20.0,
         color: Theme.of(context).highlightColor);
 
+    void login() async {
+      if (_formKey.currentState.validate()) {
+        try {
+          setState(() {
+            _loading = true;
+          });
+          await Globals.client
+              .login(emailControler.text, passwordControler.text);
+
+          init(context);
+        } catch (e) {
+          setState(() {
+            _loading = false;
+          });
+
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('[${e.codeName}] ${e.message}'),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    }
+
     return Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -82,6 +136,8 @@ class _MyFormState extends State<MyForm> {
               TextFormField(
                 controller: emailControler,
                 style: style,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(32.0),
@@ -105,6 +161,10 @@ class _MyFormState extends State<MyForm> {
               SizedBox(height: 25.0),
 
               TextFormField(
+                textInputAction: TextInputAction.send,
+                onFieldSubmitted: (s) {
+                  login();
+                },
                 controller: passwordControler,
                 style: style,
                 obscureText: true,
@@ -154,36 +214,7 @@ class _MyFormState extends State<MyForm> {
                     minWidth: MediaQuery.of(context).size.width,
                     padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        try {
-                          setState(() {
-                            _loading = true;
-                          });
-                          print(emailControler.text);
-                          print(passwordControler.text);
-                          await Globals.client.login(
-                              emailControler.text, passwordControler.text);
-                          context.read(Globals.selectedIndex).state = 0;
-                          await Globals.client.getUserInfo();
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) {
-                              return AppBase();
-                            }),
-                          );
-                        } catch (e) {
-                          setState(() {
-                            _loading = false;
-                          });
-
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('[${e.codeName}] ${e.message}'),
-                            backgroundColor: Colors.red,
-                          ));
-                        }
-                        // If the form is valid, display a Snackbar.
-                        // Scaffold.of(context)
-                        //     .showSnackBar(SnackBar(content: Text('Processing Data')));
-                      }
+                      login();
                     },
                     child: !_loading
                         ? Text("Login",
@@ -196,27 +227,27 @@ class _MyFormState extends State<MyForm> {
                   ),
                 ),
               ),
-                      RichText(
-                        text: TextSpan(
-                          style: style,
-                          children: <TextSpan>[
-                            TextSpan(text: 'Not registered? '),
-                            TextSpan(
-                                text: 'Register',
-                                style: style.copyWith(
-                                    color: Colors.blue[400],
-                                    fontWeight: FontWeight.bold),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => RegisterPage()),
-                                    );
-                                  }),
-                          ],
-                        ),
-                      )
+              RichText(
+                text: TextSpan(
+                  style: style,
+                  children: <TextSpan>[
+                    TextSpan(text: 'Not registered? '),
+                    TextSpan(
+                        text: 'Register',
+                        style: style.copyWith(
+                            color: Colors.blue[400],
+                            fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterPage()),
+                            );
+                          }),
+                  ],
+                ),
+              )
             ],
           ),
         ));

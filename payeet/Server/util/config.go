@@ -1,9 +1,9 @@
 package util
 
 import (
-	log "github.com/sirupsen/logrus"
+	"os"
 
-	"github.com/spf13/viper"
+	log "github.com/sirupsen/logrus"
 )
 
 // Config holds the config data
@@ -20,19 +20,19 @@ type Config struct {
 }
 
 // LoadConfig is used to load the config from the config file.
-func LoadConfig(path string) (config Config, err error) {
+func LoadConfig(path string) (c Config, err error) {
 	log.Infof("Loading config...")
-	viper.AddConfigPath(path)
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	viper.AutomaticEnv()
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		return
-	}
+	c.Port = os.Getenv("PORT")
+	c.AccessTokenKey = os.Getenv("ACCESS_TOKEN_KEY")
+	c.RefreshTokenKey = os.Getenv("REFRESH_TOKEN_KEY")
+	c.AccessTokenDuration = os.Getenv("ACCESS_TOKEN_DURATION")
+	c.RefreshTokenDuration = os.Getenv("REFRESH_TOKEN_DURATION")
+	c.ConnectionString = os.Getenv("CONNECTION_STRING")
+	c.DBName = os.Getenv("DB_NAME")
+	c.UserCollection = os.Getenv("USER_COLLECTION")
+	c.TransactionCollection = os.Getenv("TRANSACTION_COLLECTION")
 
-	err = viper.Unmarshal(&config)
 	log.Infof("Done! ✅")
 	return
 

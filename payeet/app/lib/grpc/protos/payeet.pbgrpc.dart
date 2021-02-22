@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.3
+// @dart = 2.7
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -130,6 +130,36 @@ class payeetClient extends $grpc.Client {
           '/payeet.payeet/RemoveFriend',
           ($0.RemoveFriendRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
+  static final _$getFollowers =
+      $grpc.ClientMethod<$0.GetFollowersRequest, $0.GetFollowersResponse>(
+          '/payeet.payeet/GetFollowers',
+          ($0.GetFollowersRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.GetFollowersResponse.fromBuffer(value));
+  static final _$getFriends =
+      $grpc.ClientMethod<$0.GetFriendsRequest, $0.GetFriendsResponse>(
+          '/payeet.payeet/GetFriends',
+          ($0.GetFriendsRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.GetFriendsResponse.fromBuffer(value));
+  static final _$searchFriend =
+      $grpc.ClientMethod<$0.SearchFriendRequest, $0.SearchFriendResponse>(
+          '/payeet.payeet/SearchFriend',
+          ($0.SearchFriendRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.SearchFriendResponse.fromBuffer(value));
+  static final _$getFullSelfHistory =
+      $grpc.ClientMethod<$0.HistoryRequest, $0.HistoryResponse>(
+          '/payeet.payeet/GetFullSelfHistory',
+          ($0.HistoryRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.HistoryResponse.fromBuffer(value));
+  static final _$getTopUsers =
+      $grpc.ClientMethod<$0.TopUsersRequest, $0.TopUsersResponse>(
+          '/payeet.payeet/GetTopUsers',
+          ($0.TopUsersRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.TopUsersResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
       {$grpc.CallOptions options,
@@ -162,6 +192,44 @@ class payeetClient extends $grpc.Client {
       $0.RemoveFriendRequest request,
       {$grpc.CallOptions options}) {
     return $createUnaryCall(_$removeFriend, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.GetFollowersResponse> getFollowers(
+      $0.GetFollowersRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$getFollowers, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$0.GetFriendsResponse> getFriends(
+      $0.GetFriendsRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$getFriends, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$0.SearchFriendResponse> searchFriend(
+      $0.SearchFriendRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$searchFriend, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$0.HistoryResponse> getFullSelfHistory(
+      $0.HistoryRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$getFullSelfHistory, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseFuture<$0.TopUsersResponse> getTopUsers(
+      $0.TopUsersRequest request,
+      {$grpc.CallOptions options}) {
+    return $createUnaryCall(_$getTopUsers, request, options: options);
   }
 }
 
@@ -205,6 +273,45 @@ abstract class payeetServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.RemoveFriendRequest.fromBuffer(value),
         ($0.StatusResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.GetFollowersRequest, $0.GetFollowersResponse>(
+            'GetFollowers',
+            getFollowers_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.GetFollowersRequest.fromBuffer(value),
+            ($0.GetFollowersResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetFriendsRequest, $0.GetFriendsResponse>(
+        'GetFriends',
+        getFriends_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.GetFriendsRequest.fromBuffer(value),
+        ($0.GetFriendsResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.SearchFriendRequest, $0.SearchFriendResponse>(
+            'SearchFriend',
+            searchFriend_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.SearchFriendRequest.fromBuffer(value),
+            ($0.SearchFriendResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.HistoryRequest, $0.HistoryResponse>(
+        'GetFullSelfHistory',
+        getFullSelfHistory_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.HistoryRequest.fromBuffer(value),
+        ($0.HistoryResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.TopUsersRequest, $0.TopUsersResponse>(
+        'GetTopUsers',
+        getTopUsers_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.TopUsersRequest.fromBuffer(value),
+        ($0.TopUsersResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
@@ -232,6 +339,33 @@ abstract class payeetServiceBase extends $grpc.Service {
     return removeFriend(call, await request);
   }
 
+  $async.Stream<$0.GetFollowersResponse> getFollowers_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.GetFollowersRequest> request) async* {
+    yield* getFollowers(call, await request);
+  }
+
+  $async.Stream<$0.GetFriendsResponse> getFriends_Pre($grpc.ServiceCall call,
+      $async.Future<$0.GetFriendsRequest> request) async* {
+    yield* getFriends(call, await request);
+  }
+
+  $async.Stream<$0.SearchFriendResponse> searchFriend_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.SearchFriendRequest> request) async* {
+    yield* searchFriend(call, await request);
+  }
+
+  $async.Stream<$0.HistoryResponse> getFullSelfHistory_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.HistoryRequest> request) async* {
+    yield* getFullSelfHistory(call, await request);
+  }
+
+  $async.Future<$0.TopUsersResponse> getTopUsers_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.TopUsersRequest> request) async {
+    return getTopUsers(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(
@@ -242,4 +376,14 @@ abstract class payeetServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.AddFriendRequest request);
   $async.Future<$0.StatusResponse> removeFriend(
       $grpc.ServiceCall call, $0.RemoveFriendRequest request);
+  $async.Stream<$0.GetFollowersResponse> getFollowers(
+      $grpc.ServiceCall call, $0.GetFollowersRequest request);
+  $async.Stream<$0.GetFriendsResponse> getFriends(
+      $grpc.ServiceCall call, $0.GetFriendsRequest request);
+  $async.Stream<$0.SearchFriendResponse> searchFriend(
+      $grpc.ServiceCall call, $0.SearchFriendRequest request);
+  $async.Stream<$0.HistoryResponse> getFullSelfHistory(
+      $grpc.ServiceCall call, $0.HistoryRequest request);
+  $async.Future<$0.TopUsersResponse> getTopUsers(
+      $grpc.ServiceCall call, $0.TopUsersRequest request);
 }

@@ -24,9 +24,15 @@ message TransferRequest{
     int32 Amount = 2;
 }
 
-message historyRequest{
-    int32 Index = 1;
-    string SenderID = 2;
+message HistoryRequest{
+    string SenderMail = 1;
+}
+
+message HistoryResponse{
+    string SenderMail = 1;
+    string ReceiverMail = 2;
+    int32 Amount = 3;
+    int64 Time = 4;
 }
 
 message RefreshTokenRequest{
@@ -53,7 +59,6 @@ message UserInfoRequest{
 message UserInfoResponse{
     string FirstName = 1;
     string LastName = 2;
-    repeated string Friends = 3;
     string User_ID = 4;
 }
 
@@ -63,6 +68,36 @@ message AddFriendRequest{
 
 message RemoveFriendRequest{
     string Mail = 1;
+}
+
+message GetFollowersRequest{
+}
+
+message GetFollowersResponse{
+    string Mail = 1;
+}
+
+message GetFriendsRequest{
+}
+
+message GetFriendsResponse{
+    string Mail = 1;
+}
+
+message SearchFriendRequest{
+    string search = 1;
+}
+
+message SearchFriendResponse{
+    string Mail = 1;
+}
+
+message TopUsersResponse{
+    repeated UserInfoResponse users = 1;
+}
+
+message TopUsersRequest{
+
 }
 
 service payeet_auth{
@@ -81,4 +116,14 @@ service payeet{
 
     rpc AddFriend (AddFriendRequest) returns (StatusResponse);
     rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
+
+    rpc GetFollowers (GetFollowersRequest) returns (stream GetFollowersResponse);
+    
+    rpc GetFriends (GetFriendsRequest) returns (stream GetFriendsResponse);
+    
+    rpc SearchFriend (SearchFriendRequest) returns (stream SearchFriendResponse);
+
+    rpc GetFullSelfHistory (HistoryRequest) returns (stream HistoryResponse);
+
+    rpc GetTopUsers (TopUsersRequest) returns (TopUsersResponse);
 }
