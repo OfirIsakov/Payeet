@@ -83,6 +83,7 @@ class _MyFormState extends State<MyForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextFormField(
+                        autocorrect: false,
                         controller: firstNameController,
                         style: style,
                         decoration: InputDecoration(
@@ -109,6 +110,7 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        autocorrect: false,
                         controller: lastNameController,
                         style: style,
                         decoration: InputDecoration(
@@ -135,6 +137,7 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        autocorrect: false,
                         controller: emailController,
                         style: style,
                         decoration: InputDecoration(
@@ -161,6 +164,7 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        autocorrect: false,
                         controller: confirmEmailController,
                         style: style,
                         decoration: InputDecoration(
@@ -191,6 +195,7 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        autocorrect: false,
                         controller: passwordController,
                         style: style,
                         obscureText: true,
@@ -218,6 +223,7 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        autocorrect: false,
                         controller: confirmPasswordController,
                         style: style,
                         obscureText: true,
