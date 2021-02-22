@@ -265,6 +265,28 @@ class _MyFormState extends State<MyForm> {
                           return null;
                         },
                       ),
+                      SizedBox(height: 10.0),
+                      Center(
+                        child: Card(
+                          color: Theme.of(context).backgroundColor,
+                          shadowColor: Theme.of(context).highlightColor,
+                          elevation: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RichText(
+                              text: TextSpan(
+                                style: style.copyWith(fontSize: 15),
+                                children: <TextSpan>[
+                                  TextSpan(text: 'Password Requirements:\n', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                  TextSpan(text: '∙ minumum length of 5 characters\n'),
+                                  TextSpan(text: '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
+                                  
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: Material(
