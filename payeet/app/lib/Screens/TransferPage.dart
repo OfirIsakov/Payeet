@@ -1,5 +1,4 @@
-import 'dart:ffi';
-
+import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Payeet/globals.dart';
@@ -7,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:Payeet/UI_Elements/confirm.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:Payeet/grpc/protos/payeet.pbgrpc.dart';
 
 class TransferPage extends StatefulWidget {
   @override
@@ -127,7 +128,7 @@ class _TransferPageState extends State<TransferPage> {
                                 });
                               },
                               child: Text(
-                                "New User",
+                                "Add Friend",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     color: Theme.of(context).highlightColor,
@@ -169,122 +170,7 @@ class _TransferPageState extends State<TransferPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 36, left: 36, right: 36),
                 child: index == 0
-                    ? Column(
-                        children: [
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  controller: emailControler,
-                                  style: style,
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(32.0),
-                                        borderSide: BorderSide(
-                                            color: Colors.grey, width: 1.0),
-                                      ),
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          20.0, 15.0, 20.0, 15.0),
-                                      hintText: "Email",
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0))),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please enter email.';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                SizedBox(height: 5.0),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0),
-                                  child: Material(
-                                    elevation: 5,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    color: Theme.of(context).highlightColor,
-                                    child: MaterialButton(
-                                      minWidth:
-                                          MediaQuery.of(context).size.width,
-                                      padding: EdgeInsets.fromLTRB(
-                                          20.0, 15.0, 20.0, 15.0),
-                                      onPressed: () async {
-                                        if (_formKey.currentState.validate()) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (_) => ConfirmDialog(
-                                              title:
-                                                  'Add ${emailControler.text}?',
-                                              cancelFunction: () {
-                                                Navigator.of(context).pop();
-                                                return false;
-                                              },
-                                              actionText: Text('Approve'),
-                                              actionFunction: () async {
-                                                try {
-                                                  setState(() {
-                                                    _loading = true;
-                                                  });
-
-                                                  await Globals.client
-                                                      .addFriend(
-                                                          emailControler.text);
-                                                  await Globals.client
-                                                      .getUserInfo();
-
-                                                  Scaffold.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        'Added successfully'),
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                  ));
-
-                                                  setState(() {
-                                                    _loading = false;
-                                                  });
-                                                } catch (e) {
-                                                  setState(() {
-                                                    _loading = false;
-                                                  });
-                                                  Scaffold.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        '[${e.codeName}] ${e.message}'),
-                                                    backgroundColor: Colors.red,
-                                                  ));
-                                                }
-
-                                                Navigator.of(context).pop();
-                                                return true;
-                                              },
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: !_loading
-                                          ? Text("Add",
-                                              textAlign: TextAlign.center,
-                                              style: style.copyWith(
-                                                  color: Theme.of(context)
-                                                      .accentColor,
-                                                  fontWeight: FontWeight.bold))
-                                          : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-                                          CupertinoActivityIndicator(),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
+                    ? LimitedBox(maxHeight: 400, child: SearchFriend())
                     : LimitedBox(
                         maxHeight: 105,
                         child: showCubes
@@ -507,7 +393,6 @@ class _TransferPageState extends State<TransferPage> {
                                           title: Text(
                                             "${Globals.client.getCachedFriends[index]}\n",
                                           ),
-                                          
                                           subtitle: Text(
                                             "${Globals.client.getCachedFriends[index]}",
                                             style: TextStyle(
@@ -528,17 +413,19 @@ class _TransferPageState extends State<TransferPage> {
 
               //Expanded(flex: 1, child: Container()),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 36.0, right: 36.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      MyForm(
-                        emailNode: _nodeText1,
-                        amountNode: _nodeText2,
-                      ),
-                    ]),
-              ),
+              index == 1
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 36.0, right: 36.0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            MyForm(
+                              emailNode: _nodeText1,
+                              amountNode: _nodeText2,
+                            ),
+                          ]),
+                    )
+                  : Container(),
             ],
           ),
 
@@ -548,250 +435,6 @@ class _TransferPageState extends State<TransferPage> {
     );
   }
 }
-
-// class MyForm extends StatefulWidget {
-
-//   const MyForm({
-
-//     Key key,
-//     this.emailNode,
-//     this.amountNode,
-//   }) : super(key: key);
-
-//   final FocusNode emailNode;
-//   final FocusNode amountNode;
-
-//   @override
-//   _MyFormState createState() => _MyFormState();
-// }
-
-// class _MyFormState extends State<MyForm> {
-//   final emailControler = TextEditingController();
-//   final amountControler = TextEditingController();
-
-//   final _focusNodeEmail = FocusNode();
-//   final _focusNodeAmount = FocusNode();
-
-//   @override
-//   void dispose() {
-//     // Clean up the controller when the widget is disposed.
-//     emailControler.dispose();
-//     amountControler.dispose();
-//     super.dispose();
-//   }
-
-//   bool isNumeric(String s) {
-//     if (s == null) {
-//       return false;
-//     }
-//     return double.tryParse(s) != null;
-//   }
-
-//   final _formKey = GlobalKey<FormState>();
-//   bool _loading = false;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     TextStyle style = TextStyle(
-//         fontFamily: 'Montserrat',
-//         fontSize: 20.0,
-//         color: Theme.of(context).highlightColor);
-//     emailControler.text = context.read(Globals.transfer_email).state;
-//     return Form(
-//       key: _formKey,
-//       child: KeyboardActions(
-//         tapOutsideToDismiss: true,
-//         config: KeyboardActionsConfig(
-//           keyboardSeparatorColor: Colors.purple,
-//           actions: [
-//             KeyboardActionsItem(
-//               focusNode: _focusNodeEmail,
-//             ),
-//             KeyboardActionsItem(
-//               focusNode: _focusNodeAmount,
-//             ),
-//           ],
-//         ),
-//         child: ListView(
-//           children: [
-//             TextField(
-//               focusNode: _focusNodeEmail,
-//               decoration: InputDecoration(
-//                 labelText: "Product Name",
-//               ),
-//             ),
-//             // TextFormField(
-//             //   focusNode: _focusNodeEmail,
-//             //   textInputAction: TextInputAction.next,
-//             //   keyboardType: TextInputType.emailAddress,
-//             //   controller: emailControler,
-//             //   style: style,
-//             //   decoration: InputDecoration(
-//             //       enabledBorder: OutlineInputBorder(
-//             //         borderRadius: BorderRadius.circular(32.0),
-//             //         borderSide: BorderSide(color: Colors.grey, width: 1.0),
-//             //       ),
-//             //       contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-//             //       hintText: "Email",
-//             //       hintStyle: TextStyle(color: Colors.grey),
-//             //       border: OutlineInputBorder(
-//             //           borderRadius: BorderRadius.circular(32.0))),
-//             //   validator: (value) {
-//             //     if (value.isEmpty) {
-//             //       return 'Please enter the recipient email.';
-//             //     }
-//             //     return null;
-//             //   },
-//             // ),
-
-//             // //SizedBox(height: 25.0),
-
-//             // TextFormField(
-//             //   focusNode: _focusNodeAmount,
-//             //   textInputAction: TextInputAction.continueAction,
-//             //   keyboardType: TextInputType.number,
-//             //   controller: amountControler,
-//             //   style: style,
-//             //   decoration: InputDecoration(
-//             //       enabledBorder: OutlineInputBorder(
-//             //         borderRadius: BorderRadius.circular(32.0),
-//             //         borderSide: BorderSide(color: Colors.grey, width: 1.0),
-//             //       ),
-//             //       contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-//             //       hintText: "Amount",
-//             //       hintStyle: TextStyle(color: Colors.grey),
-//             //       border: OutlineInputBorder(
-//             //           borderRadius: BorderRadius.circular(32.0))),
-//             //   validator: (value) {
-//             //     if (value.isEmpty) {
-//             //       return 'Please enter the amount you would like to transfer';
-//             //     }
-
-//             //     if (!isNumeric(value)) {
-//             //       return 'Please enter a number';
-//             //     }
-
-//             //     if (num.parse(value) < 0) {
-//             //       return 'Amount must be above 0';
-//             //     }
-
-//             //     return null;
-//             //   },
-//             // ),
-
-//             // Padding(
-//             //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-//             //   child: ElevatedButton(
-//             //     onPressed: () {
-//             //       // Validate returns true if the form is valid, or false
-//             //       // otherwise.
-//             //       if (_formKey.currentState.validate()) {
-//             //         // If the form is valid, display a Snackbar.
-//             //         Scaffold.of(context)
-//             //             .showSnackBar(SnackBar(content: Text('Processing Data')));
-//             //       }
-//             //     },
-//             //     child: Text('Submit'),
-//             //   ),
-//             // ),
-
-//             // Padding(
-//             //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-//             //   child: Material(
-//             //     elevation: 5,
-//             //     borderRadius: BorderRadius.circular(30.0),
-//             //     color: Theme.of(context).highlightColor,
-//             //     child: MaterialButton(
-//             //       minWidth: MediaQuery.of(context).size.width,
-//             //       padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-//             //       onPressed: () async {
-//             //         if (_formKey.currentState.validate()) {
-//             //           showDialog(
-//             //             context: context,
-//             //             builder: (_) => ConfirmDialog(
-//             //               title: Text(
-//             //                 'Send ${amountControler.text} to ${emailControler.text}?',
-//             //                 style: Theme.of(context).textTheme.bodyText1,
-//             //               ),
-//             //               actionText: Text('Approve'),
-//             //               cancelFunction: () {
-//             //                 Navigator.pop(context);
-//             //               },
-//             //               actionFunction: () async {
-//             //                 try {
-//             //                   setState(() {
-//             //                     _loading = true;
-//             //                   });
-//             //                   await Globals.client.transferBalance(
-//             //                       emailControler.text,
-//             //                       int.parse(amountControler.text));
-
-//             //                   Scaffold.of(context).showSnackBar(SnackBar(
-//             //                     content: Text('Transfered successfully'),
-//             //                     backgroundColor: Colors.green,
-//             //                   ));
-
-//             //                   context.read(Globals.balance).state -=
-//             //                       int.parse(amountControler.text);
-//             //                   setState(() {
-//             //                     context.read(Globals.transfer_email).state = "";
-
-//             //                     _loading = false;
-//             //                   });
-//             //                 } catch (e) {
-//             //                   setState(() {
-//             //                     _loading = false;
-//             //                   });
-//             //                   print(e.runtimeType);
-//             //                   Scaffold.of(context).showSnackBar(SnackBar(
-//             //                     content: Text('[${e.codeName}] ${e.message}'),
-//             //                     backgroundColor: Colors.red,
-//             //                   ));
-//             //                 }
-
-//             //                 // try {
-//             //                 //   await Globals.client.removeFriend(
-//             //                 //       Globals.client.getCachedFriends[index]);
-//             //                 //   setState(() {
-//             //                 //     Globals.client.getCachedFriends
-//             //                 //         .removeAt(index);
-//             //                 //   });
-//             //                 // } catch (e) {
-//             //                 //   Scaffold.of(context).showSnackBar(SnackBar(
-//             //                 //     content: Text('[${e.codeName}] ${e.message}'),
-//             //                 //     backgroundColor: Colors.red,
-//             //                 //   ));
-//             //                 // }
-
-//             //                 Navigator.of(context).pop();
-//             //                 return true;
-//             //               },
-//             //               // backgroundColor: Theme.of(context).backgroundColor,
-//             //             ),
-//             //           );
-
-//             //           // If the form is valid, display a Snackbar.
-//             //           // Scaffold.of(context)
-//             //           //     .showSnackBar(SnackBar(content: Text('Processing Data')));
-//             //         }
-//             //       },
-//             //       child: !_loading
-//             //           ? Text("Transfer",
-//             //               textAlign: TextAlign.center,
-//             //               style: style.copyWith(
-//             //                   color: Theme.of(context).accentColor,
-//             //                   fontWeight: FontWeight.bold))
-//             //           : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-//             //           CupertinoActivityIndicator(),
-//             //     ),
-//             //   ),
-//             // ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class MyForm extends StatefulWidget {
   const MyForm({
@@ -955,7 +598,7 @@ class _MyFormState extends State<MyForm> {
                                 int.parse(amountControler.text);
                             setState(() {
                               context.read(Globals.transfer_email).state = "";
-                              
+
                               _loading = false;
                             });
                           } catch (e) {
@@ -992,6 +635,118 @@ class _MyFormState extends State<MyForm> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SearchFriend extends StatefulWidget {
+//   Future<List<Post>> search(String search) async {
+//   await Future.delayed(Duration(seconds: 2));
+//   return List.generate(search.length, (int index) {
+//     return Post(
+//       "Title : $search $index",
+//       "Description :$search $index",
+//     );
+//   });
+// }
+
+  @override
+  _SearchFriendState createState() => _SearchFriendState();
+}
+
+class _SearchFriendState extends State<SearchFriend> {
+  Future<List<SearchFriendResponse>> search(String search) async {
+    await Future.delayed(Duration(seconds: 1));
+    return await Globals.client.searchFriend(search.split('@')[0]).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchBar<SearchFriendResponse>(
+      searchBarStyle: SearchBarStyle(
+        borderRadius: BorderRadius.circular(16.0)
+        
+      ),
+      minimumChars: 1,
+      iconActiveColor: Theme.of(context).highlightColor,
+      textStyle: TextStyle(color: Theme.of(context).highlightColor),
+      cancellationText: Text("clear", style: TextStyle(color: Theme.of(context).highlightColor, fontWeight: FontWeight.bold),),
+      onSearch: search,
+      onItemFound: (SearchFriendResponse response, int index) {
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundImage: AssetImage('assets/images/avatar.png'),
+          ),
+          trailing: FlatButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  builder: (_) => ConfirmDialog(
+                    title: 'Add ${response.mail}?',
+                    cancelFunction: () {
+                      Navigator.of(context).pop();
+                      return false;
+                    },
+                    actionText: Text('Approve'),
+                    actionFunction: () async {
+                      try {
+                        await Globals.client.addFriend(response.mail);
+                        setState(() {
+                          Globals.client.getCachedFriends.add(response.mail);
+                        });
+
+                        await Globals.client.getUserInfo();
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text('Added successfully'),
+                          backgroundColor: Colors.green,
+                        ));
+                      } catch (e) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text('[${e.codeName}] ${e.message}'),
+                          backgroundColor: Colors.red,
+                        ));
+                      }
+                      Navigator.of(context).pop();
+                      return true;
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                "Add",
+                style: TextStyle(color: Theme.of(context).highlightColor),
+              )),
+          title: Text(response.mail),
+        );
+      },
+      onError: (error) {
+        return Center(
+          child: Text("Error occurred : $error"),
+        );
+      },
+      loader: Center(
+        // child: CircularProgressIndicator(
+        //   valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).highlightColor),
+        // ),
+        child: CupertinoActivityIndicator(),
+      ),
+      emptyWidget: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.grey.withOpacity(0.5),
+              child: SizedBox(
+                height: 50,
+                child: Image.asset('assets/images/dog.png'),
+              )),
+          Text(
+            "Wow, such empty",
+            style: TextStyle(fontWeight: FontWeight.w600,color: Theme.of(context).highlightColor),
+          )
+        ],
+      )),
     );
   }
 }
