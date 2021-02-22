@@ -77,7 +77,8 @@ class _MyFormState extends State<MyForm> {
         key: _formKey,
         child: Container(
             child: Padding(
-                padding: EdgeInsets.only(left: 36, right: 36, bottom: 36, top: 0),
+                padding:
+                    EdgeInsets.only(left: 36, right: 36, bottom: 36, top: 0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,6 +86,8 @@ class _MyFormState extends State<MyForm> {
                       TextFormField(
                         autocorrect: false,
                         controller: firstNameController,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.name,
                         style: style,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
@@ -110,6 +113,8 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.name,
                         autocorrect: false,
                         controller: lastNameController,
                         style: style,
@@ -137,6 +142,8 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
                         controller: emailController,
                         style: style,
@@ -164,6 +171,8 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
                         controller: confirmEmailController,
                         style: style,
@@ -195,6 +204,8 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.text,
                         autocorrect: false,
                         controller: passwordController,
                         style: style,
@@ -223,6 +234,8 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.done,
+                        keyboardType: TextInputType.text,
                         autocorrect: false,
                         controller: confirmPasswordController,
                         style: style,
