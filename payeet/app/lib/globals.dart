@@ -14,7 +14,7 @@ class Globals {
 
   static var client = PayeetClient(PayeetChannel(
     ClientChannel(
-      'localhost',
+      'api.payeet.xyz',
       port: 6969,
       options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
     ),

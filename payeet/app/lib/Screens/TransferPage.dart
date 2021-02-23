@@ -166,7 +166,6 @@ class _TransferPageState extends State<TransferPage> {
                           : Container(),
                     ],
                   )),
-
               Padding(
                 padding: const EdgeInsets.only(bottom: 36, left: 36, right: 36),
                 child: index == 0
@@ -218,9 +217,6 @@ class _TransferPageState extends State<TransferPage> {
                                   },
                                   onTap: () {
                                     setState(() {
-                                      print(Globals
-                                          .client.getCachedFriends[index]);
-                                      //emailControler.text = Globals.client.getCachedFriends[index];
                                       context
                                               .read(Globals.transfer_email)
                                               .state =
@@ -228,7 +224,6 @@ class _TransferPageState extends State<TransferPage> {
                                               .client.getCachedFriends[index];
                                       selected_index = index;
                                     });
-                                    //print("Container clicked");
                                   },
                                   child: SizedBox(
                                     width: 200,
@@ -294,9 +289,6 @@ class _TransferPageState extends State<TransferPage> {
                                           if (direction ==
                                               DismissDirection.endToStart) {
                                             setState(() {
-                                              print(Globals.client
-                                                  .getCachedFriends[index]);
-                                              //emailControler.text = Globals.client.getCachedFriends[index];
                                               context
                                                   .read(Globals.transfer_email)
                                                   .state = Globals
@@ -372,9 +364,6 @@ class _TransferPageState extends State<TransferPage> {
                                         child: ListTile(
                                           onTap: () async {
                                             setState(() {
-                                              print(Globals.client
-                                                  .getCachedFriends[index]);
-                                              //emailControler.text = Globals.client.getCachedFriends[index];
                                               context
                                                   .read(Globals.transfer_email)
                                                   .state = Globals
@@ -410,9 +399,6 @@ class _TransferPageState extends State<TransferPage> {
                               ),
                       ),
               ),
-
-              //Expanded(flex: 1, child: Container()),
-
               index == 1
                   ? Padding(
                       padding: const EdgeInsets.only(left: 36.0, right: 36.0),
@@ -543,22 +529,6 @@ class _MyFormState extends State<MyForm> {
               return null;
             },
           ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       // Validate returns true if the form is valid, or false
-          //       // otherwise.
-          //       if (_formKey.currentState.validate()) {
-          //         // If the form is valid, display a Snackbar.
-          //         Scaffold.of(context)
-          //             .showSnackBar(SnackBar(content: Text('Processing Data')));
-          //       }
-          //     },
-          //     child: Text('Submit'),
-          //   ),
-          // ),
-
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Material(
@@ -605,7 +575,6 @@ class _MyFormState extends State<MyForm> {
                             setState(() {
                               _loading = false;
                             });
-                            print(e.runtimeType);
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text('[${e.codeName}] ${e.message}'),
                               backgroundColor: Colors.red,
@@ -640,16 +609,6 @@ class _MyFormState extends State<MyForm> {
 }
 
 class SearchFriend extends StatefulWidget {
-//   Future<List<Post>> search(String search) async {
-//   await Future.delayed(Duration(seconds: 2));
-//   return List.generate(search.length, (int index) {
-//     return Post(
-//       "Title : $search $index",
-//       "Description :$search $index",
-//     );
-//   });
-// }
-
   @override
   _SearchFriendState createState() => _SearchFriendState();
 }
@@ -663,14 +622,16 @@ class _SearchFriendState extends State<SearchFriend> {
   @override
   Widget build(BuildContext context) {
     return SearchBar<SearchFriendResponse>(
-      searchBarStyle: SearchBarStyle(
-        borderRadius: BorderRadius.circular(16.0)
-        
-      ),
+      searchBarStyle: SearchBarStyle(borderRadius: BorderRadius.circular(16.0)),
       minimumChars: 1,
       iconActiveColor: Theme.of(context).highlightColor,
       textStyle: TextStyle(color: Theme.of(context).highlightColor),
-      cancellationText: Text("clear", style: TextStyle(color: Theme.of(context).highlightColor, fontWeight: FontWeight.bold),),
+      cancellationText: Text(
+        "clear",
+        style: TextStyle(
+            color: Theme.of(context).highlightColor,
+            fontWeight: FontWeight.bold),
+      ),
       onSearch: search,
       onItemFound: (SearchFriendResponse response, int index) {
         return ListTile(
@@ -743,7 +704,9 @@ class _SearchFriendState extends State<SearchFriend> {
               )),
           Text(
             "Wow, such empty",
-            style: TextStyle(fontWeight: FontWeight.w600,color: Theme.of(context).highlightColor),
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).highlightColor),
           )
         ],
       )),
