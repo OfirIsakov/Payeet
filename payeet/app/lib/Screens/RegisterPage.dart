@@ -77,13 +77,17 @@ class _MyFormState extends State<MyForm> {
         key: _formKey,
         child: Container(
             child: Padding(
-                padding: EdgeInsets.only(left: 36, right: 36, bottom: 36, top: 0),
+                padding:
+                    EdgeInsets.only(left: 36, right: 36, bottom: 36, top: 0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextFormField(
+                        autocorrect: false,
                         controller: firstNameController,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.name,
                         style: style,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
@@ -109,6 +113,9 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.name,
+                        autocorrect: false,
                         controller: lastNameController,
                         style: style,
                         decoration: InputDecoration(
@@ -135,6 +142,9 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
                         controller: emailController,
                         style: style,
                         decoration: InputDecoration(
@@ -161,6 +171,9 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
                         controller: confirmEmailController,
                         style: style,
                         decoration: InputDecoration(
@@ -191,6 +204,9 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 25.0),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.text,
+                        autocorrect: false,
                         controller: passwordController,
                         style: style,
                         obscureText: true,
@@ -218,6 +234,9 @@ class _MyFormState extends State<MyForm> {
                       ),
                       SizedBox(height: 10.0),
                       TextFormField(
+                        textInputAction: TextInputAction.done,
+                        keyboardType: TextInputType.text,
+                        autocorrect: false,
                         controller: confirmPasswordController,
                         style: style,
                         obscureText: true,
@@ -245,6 +264,28 @@ class _MyFormState extends State<MyForm> {
                           }
                           return null;
                         },
+                      ),
+                      SizedBox(height: 10.0),
+                      Center(
+                        child: Card(
+                          color: Theme.of(context).backgroundColor,
+                          shadowColor: Theme.of(context).highlightColor,
+                          elevation: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RichText(
+                              text: TextSpan(
+                                style: style.copyWith(fontSize: 15),
+                                children: <TextSpan>[
+                                  TextSpan(text: 'Password Requirements:\n', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                  TextSpan(text: '∙ minumum length of 5 characters\n'),
+                                  TextSpan(text: '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
+                                  
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),

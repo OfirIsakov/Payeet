@@ -4,7 +4,7 @@ import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
+import 'dart:async';
 import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,9 +17,14 @@ void init(BuildContext context) async {
   context.read(Globals.radioIndex).state = 1;
   context.read(Globals.transfer_email).state = "";
 
+  Timer.periodic(Duration(minutes: 5), (timer) async {
+    print('im refreshing');
+    await Globals.client.loginWithRefresh();
+  });
   await Globals.client.getFriends();
   await Globals.client.fetchTopUsers();
   await Globals.client.fetchFollowers();
+
   Navigator.of(context).pushReplacement(
     MaterialPageRoute(builder: (context) {
       return AppBase();
