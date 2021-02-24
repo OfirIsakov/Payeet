@@ -3,7 +3,9 @@ package services
 import (
 	"context"
 	"regexp"
+	"time"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -55,6 +57,9 @@ type UserStore interface {
 	GetReceiverHistory(mail string) ([]*Transaction, error)
 
 	Write(message []byte) (int, error) // we must implement an io.Writer function to log into mongo
+
+	GetLastLogin(mail string) (time.Time, error)
+	DailyBonus(mail string) error
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -66,6 +71,9 @@ type MongoUserStore struct { // change name to db wapper or something
 	UsersCollection        *mongo.Collection
 	LogsCollection         *mongo.Collection
 	Client                 *mongo.Client
+
+	BaseDailyBonus   int
+	StreakDailyBonus float64
 }
 
 // NewMongoUserStore d
@@ -396,4 +404,58 @@ func (store *MongoUserStore) Write(message []byte) (int, error) {
 	}
 
 	return len(message), nil
+}
+
+// GetLastLogin will return the time of the last time the user logged in
+func (store *MongoUserStore) GetLastLogin(mail string) (time.Time, error) {
+
+	findOptions := options.FindOne()
+	findOptions.SetSort(bson.M{"time": -1})
+
+	var loginLog map[string]interface{}
+
+	err := store.LogsCollection.FindOne(context.TODO(), bson.M{"msg": "Login", "email": mail}, findOptions).Decode(&loginLog)
+	if err != nil {
+		return time.Now(), err
+	}
+
+	// parse the time and return time object
+	loginTime, err := time.Parse(time.RFC3339, loginLog["time"].(string))
+	if err != nil {
+		return time.Now(), status.Errorf(codes.Internal, "Error while parsing date")
+	}
+
+	return loginTime, nil
+}
+
+// DailyBonus will add the user's daily bonus to his account and update the new multiplier
+func (store *MongoUserStore) DailyBonus(mail string) error {
+	lastLogin, err := store.GetLastLogin(mail)
+	if err != nil {
+		return err
+	}
+
+	now := time.Now()
+	midnight := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
+	// if he logged in before todays midnight
+	if lastLogin.Unix() < midnight.Unix() {
+		// if he logged in after yesterdays midnight give him the bonus
+		if lastLogin.Unix() > midnight.Add(-24*time.Hour).Unix() {
+			user, err := store.GetUserByEmail(mail)
+			if err != nil {
+				return err
+			}
+
+			bonus := int(float64(store.BaseDailyBonus) * user.DailyLoginMultiplier)
+			store.SetBalance(mail, user.Balance+bonus)
+			store.ChangeFieldValue(mail, "DailyLoginMultiplier", user.DailyLoginMultiplier+store.StreakDailyBonus)
+
+			log.WithFields(logrus.Fields{"email": mail, "bonus": bonus}).Info("DailyBonus")
+		} else { // reset his login multiplier
+			store.ChangeFieldValue(mail, "DailyLoginMultiplier", 1)
+		}
+	}
+
+	return nil
 }
