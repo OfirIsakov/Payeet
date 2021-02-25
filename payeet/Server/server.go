@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
@@ -33,16 +34,18 @@ func init() {
 	if err := godotenv.Load("config.env"); err != nil {
 		log.Warning("No .env file found")
 	}
+
+	// log debuglevel or higher
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
-	log.SetLevel(log.DebugLevel)
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
-	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection)
+	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection, config.LogsCollection)
 	log.Info("Connecting to DB...")
 	userStore.Connect()
 	defer userStore.Disconnect()
@@ -55,6 +58,19 @@ func main() {
 
 	authServer := services.NewAuthServer(userStore, jwtManger)
 	logic := services.NewPayeetServer(userStore, jwtManger)
+
+	// setting the daily bonus base that will be used to calculate the user's daily bonus
+	dailyBonus, err := strconv.Atoi(config.BaseDailyBonus)
+	if err != nil {
+		log.Fatal("❌\n", err)
+	}
+	userStore.BaseDailyBonus = dailyBonus
+	// setting the daily streak bonus that will be used to add to the users multiplier each consecutive day
+	streakBonus, err := strconv.ParseFloat(config.StreakDailyBonus, 64)
+	if err != nil {
+		log.Fatal("❌\n", err)
+	}
+	userStore.StreakDailyBonus = streakBonus
 
 	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
 	srv := grpc.NewServer(
@@ -73,6 +89,13 @@ func main() {
 	log.Info("Done! ✅")
 
 	log.Info("Serving... 🥳")
+	log.Info("All logs now will be logged to the MongoDB database!... 📃")
+	log.SetOutput(userStore)
+
+	// start logging as JSON
+	log.SetFormatter(&log.JSONFormatter{})
+
+	log.Info("Server up")
 	if e := srv.Serve(lis); e != nil {
 		log.Fatal("❌\n", e)
 	}

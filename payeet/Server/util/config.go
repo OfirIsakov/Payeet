@@ -17,6 +17,9 @@ type Config struct {
 	DBName                string `mapstructure:"DB_NAME"`
 	UserCollection        string `mapstructure:"USER_COLLECTION"`
 	TransactionCollection string `mapstructure:"TRANSACTION_COLLECTION"`
+	LogsCollection        string `mapstructure:"LOGS_COLLECTION"`
+	BaseDailyBonus        string `mapstructure:"BASE_DAILY_BONUS"`
+	StreakDailyBonus      string `mapstructure:"STREAK_DAILY_BONUS"`
 }
 
 // LoadConfig is used to load the config from the config file.
@@ -32,6 +35,9 @@ func LoadConfig(path string) (c Config, err error) {
 	c.DBName = os.Getenv("DB_NAME")
 	c.UserCollection = os.Getenv("USER_COLLECTION")
 	c.TransactionCollection = os.Getenv("TRANSACTION_COLLECTION")
+	c.LogsCollection = os.Getenv("LOGS_COLLECTION")
+	c.BaseDailyBonus = os.Getenv("BASE_DAILY_BONUS")
+	c.StreakDailyBonus = os.Getenv("STREAK_DAILY_BONUS")
 
 	log.Infof("Done! ✅")
 	return

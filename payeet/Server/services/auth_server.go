@@ -63,6 +63,9 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
+	// grant user his daily bonus if he should
+	server.userStore.DailyBonus(user.Email)
+
 	log.WithFields(logrus.Fields{
 		"email": user.Email}).Info("Login")
 
