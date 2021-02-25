@@ -11,14 +11,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// [init] sets values to the globals 
+/// [init] sets values to the globals and starts a timer to refresh the access toekn.
 void init(BuildContext context) async {
   context.read(Globals.selectedIndex).state = 0;
   context.read(Globals.radioIndex).state = 1;
   context.read(Globals.transfer_email).state = "";
 
   Timer.periodic(Duration(minutes: 5), (timer) async {
-    print('im refreshing');
     await Globals.client.loginWithRefresh();
   });
   await Globals.client.getFriends();
@@ -134,6 +133,7 @@ class _MyFormState extends State<MyForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
+                autocorrect: false,
                 controller: emailControler,
                 style: style,
                 textInputAction: TextInputAction.next,
@@ -161,6 +161,7 @@ class _MyFormState extends State<MyForm> {
               SizedBox(height: 25.0),
 
               TextFormField(
+                autocorrect: false,
                 textInputAction: TextInputAction.send,
                 onFieldSubmitted: (s) {
                   login();
@@ -188,22 +189,6 @@ class _MyFormState extends State<MyForm> {
                   return null;
                 },
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              //   child: ElevatedButton(
-              //     onPressed: () {
-              //       // Validate returns true if the form is valid, or false
-              //       // otherwise.
-              //       if (_formKey.currentState.validate()) {
-              //         // If the form is valid, display a Snackbar.
-              //         Scaffold.of(context)
-              //             .showSnackBar(SnackBar(content: Text('Processing Data')));
-              //       }
-              //     },
-              //     child: Text('Submit'),
-              //   ),
-              // ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Material(
@@ -222,7 +207,7 @@ class _MyFormState extends State<MyForm> {
                             style: style.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold))
-                        : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
+                        :
                         CupertinoActivityIndicator(),
                   ),
                 ),
