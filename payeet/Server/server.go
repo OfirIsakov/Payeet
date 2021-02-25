@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
@@ -57,6 +58,19 @@ func main() {
 
 	authServer := services.NewAuthServer(userStore, jwtManger)
 	logic := services.NewPayeetServer(userStore, jwtManger)
+
+	// setting the daily bonus base that will be used to calculate the user's daily bonus
+	dailyBonus, err := strconv.Atoi(config.BaseDailyBonus)
+	if err != nil {
+		log.Fatal("❌\n", err)
+	}
+	userStore.BaseDailyBonus = dailyBonus
+	// setting the daily streak bonus that will be used to add to the users multiplier each consecutive day
+	streakBonus, err := strconv.ParseFloat(config.StreakDailyBonus, 64)
+	if err != nil {
+		log.Fatal("❌\n", err)
+	}
+	userStore.StreakDailyBonus = streakBonus
 
 	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
 	srv := grpc.NewServer(
