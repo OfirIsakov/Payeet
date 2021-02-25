@@ -61,7 +61,8 @@ class _UserPageState extends State<UserPage> {
               )
             ],
           ),
-          onTap: (){
+          onTap: () async{
+            await Globals.client.fetchFollowers();
             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FollowersPage()));
           },
           ),

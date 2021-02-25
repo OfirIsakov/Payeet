@@ -9,14 +9,15 @@ import (
 
 // User struct conains user info.
 type User struct {
-	FirstName    string   `bson:"FirstName" json:"FirstName"`
-	LastName     string   `bson:"LastName" json:"LastName"`
-	Email        string   `bson:"Email" json:"Email"`
-	Password     string   `bson:"Password" json:"Password"`
-	Role         string   `bson:"Role" json:"Role"`
-	Balance      int      `bson:"Balance" json:"Balance"`
-	RefreshToken string   `bson:"RefreshToken" json:"RefreshToken"`
-	Friends      []string `bson:"Friends" json:"Friends"`
+	FirstName            string   `bson:"FirstName" json:"FirstName"`
+	LastName             string   `bson:"LastName" json:"LastName"`
+	Email                string   `bson:"Email" json:"Email"`
+	Password             string   `bson:"Password" json:"Password"`
+	Role                 string   `bson:"Role" json:"Role"`
+	Balance              int      `bson:"Balance" json:"Balance"`
+	RefreshToken         string   `bson:"RefreshToken" json:"RefreshToken"`
+	Friends              []string `bson:"Friends" json:"Friends"`
+	DailyLoginMultiplier float64  `bson:"DailyLoginMultiplier" json:"DailyLoginMultiplier"`
 }
 
 // NewUser returns a new user.
@@ -28,14 +29,16 @@ func NewUser(firstName string, lastName string, email string, password string, R
 	}
 
 	user := &User{
-		FirstName:    firstName,
-		LastName:     lastName,
-		Email:        email,
-		Password:     string(hashedPassword),
-		Role:         Role,
-		Balance:      0,
-		RefreshToken: "",
-		Friends:      []string{}}
+		FirstName:            firstName,
+		LastName:             lastName,
+		Email:                email,
+		Password:             string(hashedPassword),
+		Role:                 Role,
+		Balance:              0,
+		RefreshToken:         "",
+		Friends:              []string{},
+		DailyLoginMultiplier: 1.0,
+	}
 
 	return user, nil
 
@@ -52,14 +55,16 @@ func (user *User) validatePassword(password string) error {
 // Clone returns a clone of a user.
 func (user *User) Clone() *User {
 	return &User{
-		FirstName:    user.FirstName,
-		LastName:     user.LastName,
-		Email:        user.Email,
-		Password:     user.Password,
-		Role:         user.Role,
-		Balance:      user.Balance,
-		RefreshToken: user.RefreshToken,
-		Friends:      user.Friends}
+		FirstName:            user.FirstName,
+		LastName:             user.LastName,
+		Email:                user.Email,
+		Password:             user.Password,
+		Role:                 user.Role,
+		Balance:              user.Balance,
+		RefreshToken:         user.RefreshToken,
+		Friends:              user.Friends,
+		DailyLoginMultiplier: user.DailyLoginMultiplier,
+	}
 }
 
 // ToBson truns a user object into bson
@@ -74,6 +79,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Balance", Value: user.Balance},
 		{Key: "RefreshToken", Value: user.RefreshToken},
 		{Key: "Friends", Value: user.Friends},
+		{Key: "DailyLoginMultiplier", Value: user.DailyLoginMultiplier},
 	}
 
 	return a

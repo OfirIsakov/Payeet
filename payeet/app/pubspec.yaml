@@ -36,6 +36,7 @@ dependencies:
   flutter_riverpod: ^0.12.1
   google_fonts: ^1.1.1
   flutter_secure_storage: ^3.3.5
+  flappy_search_bar: 1.4.1
 
   path: ^1.7.0
   async: ^2.2.0

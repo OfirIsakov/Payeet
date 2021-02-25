@@ -124,6 +124,15 @@ class PayeetClient {
     return response;
   }
 
+ ResponseStream<SearchFriendResponse> searchFriend(String text) {
+    final response = _authenticatedClient
+        .searchFriend(SearchFriendRequest()..search = text);
+
+    return response;
+  }
+
+
+
   Future<LoginResponse> refreshAccessToken() async {
     final response = await _unauthenticatedClient
         .refreshToken(RefreshTokenRequest()..refreshToken = _refreshToken);
@@ -175,7 +184,7 @@ class PayeetClient {
   Future<StatusResponse> removeFriend(String mail) async {
     final response = await _authenticatedClient
         .removeFriend(RemoveFriendRequest()..mail = mail);
-
+    
     return response;
   }
 
