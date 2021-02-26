@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -37,6 +38,15 @@ type UserStore interface {
 	Connect() error
 	Disconnect() error
 
+	SetBonuses(
+		dailyBonusString,
+		streakBonusString,
+		minimumRequiredTransferDaysString,
+		minimumRequiredTransferAmountString,
+		karmaMultiplierFactorString,
+		minimumRequiredUniqueUsersString,
+		maximumTransfersToSameUserString string)
+
 	AddUser(user *User) error
 	AddTransaction(t *Transaction) error
 
@@ -61,6 +71,9 @@ type UserStore interface {
 
 	GetLastLogin(mail string) (time.Time, error)
 	DailyBonus(mail string) error
+
+	GetTransactionsInLastDays(mail string) ([]*Transaction, error)
+	CalculateNewKarma(mail string) (float64, error)
 }
 
 // MongoUserStore is a warpper for mongodb
@@ -73,8 +86,13 @@ type MongoUserStore struct { // change name to db wapper or something
 	LogsCollection         *mongo.Collection
 	Client                 *mongo.Client
 
-	BaseDailyBonus   int
-	StreakDailyBonus float64
+	BaseDailyBonus                int
+	StreakDailyBonus              float64
+	MinimumRequiredTransferDays   int
+	MinimumRequiredTransferAmount int
+	KarmaMultiplierFactor         float64
+	MinimumRequiredUniqueUsers    int
+	MaximumTransfersToSameUser    int
 }
 
 // NewMongoUserStore d
@@ -134,6 +152,68 @@ func formatUser(user *User) *User {
 	user.Email = strings.ToLower(user.Email)
 
 	return user
+}
+
+// SetBonuses function sets the daily bonus and
+func (store *MongoUserStore) SetBonuses(
+	dailyBonusString,
+	streakBonusString,
+	minimumRequiredTransferDaysString,
+	minimumRequiredTransferAmountString,
+	karmaMultiplierFactorString,
+	minimumRequiredUniqueUsersString,
+	maximumTransfersToSameUserString string) {
+
+	dailyBonus, err := strconv.Atoi(dailyBonusString)
+	if err != nil {
+		log.Info("1")
+		log.Fatal("❌\n", err)
+	}
+	store.BaseDailyBonus = dailyBonus
+
+	streakBonus, err := strconv.ParseFloat(streakBonusString, 64)
+	if err != nil {
+		log.Info("2")
+		log.Fatal("❌\n", err)
+	}
+	store.StreakDailyBonus = streakBonus
+
+	minimumRequiredTransferDays, err := strconv.Atoi(minimumRequiredTransferDaysString)
+	if err != nil {
+		log.Info("3")
+		log.Fatal("❌\n", err)
+	}
+	store.MinimumRequiredTransferDays = minimumRequiredTransferDays
+
+	minimumRequiredTransferAmount, err := strconv.Atoi(minimumRequiredTransferAmountString)
+	if err != nil {
+		log.Info("4")
+		log.Fatal("❌\n", err)
+	}
+	store.MinimumRequiredTransferAmount = minimumRequiredTransferAmount
+
+	karmaMultiplierFactor, err := strconv.ParseFloat(karmaMultiplierFactorString, 64)
+	if err != nil {
+		log.Info("5")
+		log.Fatal("❌\n", err)
+	}
+	store.KarmaMultiplierFactor = karmaMultiplierFactor
+
+	minimumRequiredUniqueUsers, err := strconv.Atoi(minimumRequiredUniqueUsersString)
+	if err != nil {
+		log.Info("6")
+		log.Fatal("❌\n", err)
+	}
+	store.MinimumRequiredUniqueUsers = minimumRequiredUniqueUsers
+
+	maximumTransfersToSameUser, err := strconv.Atoi(maximumTransfersToSameUserString)
+	if err != nil {
+		log.Info("7")
+		log.Fatal("❌\n", err)
+	}
+	store.MaximumTransfersToSameUser = maximumTransfersToSameUser
+
+	log.Info("Set the bonuses 📈")
 }
 
 // AddUser adds a new user to the database.
@@ -451,22 +531,103 @@ func (store *MongoUserStore) DailyBonus(mail string) error {
 
 	// if he logged in before todays midnight
 	if lastLogin.Unix() < midnight.Unix() {
-		// if he logged in after yesterdays midnight give him the bonus
-		if lastLogin.Unix() > midnight.Add(-24*time.Hour).Unix() {
-			user, err := store.GetUserByEmail(mail)
-			if err != nil {
-				return err
-			}
-
-			bonus := int(float64(store.BaseDailyBonus) * user.DailyLoginMultiplier)
-			store.SetBalance(mail, user.Balance+bonus)
-			store.ChangeFieldValue(mail, "DailyLoginMultiplier", user.DailyLoginMultiplier+store.StreakDailyBonus)
-
-			log.WithFields(logrus.Fields{"email": mail, "bonus": bonus}).Info("DailyBonus")
-		} else { // reset his login multiplier
-			store.ChangeFieldValue(mail, "DailyLoginMultiplier", 1)
+		user, err := store.GetUserByEmail(mail)
+		if err != nil {
+			return err
 		}
+
+		bonus := store.BaseDailyBonus
+
+		// if he logged in after yesterdays midnight give him the daily bonus
+		if lastLogin.Unix() > midnight.Add(-24*time.Hour).Unix() {
+
+			bonus += int(float64(bonus) * user.DailyLoginMultiplier)
+			user.DailyLoginMultiplier = user.DailyLoginMultiplier + store.StreakDailyBonus
+
+		} else { // reset his login multiplier
+			user.DailyLoginMultiplier = 1
+		}
+
+		// multiply by the karma bonus
+		newKarma, err := store.CalculateNewKarma(mail)
+		if err != nil {
+			return err
+		}
+
+		user.Karma += newKarma
+		bonus = int(float64(bonus) * user.Karma)
+
+		store.SetBalance(mail, user.Balance+bonus)
+		store.ChangeFieldValue(mail, "Karma", user.Karma)
+		store.ChangeFieldValue(mail, "DailyLoginMultiplier", user.DailyLoginMultiplier)
+		log.WithFields(logrus.Fields{"email": mail, "bonus": bonus}).Info("DailyBonus")
 	}
 
 	return nil
+}
+
+// GetTransactionsInLastDays will return an array of transactions that occured in the last MinimumRequiredTransferDays days
+func (store *MongoUserStore) GetTransactionsInLastDays(mail string) ([]*Transaction, error) {
+	unixTimeDaysAgo := time.Now().Add(time.Duration(store.MinimumRequiredTransferDays) * -24 * time.Hour).Unix()
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail, "Time": bson.M{"$gt": unixTimeDaysAgo}})
+	if err != nil {
+		return nil, err
+	}
+
+	transactions := []*Transaction{}
+
+	if err = cursor.All(context.TODO(), &transactions); err != nil {
+		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+	}
+
+	return transactions, nil
+}
+
+// CalculateNewKarma will calculate and return the chnge in the user's karma
+func (store *MongoUserStore) CalculateNewKarma(mail string) (float64, error) {
+	transactions, err := store.GetTransactionsInLastDays(mail)
+	if err != nil {
+		return 0, err
+	}
+
+	var karma float64
+
+	hasTransferedToSameUser := false
+	uniqueUsers := make(map[string]int) // used as a set
+	amount := 0
+	for _, transaction := range transactions {
+		amount += transaction.Amount
+		uniqueUsers[transaction.Receiver]++
+	}
+
+	for _, count := range uniqueUsers {
+		if count >= store.MaximumTransfersToSameUser {
+			hasTransferedToSameUser = true
+		}
+	}
+
+	if err != nil {
+		return 0, err
+	}
+
+	// chenge karma as the user transfered more then the minimum in the last days
+	if amount > store.MinimumRequiredTransferAmount {
+		karma += store.KarmaMultiplierFactor
+	} else {
+		karma -= store.KarmaMultiplierFactor
+	}
+
+	// chenge karma as the user transfered to unique users
+	if len(uniqueUsers) >= store.MinimumRequiredUniqueUsers {
+		karma += store.KarmaMultiplierFactor
+	} else {
+		karma -= store.KarmaMultiplierFactor
+	}
+
+	// subtract karma if the user transfered to the same person to many times
+	if hasTransferedToSameUser {
+		karma -= store.KarmaMultiplierFactor
+	}
+
+	return karma, nil
 }
