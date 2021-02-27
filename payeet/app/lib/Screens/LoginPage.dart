@@ -1,35 +1,11 @@
-import 'dart:ffi';
-
 import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:async';
-import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// [init] sets values to the globals and starts a timer to refresh the access toekn.
-void init(BuildContext context) async {
-  context.read(Globals.selectedIndex).state = 0;
-  context.read(Globals.radioIndex).state = 1;
-  context.read(Globals.transfer_email).state = "";
-
-  Timer.periodic(Duration(minutes: 5), (timer) async {
-    await Globals.client.loginWithRefresh();
-  });
-  await Globals.client.getFriends();
-  await Globals.client.fetchTopUsers();
-  await Globals.client.fetchFollowers();
-
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (context) {
-      return AppBase();
-    }),
-  );
-}
+import 'AppBase.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -39,16 +15,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    void loginWithRefresh() async {
-      try {
-        await Globals.client.loginWithRefresh();
-
-        init(context);
-      } catch (e) {}
-    }
-
-    loginWithRefresh();
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
@@ -112,7 +78,11 @@ class _MyFormState extends State<MyForm> {
           await Globals.client
               .login(emailControler.text, passwordControler.text);
 
-          init(context);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) {
+              return AppBase();
+            }),
+          );
         } catch (e) {
           setState(() {
             _loading = false;
@@ -159,7 +129,6 @@ class _MyFormState extends State<MyForm> {
                 },
               ),
               SizedBox(height: 25.0),
-
               TextFormField(
                 autocorrect: false,
                 textInputAction: TextInputAction.send,
@@ -207,8 +176,7 @@ class _MyFormState extends State<MyForm> {
                             style: style.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold))
-                        :
-                        CupertinoActivityIndicator(),
+                        : CupertinoActivityIndicator(),
                   ),
                 ),
               ),

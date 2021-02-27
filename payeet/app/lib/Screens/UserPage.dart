@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Payeet/globals.dart';
 import 'package:Payeet/UI_Elements/confirm.dart';
+import 'package:Payeet/secure_storage.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -89,7 +90,7 @@ class _UserPageState extends State<UserPage> {
                           },
                           actionText: Text('logout'),
                           actionFunction: () async {
-                            Globals.client.secureStorage
+                            SecureStorage
                                 .deleteSecureData('refreshToken');
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) {

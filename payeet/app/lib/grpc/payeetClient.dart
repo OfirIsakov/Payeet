@@ -68,7 +68,7 @@ class PayeetClient {
     tokenExpiresOn = response.expiresOn;
     _refreshToken = response.refreshToken;
 
-    await secureStorage.writeSecureData('refreshToken', _refreshToken);
+    await SecureStorage.writeSecureData('refreshToken', _refreshToken);
 
     channel.setAccessTokenMetadata(_accessToken);
     _authenticatedClient =
@@ -79,8 +79,8 @@ class PayeetClient {
     return response;
   }
 
-  Future<LoginResponse> loginWithRefresh() async {
-    _refreshToken = await secureStorage.readSecureData('refreshToken');
+  Future<bool> loginWithRefresh() async {
+    _refreshToken = await SecureStorage.readSecureData('refreshToken');
 
     LoginResponse response;
 
@@ -88,7 +88,8 @@ class PayeetClient {
       response = await _unauthenticatedClient
           .refreshToken(RefreshTokenRequest()..refreshToken = _refreshToken);
     } catch (e) {
-      rethrow; // cant login so throw the error
+      //rethrow; // cant login so throw the error
+      return false;
     }
 
     _accessToken = response.accessToken;
@@ -101,7 +102,7 @@ class PayeetClient {
 
     await getUserInfo();
 
-    return response;
+    return true;
   }
 
   Future<StatusResponse> register(
