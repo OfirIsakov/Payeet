@@ -21,7 +21,6 @@ class AppBase extends StatefulWidget {
 class _AppBaseState extends State<AppBase> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     init();
   }
@@ -40,12 +39,6 @@ class _AppBaseState extends State<AppBase> {
     await Globals.client.getFriends();
     await Globals.client.fetchTopUsers();
     await Globals.client.fetchFollowers();
-
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(builder: (context) {
-    //     return AppBase();
-    //   }),
-    // );
   }
 
   final navItems = [

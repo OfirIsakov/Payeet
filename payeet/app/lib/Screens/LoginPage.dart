@@ -13,28 +13,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool shouldMoveUser = false;
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   Globals.client.loginWithRefresh().then((value) {
-  //     setState(() {
-  //       print(value);
-  //       shouldMoveUser = value;
-  //       print(shouldMoveUser);
-  //     });
-  //     SecureStorage.readSecureData('ThemeIndex')
-  //         .then((index) => Globals.updateThemeMode(int.parse(index), context))
-  //         .catchError((e) => print(e));
-
-  //     if (shouldMoveUser) {
-  //       print("ff");
-  //       init(context);
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,70 +39,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-
-    // return Scaffold(
-    //   backgroundColor: Theme.of(context).backgroundColor,
-    //   body: Center(
-    //     child: Container(
-    //       child: Padding(
-    //         padding: const EdgeInsets.all(36.0),
-    //         child: shouldMoveUser == false
-    //             ? Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.center,
-    //                 mainAxisAlignment: MainAxisAlignment.center,
-    //                 children: <Widget>[
-    //                   Container(
-    //                     height: 100,
-    //                     child: SvgPicture.asset(
-    //                       'assets/icon/payeet_icon.svg',
-    //                     ),
-    //                   ),
-    //                   SizedBox(height: 45.0),
-    //                   MyForm(),
-    //                 ],
-    //               )
-    //             : CupertinoActivityIndicator(),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    // return Scaffold(
-    //     backgroundColor: Theme.of(context).backgroundColor,
-    //     body: Center(
-    //         child: FutureBuilder<bool>(
-    //       future: Globals.client.loginWithRefresh(),
-    //       builder: (context, AsyncSnapshot<bool> snapshot) {
-    //         if (snapshot.hasData) {
-    //           if (snapshot.data == false) {
-    //             return Container(
-    //               child: Padding(
-    //                 padding: const EdgeInsets.all(36.0),
-    //                 child: Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.center,
-    //                   mainAxisAlignment: MainAxisAlignment.center,
-    //                   children: <Widget>[
-    //                     Container(
-    //                       height: 100,
-    //                       child: SvgPicture.asset(
-    //                         'assets/icon/payeet_icon.svg',
-    //                       ),
-    //                     ),
-    //                     SizedBox(height: 45.0),
-    //                     MyForm(),
-    //                   ],
-    //                 ),
-    //               ),
-    //             );
-    //           } else {
-    //             //init(context);
-    //             return Container();
-    //           }
-    //         } else {
-    //           return CircularProgressIndicator();
-    //         }
-    //       },
-    //     )));
   }
 }
 
