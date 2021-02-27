@@ -18,6 +18,7 @@ type User struct {
 	RefreshToken         string   `bson:"RefreshToken" json:"RefreshToken"`
 	Friends              []string `bson:"Friends" json:"Friends"`
 	DailyLoginMultiplier float64  `bson:"DailyLoginMultiplier" json:"DailyLoginMultiplier"`
+	Karma                float64  `bson:"Karma" json:"Karma"`
 }
 
 // NewUser returns a new user.
@@ -38,6 +39,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		RefreshToken:         "",
 		Friends:              []string{},
 		DailyLoginMultiplier: 1.0,
+		Karma:                1.0,
 	}
 
 	return user, nil
@@ -64,6 +66,7 @@ func (user *User) Clone() *User {
 		RefreshToken:         user.RefreshToken,
 		Friends:              user.Friends,
 		DailyLoginMultiplier: user.DailyLoginMultiplier,
+		Karma:                user.Karma,
 	}
 }
 
@@ -80,6 +83,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "RefreshToken", Value: user.RefreshToken},
 		{Key: "Friends", Value: user.Friends},
 		{Key: "DailyLoginMultiplier", Value: user.DailyLoginMultiplier},
+		{Key: "Karma", Value: user.Karma},
 	}
 
 	return a
