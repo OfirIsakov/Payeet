@@ -82,10 +82,10 @@ func (manager *JWTManager) VerifyAccessToken(accessToken string) (*UserClaims, e
 		&UserClaims{},
 
 		func(token *jwt.Token) (interface{}, error) {
-			_, ok := token.Method.(*jwt.SigningMethodHMAC) // change this to a more secure method!!
+			_, ok := token.Method.(*jwt.SigningMethodHMAC) //TODO change this to a more secure method!!
 
 			if !ok {
-				return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+				return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 			}
 
 			return []byte(manager.AccessTokenKey), nil
@@ -95,13 +95,13 @@ func (manager *JWTManager) VerifyAccessToken(accessToken string) (*UserClaims, e
 	)
 
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
 
 	if !ok {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 	}
 
 	return claims, nil
@@ -116,10 +116,10 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 		&UserClaims{},
 
 		func(token *jwt.Token) (interface{}, error) {
-			_, ok := token.Method.(*jwt.SigningMethodHMAC) // change this to a more secure method!!
+			_, ok := token.Method.(*jwt.SigningMethodHMAC) //TODO change this to a more secure method!!
 
 			if !ok {
-				return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+				return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 			}
 
 			return []byte(manager.RefreshTokenKey), nil
@@ -129,13 +129,12 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 	)
 
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 	}
 
 	claims, ok := token.Claims.(*UserClaims)
-
 	if !ok {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid token")
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid token")
 	}
 
 	return claims, nil
@@ -146,18 +145,18 @@ func (manager *JWTManager) VerifyRefreshToken(RefreshToken string) (*UserClaims,
 func (manager *JWTManager) ExtractClaims(ctx context.Context) (*UserClaims, error) {
 	metaData, ok := metadata.FromIncomingContext(ctx) // extract metadata form ctx
 	if !ok {
-		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "metadata not provided")
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "Metadata not provided")
 	}
 
 	values := metaData["authorization"] // check if the user provided a token
 	if len(values) == 0 {
-		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "authorization token is not provided")
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "Authorization token is not provided")
 	}
 
 	accessToken := values[0]                              // the access token is always in the first cell
 	claims, err := manager.VerifyAccessToken(accessToken) // check if the token is valid
 	if err != nil {
-		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "invalid access token")
+		return &UserClaims{}, status.Errorf(codes.Unauthenticated, "Invalid access token")
 	}
 
 	return claims, nil

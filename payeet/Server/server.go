@@ -44,21 +44,21 @@ func main() {
 		log.Fatal("❌\n", err)
 	}
 
-	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection, config.LogsCollection)
+	mongoDBWrapper := services.NewMongoDBWrapper(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection, config.LogsCollection)
 	log.Info("Connecting to DB...")
-	userStore.Connect()
-	defer userStore.Disconnect()
-	userStore.CheckConnection()
+	mongoDBWrapper.Connect()
+	defer mongoDBWrapper.Disconnect()
+	mongoDBWrapper.CheckConnection()
 	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
 
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
-	authServer := services.NewAuthServer(userStore, jwtManger)
-	logic := services.NewPayeetServer(userStore, jwtManger)
+	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManger)
+	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManger)
 
-	userStore.SetBonuses(
+	mongoDBWrapper.SetBonuses(
 		config.BaseDailyBonus,
 		config.StreakDailyBonus,
 		config.MinimumRequiredTransferDays,
@@ -77,7 +77,7 @@ func main() {
 	reflection.Register(srv)
 
 	log.Infof("Starting server on port [%s]", config.Port)
-	lis, err := net.Listen("tcp", ":"+config.Port)
+	listener, err := net.Listen("tcp", ":"+config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,14 +85,14 @@ func main() {
 
 	log.Info("Serving... 🥳")
 	log.Info("All logs now will be logged to the MongoDB database!... 📃")
-	log.SetOutput(userStore)
+	log.SetOutput(mongoDBWrapper)
 
 	// start logging as JSON
 	log.SetFormatter(&log.JSONFormatter{})
 
 	log.Info("Server up")
-	if e := srv.Serve(lis); e != nil {
-		log.Fatal("❌\n", e)
+	if err := srv.Serve(listener); err != nil {
+		log.Fatal("❌\n", err)
 	}
 
 }
