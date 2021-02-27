@@ -11,6 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:Payeet/UI_Elements/linechart.dart';
 
+import 'package:grpc/grpc.dart';
+
 class StatsPage extends StatefulWidget {
   @override
   _StatsPageState createState() => _StatsPageState();

@@ -5,16 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:Payeet/Screens/Home.dart';
-import 'package:Payeet/Screens/UserPage.dart';
 import 'package:Payeet/screens/LoginPage.dart';
-import 'package:Payeet/Screens/StatsPage.dart';
-import 'package:Payeet/Screens/TransferPage.dart';
-import 'package:Payeet/Screens/FriendsPage.dart';
-
-
 
 import 'package:Payeet/globals.dart';
+import 'secure_storage.dart';
+import 'Screens/AppBase.dart';
 
 void main() {
   runApp(
@@ -23,7 +18,12 @@ void main() {
 }
 
 /// This is the main application widget.
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     Map swatch = <int, Color>{};
@@ -44,19 +44,38 @@ class MyApp extends StatelessWidget {
     return MaterialColor(color.value, swatch);
   }
 
+  bool shouldMoveUser = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Globals.client.loginWithRefresh().then((value) {
+      setState(() {
+        shouldMoveUser = value;
+      });
+      SecureStorage.readSecureData('ThemeIndex')
+          .then((index) => Globals.updateThemeMode(int.parse(index), context))
+          .catchError((e) => print(e));
+
+      // if (shouldMoveUser) {
+      // }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // this gesture detector allows as to click out side the keyboard to dismiss it.
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          currentFocus.focusedChild.unfocus();
-        }
-      },
-      child: MaterialApp(
-        themeMode: ThemeMode.system,
+    return GestureDetector(onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+        currentFocus.focusedChild.unfocus();
+      }
+    }, child: Consumer(builder: (context, watch, _) {
+      final theme = watch(Globals.themeMode).state;
+
+      return MaterialApp(
+        themeMode: theme,
         // this is the theme of the app.
         darkTheme: ThemeData(
           unselectedWidgetColor: Colors.white,
@@ -112,100 +131,8 @@ class MyApp extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 14)),
             backgroundColor: Colors.white),
-        home: LoginPage(),
-      ),
-    );
-  }
-}
-
-//AppBase is the base of the application,
-//it has a navigation bar and
-class AppBase extends StatelessWidget {
-  // this will show in the bottom part of the app.
-  final navItems = [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: "Home",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.people),
-      label: "Friends",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.transfer_within_a_station),
-      label: "Transfer",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.bar_chart),
-      label: "Stats",
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.account_circle),
-      label: "Profile",
-    ),
-  ];
-
-  // this will show in the top of every page.
-  final pageNames = ["Overview", "Friends", "Transfer", "Stats", "Profile"];
-
-  @override
-  Widget build(BuildContext context) {
-    // _widgetOptions holds the pages
-    final List<Widget> _widgetOptions = <Widget>[
-      HomePage(),
-      FriendsPage(),
-      TransferPage(),
-      StatsPage(),
-      UserPage(),
-    ];
-    void _onItemTapped(int index) {
-      context.read(Globals.selectedIndex).state = index;
-    }
-
-    return Consumer(builder: (context, watch, _) {
-      final index = watch(Globals.selectedIndex).state;
-      return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        appBar: AppBar(
-          title: Text(
-            pageNames[index],
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          centerTitle: false,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          actions: (index == 0
-              ? [
-                  IconButton(
-                      icon: Icon(
-                        CupertinoIcons.chat_bubble_text,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                      onPressed: () {})
-                ]
-              : index == 4
-                  ? [
-                      IconButton(
-                          icon: Icon(
-                            Icons.more_horiz,
-                            color: Theme.of(context).highlightColor,
-                          ),
-                          onPressed: () {})
-                    ]
-                  : []),
-        ),
-        body: Center(
-          child: _widgetOptions.elementAt(index),
-        ),
-        bottomNavigationBar: CupertinoTabBar(
-          backgroundColor: Theme.of(context).bottomAppBarColor,
-          activeColor: Theme.of(context).highlightColor,
-          items: navItems,
-          currentIndex: index,
-          // selectedItemColor: Colors.black,
-          onTap: _onItemTapped,
-        ),
+        home: shouldMoveUser ? AppBase() : LoginPage(),
       );
-    });
+    }));
   }
 }

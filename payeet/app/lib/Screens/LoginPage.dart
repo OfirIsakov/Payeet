@@ -1,35 +1,11 @@
-import 'dart:ffi';
-
 import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:async';
-import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// [init] sets values to the globals and starts a timer to refresh the access toekn.
-void init(BuildContext context) async {
-  context.read(Globals.selectedIndex).state = 0;
-  context.read(Globals.radioIndex).state = 1;
-  context.read(Globals.transfer_email).state = "";
-
-  Timer.periodic(Duration(minutes: 5), (timer) async {
-    await Globals.client.loginWithRefresh();
-  });
-  await Globals.client.getFriends();
-  await Globals.client.fetchTopUsers();
-  await Globals.client.fetchFollowers();
-
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (context) {
-      return AppBase();
-    }),
-  );
-}
+import 'AppBase.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -37,18 +13,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool shouldMoveUser = false;
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   Globals.client.loginWithRefresh().then((value) {
+  //     setState(() {
+  //       print(value);
+  //       shouldMoveUser = value;
+  //       print(shouldMoveUser);
+  //     });
+  //     SecureStorage.readSecureData('ThemeIndex')
+  //         .then((index) => Globals.updateThemeMode(int.parse(index), context))
+  //         .catchError((e) => print(e));
+
+  //     if (shouldMoveUser) {
+  //       print("ff");
+  //       init(context);
+  //     }
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
-    void loginWithRefresh() async {
-      try {
-        await Globals.client.loginWithRefresh();
-
-        init(context);
-      } catch (e) {}
-    }
-
-    loginWithRefresh();
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
@@ -73,6 +61,70 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+
+    // return Scaffold(
+    //   backgroundColor: Theme.of(context).backgroundColor,
+    //   body: Center(
+    //     child: Container(
+    //       child: Padding(
+    //         padding: const EdgeInsets.all(36.0),
+    //         child: shouldMoveUser == false
+    //             ? Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.center,
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: <Widget>[
+    //                   Container(
+    //                     height: 100,
+    //                     child: SvgPicture.asset(
+    //                       'assets/icon/payeet_icon.svg',
+    //                     ),
+    //                   ),
+    //                   SizedBox(height: 45.0),
+    //                   MyForm(),
+    //                 ],
+    //               )
+    //             : CupertinoActivityIndicator(),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+    // return Scaffold(
+    //     backgroundColor: Theme.of(context).backgroundColor,
+    //     body: Center(
+    //         child: FutureBuilder<bool>(
+    //       future: Globals.client.loginWithRefresh(),
+    //       builder: (context, AsyncSnapshot<bool> snapshot) {
+    //         if (snapshot.hasData) {
+    //           if (snapshot.data == false) {
+    //             return Container(
+    //               child: Padding(
+    //                 padding: const EdgeInsets.all(36.0),
+    //                 child: Column(
+    //                   crossAxisAlignment: CrossAxisAlignment.center,
+    //                   mainAxisAlignment: MainAxisAlignment.center,
+    //                   children: <Widget>[
+    //                     Container(
+    //                       height: 100,
+    //                       child: SvgPicture.asset(
+    //                         'assets/icon/payeet_icon.svg',
+    //                       ),
+    //                     ),
+    //                     SizedBox(height: 45.0),
+    //                     MyForm(),
+    //                   ],
+    //                 ),
+    //               ),
+    //             );
+    //           } else {
+    //             //init(context);
+    //             return Container();
+    //           }
+    //         } else {
+    //           return CircularProgressIndicator();
+    //         }
+    //       },
+    //     )));
   }
 }
 
@@ -112,7 +164,11 @@ class _MyFormState extends State<MyForm> {
           await Globals.client
               .login(emailControler.text, passwordControler.text);
 
-          init(context);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) {
+              return AppBase();
+            }),
+          );
         } catch (e) {
           setState(() {
             _loading = false;
@@ -159,7 +215,6 @@ class _MyFormState extends State<MyForm> {
                 },
               ),
               SizedBox(height: 25.0),
-
               TextFormField(
                 autocorrect: false,
                 textInputAction: TextInputAction.send,
@@ -207,8 +262,7 @@ class _MyFormState extends State<MyForm> {
                             style: style.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold))
-                        :
-                        CupertinoActivityIndicator(),
+                        : CupertinoActivityIndicator(),
                   ),
                 ),
               ),
