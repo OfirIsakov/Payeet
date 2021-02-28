@@ -40,26 +40,8 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
-	// generate JWT tokenn
-	accessToken, err := server.jwtManager.GenerateAccessToken(user) // create a new token
+	accessToken, refreshToken, expiresAt, err := server.GenerateTokens(user)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// generate refresh token
-	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// get userclaims from the token so we could get the expire time.
-	userClaims, err := server.jwtManager.VerifyAccessToken(accessToken)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// save the refresh token in the database.
-	if server.mongoDBWrapper.SetRefreshToken(user.Email, refreshToken) != nil {
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
@@ -71,7 +53,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	log.WithFields(logrus.Fields{"email": user.Email}).Info("Login")
 
 	// sending a new JWT token, expire time, new refresh token.
-	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: userClaims.ExpiresAt, RefreshToken: refreshToken}
+	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: expiresAt, RefreshToken: refreshToken}
 	return res, nil
 }
 
@@ -95,26 +77,13 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
-	// generate JWT token
-	accessToken, err := server.jwtManager.GenerateAccessToken(user)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// generate refresh token
-	refreshToken, err := server.jwtManager.GenerateRefreshToken(user) // create a new token
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// get the userclims from the accessToken token
-	userClaims, err = server.jwtManager.VerifyAccessToken(accessToken)
+	accessToken, refreshToken, expiresAt, err := server.GenerateTokens(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	// sending a new JWT token, expire time, new refresh token.
-	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: userClaims.ExpiresAt, RefreshToken: refreshToken}
+	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: expiresAt, RefreshToken: refreshToken}
 	return res, nil
 
 }
@@ -182,4 +151,34 @@ func IsEmailValid(mail string) bool {
 	}
 
 	return true
+}
+
+// GenerateTokens will generate new access token, refresh token and thier expiration time for the given user
+func (server *AuthServer) GenerateTokens(user *User) (accessToken string, refreshToken string, expiresAt int64, err error) {
+	// generate JWT tokenn
+	accessToken, err = server.jwtManager.GenerateAccessToken(user) // create a new token
+	if err != nil {
+		return
+	}
+
+	// generate refresh token
+	refreshToken, err = server.jwtManager.GenerateRefreshToken(user) // create a new token
+	if err != nil {
+		return
+	}
+
+	// get userclaims from the token so we could get the expire time.
+	userClaims, err := server.jwtManager.VerifyAccessToken(accessToken)
+	if err != nil {
+		return
+	}
+
+	// save the refresh token in the database.
+	if server.mongoDBWrapper.SetRefreshToken(user.Email, refreshToken) != nil {
+		return
+	}
+
+	expiresAt = userClaims.ExpiresAt
+
+	return
 }

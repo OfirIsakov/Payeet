@@ -21,20 +21,6 @@ import (
 
 // DBWrapper is an interface that handles fetching and updating the DB
 type DBWrapper interface {
-
-	// save a new user to the storge.
-
-	// Add a Transaction
-
-	// get all transactions of the receiver
-	// get all transactions of the sender.
-
-	// get all transactions of user. (Sender or Receiver)
-	// |---> the tansactions from the functions above and sort them by time.
-
-	// Add a friend
-	// Remove a friend
-
 	Connect() error
 	Disconnect() error
 

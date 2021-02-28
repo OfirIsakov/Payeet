@@ -162,8 +162,8 @@ func (server *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.P
 	return nil
 }
 
-// GetFullSelfHistory is a function that sends the full message history of the user in a stream
-func (server *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
+// GetFullHistory sends the full message history of the user if the requster is him or someone that follows him
+func (server *PayeetServer) GetFullHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullHistoryServer) error {
 
 	// get the claims from ctx.
 	claims, err := server.jwtManager.ExtractClaims(stream.Context())

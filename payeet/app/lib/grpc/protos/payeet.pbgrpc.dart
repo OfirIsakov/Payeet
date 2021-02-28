@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.7
+// @dart = 2.3
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -148,9 +148,9 @@ class payeetClient extends $grpc.Client {
           ($0.SearchFriendRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.SearchFriendResponse.fromBuffer(value));
-  static final _$getFullSelfHistory =
+  static final _$getFullHistory =
       $grpc.ClientMethod<$0.HistoryRequest, $0.HistoryResponse>(
-          '/payeet.payeet/GetFullSelfHistory',
+          '/payeet.payeet/GetFullHistory',
           ($0.HistoryRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.HistoryResponse.fromBuffer(value));
@@ -218,11 +218,11 @@ class payeetClient extends $grpc.Client {
         options: options);
   }
 
-  $grpc.ResponseStream<$0.HistoryResponse> getFullSelfHistory(
+  $grpc.ResponseStream<$0.HistoryResponse> getFullHistory(
       $0.HistoryRequest request,
       {$grpc.CallOptions options}) {
     return $createStreamingCall(
-        _$getFullSelfHistory, $async.Stream.fromIterable([request]),
+        _$getFullHistory, $async.Stream.fromIterable([request]),
         options: options);
   }
 
@@ -299,8 +299,8 @@ abstract class payeetServiceBase extends $grpc.Service {
                 $0.SearchFriendRequest.fromBuffer(value),
             ($0.SearchFriendResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.HistoryRequest, $0.HistoryResponse>(
-        'GetFullSelfHistory',
-        getFullSelfHistory_Pre,
+        'GetFullHistory',
+        getFullHistory_Pre,
         false,
         true,
         ($core.List<$core.int> value) => $0.HistoryRequest.fromBuffer(value),
@@ -356,9 +356,9 @@ abstract class payeetServiceBase extends $grpc.Service {
     yield* searchFriend(call, await request);
   }
 
-  $async.Stream<$0.HistoryResponse> getFullSelfHistory_Pre(
+  $async.Stream<$0.HistoryResponse> getFullHistory_Pre(
       $grpc.ServiceCall call, $async.Future<$0.HistoryRequest> request) async* {
-    yield* getFullSelfHistory(call, await request);
+    yield* getFullHistory(call, await request);
   }
 
   $async.Future<$0.TopUsersResponse> getTopUsers_Pre(
@@ -382,7 +382,7 @@ abstract class payeetServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.GetFriendsRequest request);
   $async.Stream<$0.SearchFriendResponse> searchFriend(
       $grpc.ServiceCall call, $0.SearchFriendRequest request);
-  $async.Stream<$0.HistoryResponse> getFullSelfHistory(
+  $async.Stream<$0.HistoryResponse> getFullHistory(
       $grpc.ServiceCall call, $0.HistoryRequest request);
   $async.Future<$0.TopUsersResponse> getTopUsers(
       $grpc.ServiceCall call, $0.TopUsersRequest request);
