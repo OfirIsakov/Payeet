@@ -28,6 +28,9 @@ message HistoryRequest{
     string SenderMail = 1;
 }
 
+message FiveFriendsHistoryRequest{
+}
+
 message HistoryResponse{
     string SenderMail = 1;
     string ReceiverMail = 2;
@@ -126,4 +129,6 @@ service payeet{
     rpc GetFullHistory (HistoryRequest) returns (stream HistoryResponse);
 
     rpc GetTopUsers (TopUsersRequest) returns (TopUsersResponse);
+
+    rpc GetFiveFriendsTransfers (FiveFriendsHistoryRequest) returns (stream HistoryResponse);
 }

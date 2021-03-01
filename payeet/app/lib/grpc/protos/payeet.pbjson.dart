@@ -45,6 +45,10 @@ const HistoryRequest$json = const {
   ],
 };
 
+const FiveFriendsHistoryRequest$json = const {
+  '1': 'FiveFriendsHistoryRequest',
+};
+
 const HistoryResponse$json = const {
   '1': 'HistoryResponse',
   '2': const [

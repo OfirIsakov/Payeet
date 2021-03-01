@@ -160,6 +160,12 @@ class payeetClient extends $grpc.Client {
           ($0.TopUsersRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.TopUsersResponse.fromBuffer(value));
+  static final _$getFiveFriendsTransfers =
+      $grpc.ClientMethod<$0.FiveFriendsHistoryRequest, $0.HistoryResponse>(
+          '/payeet.payeet/GetFiveFriendsTransfers',
+          ($0.FiveFriendsHistoryRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.HistoryResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
       {$grpc.CallOptions options,
@@ -230,6 +236,14 @@ class payeetClient extends $grpc.Client {
       $0.TopUsersRequest request,
       {$grpc.CallOptions options}) {
     return $createUnaryCall(_$getTopUsers, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.HistoryResponse> getFiveFriendsTransfers(
+      $0.FiveFriendsHistoryRequest request,
+      {$grpc.CallOptions options}) {
+    return $createStreamingCall(
+        _$getFiveFriendsTransfers, $async.Stream.fromIterable([request]),
+        options: options);
   }
 }
 
@@ -312,6 +326,15 @@ abstract class payeetServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.TopUsersRequest.fromBuffer(value),
         ($0.TopUsersResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.FiveFriendsHistoryRequest, $0.HistoryResponse>(
+            'GetFiveFriendsTransfers',
+            getFiveFriendsTransfers_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.FiveFriendsHistoryRequest.fromBuffer(value),
+            ($0.HistoryResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
@@ -366,6 +389,12 @@ abstract class payeetServiceBase extends $grpc.Service {
     return getTopUsers(call, await request);
   }
 
+  $async.Stream<$0.HistoryResponse> getFiveFriendsTransfers_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.FiveFriendsHistoryRequest> request) async* {
+    yield* getFiveFriendsTransfers(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(
@@ -386,4 +415,6 @@ abstract class payeetServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.HistoryRequest request);
   $async.Future<$0.TopUsersResponse> getTopUsers(
       $grpc.ServiceCall call, $0.TopUsersRequest request);
+  $async.Stream<$0.HistoryResponse> getFiveFriendsTransfers(
+      $grpc.ServiceCall call, $0.FiveFriendsHistoryRequest request);
 }

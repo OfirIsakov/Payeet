@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -60,6 +61,8 @@ type DBWrapper interface {
 
 	GetTransactionsInLastDays(mail string) ([]*Transaction, error)
 	CalculateNewKarma(mail string) (float64, error)
+
+	GetFiveFriendsTransfers(mail string) ([]*Transaction, error)
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -605,4 +608,47 @@ func (store *MongoDBWrapper) CalculateNewKarma(mail string) (float64, error) {
 	}
 
 	return karma, nil
+}
+
+// GetFiveFriendsTransfers will fetch the 5 latest friend's transactions of the user
+func (store *MongoDBWrapper) GetFiveFriendsTransfers(mail string) ([]*Transaction, error) {
+
+	user, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return nil, err
+	}
+
+	transactions := []*Transaction{}
+
+	for _, friendMail := range user.Friends {
+		friend, err := store.GetUserByEmail(friendMail)
+		if err != nil {
+			return nil, err
+		}
+
+		cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": friend.Email})
+		if err != nil {
+			return nil, status.Errorf(codes.NotFound, "Wrong mail")
+		}
+
+		friendTransactions := []*Transaction{}
+		if err = cursor.All(context.TODO(), &friendTransactions); err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+
+		for _, transaction := range friendTransactions {
+			transactions = append(transactions, transaction)
+		}
+	}
+
+	// sort the transactions
+	sort.Slice(transactions, func(first, second int) bool {
+		return transactions[first].Time > transactions[second].Time
+	})
+
+	if len(transactions) >= 5 {
+		return transactions[:5], nil
+	}
+
+	return transactions, nil
 }

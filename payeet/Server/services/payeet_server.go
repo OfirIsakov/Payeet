@@ -269,7 +269,7 @@ func (server *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequ
 
 	users, err := server.mongoDBWrapper.GetAllUsers()
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "")
+		return nil, err
 	}
 
 	sort.Slice(users, func(i, j int) bool {
@@ -283,4 +283,24 @@ func (server *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequ
 	}
 
 	return &pb.TopUsersResponse{Users: respons}, nil
+}
+
+// GetFiveFriendsTransfers returns the 5 latest friend's transactions of the user
+func (server *PayeetServer) GetFiveFriendsTransfers(in *pb.FiveFriendsHistoryRequest, stream pb.Payeet_GetFiveFriendsTransfersServer) error {
+	// get the claims from ctx.
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	transactions, err := server.mongoDBWrapper.GetFiveFriendsTransfers(claims.Email)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	for _, transaction := range transactions {
+		stream.Send(&pb.HistoryResponse{SenderMail: transaction.Sender, ReceiverMail: transaction.Receiver, Amount: int32(transaction.Amount), Time: transaction.Time})
+	}
+
+	return nil
 }

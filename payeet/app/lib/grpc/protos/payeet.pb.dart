@@ -264,6 +264,35 @@ class HistoryRequest extends $pb.GeneratedMessage {
   void clearSenderMail() => clearField(1);
 }
 
+class FiveFriendsHistoryRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'FiveFriendsHistoryRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  FiveFriendsHistoryRequest._() : super();
+  factory FiveFriendsHistoryRequest() => create();
+  factory FiveFriendsHistoryRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FiveFriendsHistoryRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FiveFriendsHistoryRequest clone() => FiveFriendsHistoryRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FiveFriendsHistoryRequest copyWith(void Function(FiveFriendsHistoryRequest) updates) => super.copyWith((message) => updates(message as FiveFriendsHistoryRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FiveFriendsHistoryRequest create() => FiveFriendsHistoryRequest._();
+  FiveFriendsHistoryRequest createEmptyInstance() => create();
+  static $pb.PbList<FiveFriendsHistoryRequest> createRepeated() => $pb.PbList<FiveFriendsHistoryRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FiveFriendsHistoryRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FiveFriendsHistoryRequest>(create);
+  static FiveFriendsHistoryRequest _defaultInstance;
+}
+
 class HistoryResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HistoryResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'SenderMail', protoName: 'SenderMail')
