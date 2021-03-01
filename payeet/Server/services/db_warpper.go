@@ -19,22 +19,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// UserStore is an interface that handles storing users.
-type UserStore interface {
-
-	// save a new user to the storge.
-
-	// Add a Transaction
-
-	// get all transactions of the receiver
-	// get all transactions of the sender.
-
-	// get all transactions of user. (Sender or Receiver)
-	// |---> the tansactions from the functions above and sort them by time.
-
-	// Add a friend
-	// Remove a friend
-
+// DBWrapper is an interface that handles fetching and updating the DB
+type DBWrapper interface {
 	Connect() error
 	Disconnect() error
 
@@ -53,9 +39,9 @@ type UserStore interface {
 	GetUserByEmail(mail string) (*User, error)
 	GetAllUsers() (a []*User, err error)
 
-	SetRefreshToken(email string, refreshToken string) error
-	SetBalance(email string, balance int) error
-	GetBalance(email string) (int, error)
+	SetRefreshToken(mail string, refreshToken string) error
+	SetBalance(mail string, balance int) error
+	GetBalance(mail string) (int, error)
 
 	AddFriend(mail, friendMail string) error
 	RemoveFriend(mail, friendMail string) error
@@ -76,8 +62,8 @@ type UserStore interface {
 	CalculateNewKarma(mail string) (float64, error)
 }
 
-// MongoUserStore is a warpper for mongodb
-type MongoUserStore struct { // change name to db wapper or something
+// MongoDBWrapper is a warpper for mongodb
+type MongoDBWrapper struct { // change name to db wapper or something
 
 	// add collection for transactions.
 
@@ -95,15 +81,15 @@ type MongoUserStore struct { // change name to db wapper or something
 	MaximumTransfersToSameUser    int
 }
 
-// NewMongoUserStore d
-func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionCollection, LogsCollection string) *MongoUserStore {
+// NewMongoDBWrapper creates and returns a new object of the mongo wrapper
+func NewMongoDBWrapper(ConnectionString, DBName, UserCollection, TransactionCollection, LogsCollection string) *MongoDBWrapper {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(ConnectionString))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &MongoUserStore{
+	return &MongoDBWrapper{
 		TransactionsCollection: client.Database(DBName).Collection(TransactionCollection),
 		UsersCollection:        client.Database(DBName).Collection(UserCollection),
 		LogsCollection:         client.Database(DBName).Collection(LogsCollection),
@@ -112,7 +98,7 @@ func NewMongoUserStore(ConnectionString, DBName, UserCollection, TransactionColl
 }
 
 // CheckConnection pings the database.
-func (store *MongoUserStore) CheckConnection() {
+func (store *MongoDBWrapper) CheckConnection() {
 
 	err := store.Client.Ping(context.TODO(), readpref.Primary())
 	if err != nil {
@@ -123,7 +109,7 @@ func (store *MongoUserStore) CheckConnection() {
 }
 
 // Connect makes a connection to the database.
-func (store *MongoUserStore) Connect() error {
+func (store *MongoDBWrapper) Connect() error {
 
 	err := store.Client.Connect(context.TODO())
 	if err != nil {
@@ -134,7 +120,7 @@ func (store *MongoUserStore) Connect() error {
 }
 
 // Disconnect closes the connection to the database.
-func (store *MongoUserStore) Disconnect() error {
+func (store *MongoDBWrapper) Disconnect() error {
 
 	err := store.Client.Disconnect(context.TODO())
 	if err != nil {
@@ -154,8 +140,8 @@ func formatUser(user *User) *User {
 	return user
 }
 
-// SetBonuses function sets the daily bonus and
-func (store *MongoUserStore) SetBonuses(
+// SetBonuses sets the daily bonus and the karma constants
+func (store *MongoDBWrapper) SetBonuses(
 	dailyBonusString,
 	streakBonusString,
 	minimumRequiredTransferDaysString,
@@ -166,49 +152,42 @@ func (store *MongoUserStore) SetBonuses(
 
 	dailyBonus, err := strconv.Atoi(dailyBonusString)
 	if err != nil {
-		log.Info("1")
 		log.Fatal("❌\n", err)
 	}
 	store.BaseDailyBonus = dailyBonus
 
 	streakBonus, err := strconv.ParseFloat(streakBonusString, 64)
 	if err != nil {
-		log.Info("2")
 		log.Fatal("❌\n", err)
 	}
 	store.StreakDailyBonus = streakBonus
 
 	minimumRequiredTransferDays, err := strconv.Atoi(minimumRequiredTransferDaysString)
 	if err != nil {
-		log.Info("3")
 		log.Fatal("❌\n", err)
 	}
 	store.MinimumRequiredTransferDays = minimumRequiredTransferDays
 
 	minimumRequiredTransferAmount, err := strconv.Atoi(minimumRequiredTransferAmountString)
 	if err != nil {
-		log.Info("4")
 		log.Fatal("❌\n", err)
 	}
 	store.MinimumRequiredTransferAmount = minimumRequiredTransferAmount
 
 	karmaMultiplierFactor, err := strconv.ParseFloat(karmaMultiplierFactorString, 64)
 	if err != nil {
-		log.Info("5")
 		log.Fatal("❌\n", err)
 	}
 	store.KarmaMultiplierFactor = karmaMultiplierFactor
 
 	minimumRequiredUniqueUsers, err := strconv.Atoi(minimumRequiredUniqueUsersString)
 	if err != nil {
-		log.Info("6")
 		log.Fatal("❌\n", err)
 	}
 	store.MinimumRequiredUniqueUsers = minimumRequiredUniqueUsers
 
 	maximumTransfersToSameUser, err := strconv.Atoi(maximumTransfersToSameUserString)
 	if err != nil {
-		log.Info("7")
 		log.Fatal("❌\n", err)
 	}
 	store.MaximumTransfersToSameUser = maximumTransfersToSameUser
@@ -217,7 +196,7 @@ func (store *MongoUserStore) SetBonuses(
 }
 
 // AddUser adds a new user to the database.
-func (store *MongoUserStore) AddUser(user *User) error {
+func (store *MongoDBWrapper) AddUser(user *User) error {
 
 	_, err := store.UsersCollection.InsertOne(
 		context.TODO(),
@@ -225,14 +204,14 @@ func (store *MongoUserStore) AddUser(user *User) error {
 	)
 
 	if err != nil {
-		return err
+		return status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	return nil
 }
 
 // AddTransaction adds a new transaction to the transaction collection.
-func (store *MongoUserStore) AddTransaction(t *Transaction) error {
+func (store *MongoDBWrapper) AddTransaction(t *Transaction) error {
 
 	_, err := store.TransactionsCollection.InsertOne(
 		context.TODO(),
@@ -240,14 +219,14 @@ func (store *MongoUserStore) AddTransaction(t *Transaction) error {
 	)
 
 	if err != nil {
-		return err
+		return status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	return nil
 }
 
-// GetUserByEmail finds a user in the database that have the given email.
-func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
+// GetUserByEmail finds a user in the database that have the given mail
+func (store *MongoDBWrapper) GetUserByEmail(mail string) (*User, error) {
 
 	result := &User{}
 
@@ -259,8 +238,8 @@ func (store *MongoUserStore) GetUserByEmail(mail string) (*User, error) {
 	return result, nil
 }
 
-// GetAllUsers returns every user stored in the database.
-func (store *MongoUserStore) GetAllUsers() (a []*User, err error) {
+// GetAllUsers returns every user stored user in the database
+func (store *MongoDBWrapper) GetAllUsers() (a []*User, err error) {
 
 	cursor, err := store.UsersCollection.Find(
 		context.TODO(),
@@ -271,7 +250,7 @@ func (store *MongoUserStore) GetAllUsers() (a []*User, err error) {
 		elem := &User{}
 
 		if err := cursor.Decode(elem); err != nil {
-			return nil, err
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
 		}
 
 		a = append(a, elem)
@@ -282,22 +261,22 @@ func (store *MongoUserStore) GetAllUsers() (a []*User, err error) {
 }
 
 //SetRefreshToken makes changes to a field name.
-func (store *MongoUserStore) SetRefreshToken(email string, refreshToken string) error {
-	return store.ChangeFieldValue(email, "RefreshToken", refreshToken)
+func (store *MongoDBWrapper) SetRefreshToken(mail string, refreshToken string) error {
+	return store.ChangeFieldValue(mail, "RefreshToken", refreshToken)
 }
 
 //SetBalance sets the balance field.
-func (store *MongoUserStore) SetBalance(email string, balance int) error {
-	return store.ChangeFieldValue(email, "Balance", balance)
+func (store *MongoDBWrapper) SetBalance(mail string, balance int) error {
+	return store.ChangeFieldValue(mail, "Balance", balance)
 }
 
 //ChangeFieldValue sets a new value in the given field name
-func (store *MongoUserStore) ChangeFieldValue(email string, fieldName string, value interface{}) error {
+func (store *MongoDBWrapper) ChangeFieldValue(mail string, fieldName string, value interface{}) error {
 
 	_, err := store.UsersCollection.UpdateOne(
 		context.TODO(),
 		bson.D{
-			{Key: "Email", Value: strings.ToLower(email)},
+			{Key: "Email", Value: strings.ToLower(mail)},
 		},
 		bson.D{
 			{Key: "$set",
@@ -309,18 +288,18 @@ func (store *MongoUserStore) ChangeFieldValue(email string, fieldName string, va
 	)
 
 	if err != nil {
-		return err
+		return status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	return nil
 }
 
-// GetBalance returns the balance of the given user's email.
-func (store *MongoUserStore) GetBalance(email string) (int, error) {
+// GetBalance returns the balance of the given user's mail.
+func (store *MongoDBWrapper) GetBalance(mail string) (int, error) {
 
-	user, err := store.GetUserByEmail(email)
+	user, err := store.GetUserByEmail(mail)
 	if err != nil {
-		return -1, err
+		return -1, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	balance := user.Balance
@@ -329,7 +308,7 @@ func (store *MongoUserStore) GetBalance(email string) (int, error) {
 }
 
 // AddFriend gets user's mail and adds the firend mail to the friend list
-func (store *MongoUserStore) AddFriend(mail, friendMail string) error {
+func (store *MongoDBWrapper) AddFriend(mail, friendMail string) error {
 
 	// check if tries to add itself
 	if mail == friendMail {
@@ -365,7 +344,7 @@ func (store *MongoUserStore) AddFriend(mail, friendMail string) error {
 }
 
 // RemoveFriend gets user's mail and removes the firend mail from the friend list
-func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
+func (store *MongoDBWrapper) RemoveFriend(mail, friendMail string) error {
 
 	user, err := store.GetUserByEmail(mail)
 	if err != nil {
@@ -391,30 +370,30 @@ func (store *MongoUserStore) RemoveFriend(mail, friendMail string) error {
 	return status.Errorf(codes.NotFound, "No such friend")
 }
 
-// GetMailsByStart will get the emails of the users for a user by his search
-func (store *MongoUserStore) GetMailsByStart(search string) ([]string, error) {
+// GetMailsByStart will get the mails of the users for a user by his search
+func (store *MongoDBWrapper) GetMailsByStart(search string) ([]string, error) {
 	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Email": bson.M{"$regex": "(?i).*" + regexp.QuoteMeta(strings.ToLower(search)) + ".*@"}})
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
 
-	tempResults := []*User{}
+	users := []*User{}
 
-	if err = cursor.All(context.TODO(), &tempResults); err != nil {
-		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to user")
+	if err = cursor.All(context.TODO(), &users); err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	results := []string{}
 
-	for _, email := range tempResults {
-		results = append(results, email.Email)
+	for _, user := range users {
+		results = append(results, user.Email)
 	}
 
 	return results, nil
 }
 
 // GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
-func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, error) {
+func (store *MongoDBWrapper) GetSenderHistory(mail string) ([]*Transaction, error) {
 
 	_, err := store.GetUserByEmail(mail)
 	if err != nil {
@@ -435,7 +414,7 @@ func (store *MongoUserStore) GetSenderHistory(mail string) ([]*Transaction, erro
 }
 
 // GetReceiverHistory will fetch all of the transaction history of a given mail where the user is the receiver
-func (store *MongoUserStore) GetReceiverHistory(mail string) ([]*Transaction, error) {
+func (store *MongoDBWrapper) GetReceiverHistory(mail string) ([]*Transaction, error) {
 
 	_, err := store.GetUserByEmail(mail)
 	if err != nil {
@@ -455,18 +434,18 @@ func (store *MongoUserStore) GetReceiverHistory(mail string) ([]*Transaction, er
 	return receiverResults, nil
 }
 
-// GetFollowers fetches all the emails the follow the user
-func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
+// GetFollowers fetches all the users the follow the user
+func (store *MongoDBWrapper) GetFollowers(mail string) ([]string, error) {
 
 	cursor, err := store.UsersCollection.Find(context.TODO(), bson.M{"Friends": mail})
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	followers := []*User{}
 
 	if err = cursor.All(context.TODO(), &followers); err != nil {
-		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to string")
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	followersMail := []string{}
@@ -478,7 +457,7 @@ func (store *MongoUserStore) GetFollowers(mail string) ([]string, error) {
 }
 
 // Write adds a log to the database in the logs collecitons
-func (store *MongoUserStore) Write(message []byte) (int, error) {
+func (store *MongoDBWrapper) Write(message []byte) (int, error) {
 	var info interface{}
 	err := bson.UnmarshalExtJSON(message, true, &info)
 	if err != nil {
@@ -498,7 +477,7 @@ func (store *MongoUserStore) Write(message []byte) (int, error) {
 }
 
 // GetLastLogin will return the time of the last time the user logged in
-func (store *MongoUserStore) GetLastLogin(mail string) (time.Time, error) {
+func (store *MongoDBWrapper) GetLastLogin(mail string) (time.Time, error) {
 
 	findOptions := options.FindOne()
 	findOptions.SetSort(bson.M{"time": -1})
@@ -507,20 +486,20 @@ func (store *MongoUserStore) GetLastLogin(mail string) (time.Time, error) {
 
 	err := store.LogsCollection.FindOne(context.TODO(), bson.M{"msg": "Login", "email": mail}, findOptions).Decode(&loginLog)
 	if err != nil {
-		return time.Now(), err
+		return time.Now(), status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	// parse the time and return time object
 	loginTime, err := time.Parse(time.RFC3339, loginLog["time"].(string))
 	if err != nil {
-		return time.Now(), status.Errorf(codes.Internal, "Error while parsing date")
+		return time.Now(), status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	return loginTime, nil
 }
 
 // DailyBonus will add the user's daily bonus to his account and update the new multiplier
-func (store *MongoUserStore) DailyBonus(mail string) error {
+func (store *MongoDBWrapper) DailyBonus(mail string) error {
 	lastLogin, err := store.GetLastLogin(mail)
 	if err != nil {
 		return err
@@ -551,7 +530,7 @@ func (store *MongoUserStore) DailyBonus(mail string) error {
 		// multiply by the karma bonus
 		newKarma, err := store.CalculateNewKarma(mail)
 		if err != nil {
-			return err
+			return status.Errorf(codes.Internal, "Something went wrong!")
 		}
 
 		user.Karma += newKarma
@@ -567,24 +546,24 @@ func (store *MongoUserStore) DailyBonus(mail string) error {
 }
 
 // GetTransactionsInLastDays will return an array of transactions that occured in the last MinimumRequiredTransferDays days
-func (store *MongoUserStore) GetTransactionsInLastDays(mail string) ([]*Transaction, error) {
+func (store *MongoDBWrapper) GetTransactionsInLastDays(mail string) ([]*Transaction, error) {
 	unixTimeDaysAgo := time.Now().Add(time.Duration(store.MinimumRequiredTransferDays) * -24 * time.Hour).Unix()
 	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail, "Time": bson.M{"$gt": unixTimeDaysAgo}})
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	transactions := []*Transaction{}
 
 	if err = cursor.All(context.TODO(), &transactions); err != nil {
-		return nil, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
 	return transactions, nil
 }
 
 // CalculateNewKarma will calculate and return the chnge in the user's karma
-func (store *MongoUserStore) CalculateNewKarma(mail string) (float64, error) {
+func (store *MongoDBWrapper) CalculateNewKarma(mail string) (float64, error) {
 	transactions, err := store.GetTransactionsInLastDays(mail)
 	if err != nil {
 		return 0, err
@@ -604,10 +583,6 @@ func (store *MongoUserStore) CalculateNewKarma(mail string) (float64, error) {
 		if count >= store.MaximumTransfersToSameUser {
 			hasTransferedToSameUser = true
 		}
-	}
-
-	if err != nil {
-		return 0, err
 	}
 
 	// chenge karma as the user transfered more then the minimum in the last days
