@@ -14,7 +14,7 @@ class Globals {
   static var themeMode = StateProvider((ref) => ThemeMode.system);
 
   static List<HistoryResponse> transHistory = [];
-  static var radioIndex = StateProvider((ref) => 0);
+  static var radioIndex = StateProvider((ref) => 1);
 
   static var client = PayeetClient(PayeetChannel(
     ClientChannel(

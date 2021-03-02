@@ -81,7 +81,6 @@ class PayeetClient {
 
   Future<bool> loginWithRefresh() async {
     _refreshToken = await SecureStorage.readSecureData('refreshToken');
-
     LoginResponse response;
 
     try {
@@ -95,6 +94,8 @@ class PayeetClient {
     _accessToken = response.accessToken;
     tokenExpiresOn = response.expiresOn;
     _refreshToken = response.refreshToken;
+
+    await SecureStorage.writeSecureData('refreshToken', _refreshToken);
 
     channel.setAccessTokenMetadata(_accessToken);
     _authenticatedClient =
@@ -120,19 +121,17 @@ class PayeetClient {
 
   ResponseStream<HistoryResponse> getTransferHistory(String mail) {
     final response = _authenticatedClient
-        .getFullSelfHistory(HistoryRequest()..senderMail = mail);
+        .getFullHistory(HistoryRequest()..senderMail = mail);
 
     return response;
   }
 
- ResponseStream<SearchFriendResponse> searchFriend(String text) {
-    final response = _authenticatedClient
-        .searchFriend(SearchFriendRequest()..search = text);
+  ResponseStream<SearchFriendResponse> searchFriend(String text) {
+    final response =
+        _authenticatedClient.searchFriend(SearchFriendRequest()..search = text);
 
     return response;
   }
-
-
 
   Future<LoginResponse> refreshAccessToken() async {
     final response = await _unauthenticatedClient
@@ -185,7 +184,7 @@ class PayeetClient {
   Future<StatusResponse> removeFriend(String mail) async {
     final response = await _authenticatedClient
         .removeFriend(RemoveFriendRequest()..mail = mail);
-    
+
     return response;
   }
 

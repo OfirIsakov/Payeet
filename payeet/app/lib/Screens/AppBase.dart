@@ -27,10 +27,6 @@ class _AppBaseState extends State<AppBase> {
 
   /// [init] sets values to the globals and starts a timer to refresh the access toekn.
   void init() async {
-    context.read(Globals.selectedIndex).state = 0;
-    context.read(Globals.radioIndex).state = 1;
-    context.read(Globals.transfer_email).state = "";
-
     // stating a periodic timer to refresh the accsess token in the backround.
     Timer.periodic(Duration(minutes: 5), (timer) async {
       await Globals.client.loginWithRefresh();
