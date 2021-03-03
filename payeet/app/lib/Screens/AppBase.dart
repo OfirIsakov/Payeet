@@ -69,7 +69,7 @@ class _AppBaseState extends State<AppBase> {
       HomePage(),
       FriendsPage(),
       TransferPage(),
-      StatsPage(),
+      StatsPage(transferEmail: Globals.client.getCachedUserID,),
       UserPage(),
     ];
     void _onItemTapped(int index) {

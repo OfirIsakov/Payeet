@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:Payeet/grpc/protos/payeet.pbgrpc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:Payeet/UI_Elements/linechart.dart';
-
-import 'package:grpc/grpc.dart';
+import 'package:Payeet/UI_Elements/chart.dart';
 
 class StatsPage extends StatefulWidget {
+  final String transferEmail;
+
+  StatsPage({Key key, this.transferEmail}) : super(key: key);
+
   @override
   _StatsPageState createState() => _StatsPageState();
 }
@@ -35,7 +35,7 @@ class _StatsPageState extends State<StatsPage> {
   @override
   void initState() {
     super.initState();
-    
+
     if (Globals.transHistory.length == 0 || streamController == null) {
       streamController = StreamController.broadcast();
       streamController.stream.listen((msg) {
@@ -78,7 +78,7 @@ class _StatsPageState extends State<StatsPage> {
 
   load(StreamController<HistoryResponse> sc) async {
     Globals.client
-        .getTransferHistory(Globals.client.getCachedUserID)
+        .getTransferHistory(widget.transferEmail)
         // .where((i) => i.amount % 2 == 0) // this edits the stream directly.
         .pipe(sc);
   }
@@ -91,10 +91,12 @@ class _StatsPageState extends State<StatsPage> {
       return null;
     }
 
-    bool income = history[index].receiverMail == Globals.client.getCachedUserID;
+    bool income = history[index].receiverMail == widget.transferEmail;
     var brightness = MediaQuery.of(context).platformBrightness;
-    bool darkModeOn = brightness == Brightness.dark;
-
+    bool darkModeOn =
+        (context.read(Globals.themeMode).state == ThemeMode.dark ||
+            brightness == Brightness.dark);
+    var format = DateFormat('d/m/y');
     return Card(
         color: Theme.of(context).backgroundColor,
         child: ListTile(
@@ -103,19 +105,29 @@ class _StatsPageState extends State<StatsPage> {
           // ),
           dense: false,
           enabled: true,
-          leading: income ? Icon(
-            CupertinoIcons.money_dollar_circle,
-            color: Theme.of(context).highlightColor,
-            size: 40,
-          ) : SizedBox(child: Image(image: darkModeOn ? AssetImage('assets/images/inoutwhite.png') :AssetImage('assets/images/inoutblack.png') ),height: 40,width: 40,),
+          leading: income
+              ? Icon(
+                  CupertinoIcons.money_dollar_circle,
+                  color: Theme.of(context).highlightColor,
+                  size: 40,
+                )
+              : SizedBox(
+                  child: Image(
+                      image: darkModeOn
+                          ? AssetImage('assets/images/inoutwhite.png')
+                          : AssetImage('assets/images/inoutblack.png')),
+                  height: 40,
+                  width: 40,
+                ),
           title: Text(
-            income ? "From ${history[index].senderMail}\n" : "To ${history[index].receiverMail}\n",
+            income
+                ? "From ${history[index].senderMail}\n"
+                : "To ${history[index].receiverMail}\n",
             style: Theme.of(context).textTheme.headline2,
           ),
 
-
           subtitle: Text(
-            "${readTimestamp(history[index].time.toInt())}",
+            "${format.format(DateTime.fromMillisecondsSinceEpoch(history[index].time.toInt() * 1000))}  ➤ ${readTimestamp(history[index].time.toInt())}",
             style: TextStyle(color: Theme.of(context).highlightColor),
           ),
           trailing: Text(
@@ -161,7 +173,10 @@ class _StatsPageState extends State<StatsPage> {
     return CustomScrollView(slivers: <Widget>[
       SliverList(
           delegate: SliverChildListDelegate([
-        BarChartSample2(),
+        LimitedBox(
+          maxHeight: 300,
+          child: Chart1(transferEmail: widget.transferEmail, transHistory: history,),
+        ),
         Row(
           children: [
             Text(
@@ -180,7 +195,6 @@ class _StatsPageState extends State<StatsPage> {
               groupValue: context.read(Globals.radioIndex).state,
               activeColor: Colors.green,
               onChanged: (val) {
-                print("Radio $val");
                 setSelectedRadio(val);
               },
             ),
@@ -189,7 +203,6 @@ class _StatsPageState extends State<StatsPage> {
               groupValue: context.read(Globals.radioIndex).state,
               activeColor: Colors.blue,
               onChanged: (val) {
-                print("Radio $val");
                 setSelectedRadio(val);
               },
             ),
@@ -198,7 +211,6 @@ class _StatsPageState extends State<StatsPage> {
               groupValue: context.read(Globals.radioIndex).state,
               activeColor: Colors.red,
               onChanged: (val) {
-                print("Radio $val");
                 setSelectedRadio(val);
               },
             ),
