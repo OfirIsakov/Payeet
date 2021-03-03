@@ -150,13 +150,21 @@ func (server *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFrien
 
 // SearchFriend gets a sub mail and returns a stream of mails
 func (server *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
+	// get the claims from ctx.
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
 	mails, err := server.mongoDBWrapper.GetMailsByStart(in.GetSearch())
 	if err != nil {
 		return err
 	}
 
 	for _, mail := range mails {
-		stream.Send(&pb.SearchFriendResponse{Mail: mail})
+		if mail != claims.Email {
+			stream.Send(&pb.SearchFriendResponse{Mail: mail})
+		}
 	}
 
 	return nil
