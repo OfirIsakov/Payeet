@@ -342,7 +342,6 @@ class _Chart1State extends State<Chart1> {
         backgroundColor: Theme.of(context).backgroundColor,
         legend: Legend(isVisible: true, position: LegendPosition.bottom),
         title: ChartTitle(
-            text: "my amazing chart",
             textStyle: TextStyle(color: Theme.of(context).highlightColor)),
         primaryXAxis: CategoryAxis(
             labelStyle: TextStyle(
