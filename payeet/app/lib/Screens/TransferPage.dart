@@ -571,7 +571,16 @@ class _MyFormState extends State<MyForm> {
 
                               _loading = false;
                             });
-                          } catch (e) {
+                          } on FormatException catch (e){
+                            setState(() {
+                              _loading = false;
+                            });
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text('${e.message}, is that number too big?'),
+                              backgroundColor: Colors.red,
+                            ));
+                          } 
+                          catch (e) {
                             setState(() {
                               _loading = false;
                             });
