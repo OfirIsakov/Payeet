@@ -40,6 +40,10 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
+	if user.Activated != true {
+		return nil, status.Errorf(codes.PermissionDenied, "User not verified")
+	}
+
 	accessToken, refreshToken, expiresAt, err := server.GenerateTokens(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
