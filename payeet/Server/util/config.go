@@ -25,6 +25,9 @@ type Config struct {
 	KarmaMultiplierFactor         string `mapstructure:"KARMA_MULTIPLIER_FACTOR"`
 	MinimumRequiredUniqueUsers    string `mapstructure:"KARMA_MINIMUM_REQUIRED_UNIQUE_USERS"`
 	MaximumTransfersToSameUser    string `mapstructure:"KARMA_MAXIMUM_TRANSFERS_TO_SAME_USER"`
+
+	SystemEmail         string `mapstructure:"SYSTEM_EMAIL"`
+	SystemEmailPassword string `mapstructure:"SYSTEM_EMAIL_PASSWORD"`
 }
 
 // LoadConfig is used to load the config from the config file.
@@ -48,6 +51,8 @@ func LoadConfig(path string) (c Config, err error) {
 	c.KarmaMultiplierFactor = os.Getenv("KARMA_MULTIPLIER_FACTOR")
 	c.MinimumRequiredUniqueUsers = os.Getenv("KARMA_MINIMUM_REQUIRED_UNIQUE_USERS")
 	c.MaximumTransfersToSameUser = os.Getenv("KARMA_MAXIMUM_TRANSFERS_TO_SAME_USER")
+	c.SystemEmail = os.Getenv(`mapstructure:"SYSTEM_EMAIL"`)
+	c.SystemEmailPassword = os.Getenv(`mapstructure:"SYSTEM_EMAIL_PASSWORD"`)
 
 	log.Infof("Done! ✅")
 	return

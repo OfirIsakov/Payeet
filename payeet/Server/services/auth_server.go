@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
@@ -20,11 +19,12 @@ import (
 type AuthServer struct {
 	mongoDBWrapper MongoDBWrapper
 	jwtManager     *JWTManager
+	emailManager   *EmailManager
 }
 
 // NewAuthServer creates a new authentication server
-func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager) *AuthServer {
-	return &AuthServer{mongoDBWrapper, jwtManager}
+func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager) *AuthServer {
+	return &AuthServer{mongoDBWrapper, jwtManager, emailManager}
 }
 
 // Login checks if the details are good and sends a new jet token to the user
@@ -50,7 +50,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	// we safely ignore it here
 	server.mongoDBWrapper.DailyBonus(user.Email)
 
-	log.WithFields(logrus.Fields{"email": user.Email}).Info("Login")
+	log.WithFields(log.Fields{"email": user.Email}).Info("Login")
 
 	// sending a new JWT token, expire time, new refresh token.
 	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: expiresAt, RefreshToken: refreshToken}
@@ -125,6 +125,11 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 	err = server.mongoDBWrapper.AddUser(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Something went wrong while creating the user!")
+	}
+
+	server.emailManager.SendVerficationCode(user)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
 	}
 
 	return &pb.StatusResponse{}, nil
