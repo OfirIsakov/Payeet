@@ -47,6 +47,11 @@ message LoginRequest{
     string Password = 2;
 }
 
+message VerifyRequest{
+    string Mail = 1;
+    string code = 2;
+}
+
 
 message LoginResponse{
     string AccessToken = 1;
@@ -107,6 +112,8 @@ service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (StatusResponse);
+
+    rpc Verify(VerifyRequest) returns (StatusResponse);
 }
 
 service payeet{
