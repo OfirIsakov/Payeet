@@ -191,3 +191,21 @@ func (server *AuthServer) GenerateTokens(user *User) (accessToken string, refres
 
 	return
 }
+
+// Verify handles verifying and activating users.
+func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*pb.StatusResponse, error) {
+
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	if user.VerficationCode != req.GetCode() {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
+	}
+
+	user.Activated = true
+
+	return &pb.StatusResponse{}, nil
+}
