@@ -2,7 +2,6 @@ package services
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 	"text/template"
 
@@ -56,11 +55,7 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body.Write([]byte(fmt.Sprintf("Subject: This is a test subject \n%s\n\n", mimeHeaders)))
 
-	code, err := manager.generateNewCode(6)
-
-	if err != nil {
-		return err
-	}
+	code := user.VerficationCode
 
 	t.Execute(&body, struct {
 		Name string
@@ -70,26 +65,9 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 		CODE: code,
 	})
 
-	err = manager.sendEmail([]string{user.Email}, body)
+	err := manager.sendEmail([]string{user.Email}, body)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-const otpChars = "1234567890"
-
-func (manager *EmailManager) generateNewCode(length int) (string, error) {
-	buffer := make([]byte, length)
-	_, err := rand.Read(buffer)
-	if err != nil {
-		return "", err
-	}
-
-	otpCharsLength := len(otpChars)
-	for i := 0; i < length; i++ {
-		buffer[i] = otpChars[int(buffer[i])%otpCharsLength]
-	}
-
-	return string(buffer), nil
 }

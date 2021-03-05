@@ -1,6 +1,7 @@
 package services
 
 import (
+	"crypto/rand"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,6 +20,8 @@ type User struct {
 	Friends              []string `bson:"Friends" json:"Friends"`
 	DailyLoginMultiplier float64  `bson:"DailyLoginMultiplier" json:"DailyLoginMultiplier"`
 	Karma                float64  `bson:"Karma" json:"Karma"`
+	VerficationCode      string   `bson:"VerficationCode" json:"VerficationCode"`
+	Activated            bool     `bson:"Activated" json:"Activated"`
 }
 
 // NewUser returns a new user.
@@ -27,6 +30,12 @@ func NewUser(firstName string, lastName string, email string, password string, R
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("cannot hash password")
+	}
+
+	code, err := generateNewCode(6)
+
+	if err != nil {
+		return nil, fmt.Errorf("cant create verfication code")
 	}
 
 	user := &User{
@@ -40,10 +49,29 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Friends:              []string{},
 		DailyLoginMultiplier: 1.0,
 		Karma:                1.0,
+		VerficationCode:      code,
+		Activated:            false,
 	}
 
 	return user, nil
 
+}
+
+const otpChars = "1234567890"
+
+func generateNewCode(length int) (string, error) {
+	buffer := make([]byte, length)
+	_, err := rand.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+
+	otpCharsLength := len(otpChars)
+	for i := 0; i < length; i++ {
+		buffer[i] = otpChars[int(buffer[i])%otpCharsLength]
+	}
+
+	return string(buffer), nil
 }
 
 func (user *User) validatePassword(password string) error {
