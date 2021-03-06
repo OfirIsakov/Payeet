@@ -38,6 +38,7 @@ func (manager *EmailManager) sendEmail(to []string, body bytes.Buffer) error {
 	// Sending email.
 	err := smtp.SendMail(smtpHost+":"+smtpPort, manager.auth, manager.email, to, body.Bytes())
 	if err != nil {
+		log.Infof("Could not send email to %s", to)
 		return err
 	}
 
@@ -48,7 +49,11 @@ func (manager *EmailManager) sendEmail(to []string, body bytes.Buffer) error {
 // SendVerficationCode sends the given user an email with code.
 func (manager *EmailManager) SendVerficationCode(user *User) error {
 
-	t, _ := template.ParseFiles("mail_templates/template.html")
+	t, err := template.ParseFiles("mail_templates//template.html")
+
+	if err != nil {
+		return err
+	}
 
 	var body bytes.Buffer
 
@@ -65,9 +70,10 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 		CODE: code,
 	})
 
-	err := manager.sendEmail([]string{user.Email}, body)
+	err = manager.sendEmail([]string{user.Email}, body)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

@@ -95,6 +95,8 @@ func (user *User) Clone() *User {
 		Friends:              user.Friends,
 		DailyLoginMultiplier: user.DailyLoginMultiplier,
 		Karma:                user.Karma,
+		VerficationCode:      user.VerficationCode,
+		Activated:            user.Activated,
 	}
 }
 
@@ -112,6 +114,8 @@ func (user *User) ToBson() bson.D {
 		{Key: "Friends", Value: user.Friends},
 		{Key: "DailyLoginMultiplier", Value: user.DailyLoginMultiplier},
 		{Key: "Karma", Value: user.Karma},
+		{Key: "VerficationCode", Value: user.VerficationCode},
+		{Key: "Activated", Value: user.Activated},
 	}
 
 	return a
