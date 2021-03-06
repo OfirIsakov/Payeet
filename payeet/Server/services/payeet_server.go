@@ -284,13 +284,18 @@ func (server *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequ
 		return users[i].Balance > users[j].Balance
 	})
 
-	respons := []*pb.UserInfoResponse{}
+	response := []*pb.UserInfoResponse{}
 
+	// Append the user to the response list, empty if less than 3 users in the DB
 	for i := 0; i < 3; i++ {
-		respons = append(respons, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, User_ID: users[i].Email})
+		if i >= len(users) {
+			response = append(response, &pb.UserInfoResponse{FirstName: "", LastName: "", User_ID: ""})
+		} else {
+			response = append(response, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, User_ID: users[i].Email})
+		}
 	}
 
-	return &pb.TopUsersResponse{Users: respons}, nil
+	return &pb.TopUsersResponse{Users: response}, nil
 }
 
 // GetFiveFriendsTransfers returns the 5 latest friend's transactions of the user
