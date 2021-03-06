@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:Payeet/globals.dart';
 import 'package:Payeet/UI_Elements/confirm.dart';
 import 'package:Payeet/secure_storage.dart';
+import 'package:Payeet/grpc/helpers.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           Text(
-              "${Globals.client.getCachedFirstName} ${Globals.client.getCachedLastName}",
+              "${Globals.client.getCachedFirstName.capitalize()} ${Globals.client.getCachedLastName.capitalize()}",
               style: Theme.of(context).textTheme.bodyText1),
 
           Text(Globals.client.getCachedUserID,
