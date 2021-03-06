@@ -322,7 +322,7 @@ class _MyFormState extends State<MyForm> {
                                     _loading = false;
                                   });
 
-                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content:
                                         Text('[${e.codeName}] ${e.message}'),
                                     backgroundColor: Colors.red,

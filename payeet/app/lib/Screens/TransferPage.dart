@@ -201,7 +201,7 @@ class _TransferPageState extends State<TransferPage> {
                                                   .removeAt(index);
                                             });
                                           } catch (e) {
-                                            Scaffold.of(context)
+                                            ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                               content: Text(
                                                   '[${e.codeName}] ${e.message}'),
@@ -329,7 +329,7 @@ class _TransferPageState extends State<TransferPage> {
                                                           .removeAt(index);
                                                     });
                                                   } catch (e) {
-                                                    Scaffold.of(context)
+                                                    ScaffoldMessenger.of(context)
                                                         .showSnackBar(SnackBar(
                                                       content: Text(
                                                           '[${e.codeName}] ${e.message}'),
@@ -559,7 +559,7 @@ class _MyFormState extends State<MyForm> {
                                 emailControler.text,
                                 int.parse(amountControler.text));
 
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Transfered successfully'),
                               backgroundColor: Colors.green,
                             ));
@@ -575,7 +575,7 @@ class _MyFormState extends State<MyForm> {
                             setState(() {
                               _loading = false;
                             });
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('${e.message}, is that number too big?'),
                               backgroundColor: Colors.red,
                             ));
@@ -584,14 +584,11 @@ class _MyFormState extends State<MyForm> {
                             setState(() {
                               _loading = false;
                             });
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('[${e.codeName}] ${e.message}'),
                               backgroundColor: Colors.red,
                             ));
                           }
-                          // If the form is valid, display a Snackbar.
-                          // Scaffold.of(context)
-                          //     .showSnackBar(SnackBar(content: Text('Processing Data')));
 
                           Navigator.of(context).pop();
                           return true;
@@ -647,7 +644,7 @@ class _SearchFriendState extends State<SearchFriend> {
           leading: CircleAvatar(
             backgroundImage: AssetImage('assets/images/avatar.png'),
           ),
-          trailing: FlatButton(
+          trailing: TextButton(
               onPressed: () async {
                 showDialog(
                   context: context,
@@ -666,12 +663,12 @@ class _SearchFriendState extends State<SearchFriend> {
                         });
 
                         await Globals.client.getUserInfo();
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('Added successfully'),
                           backgroundColor: Colors.green,
                         ));
                       } catch (e) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('[${e.codeName}] ${e.message}'),
                           backgroundColor: Colors.red,
                         ));

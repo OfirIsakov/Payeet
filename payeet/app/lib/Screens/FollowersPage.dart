@@ -36,7 +36,7 @@ class _FollowersPageState extends State<FollowersPage> {
                         style:
                             TextStyle(color: Theme.of(context).highlightColor),
                       ),
-                      trailing: FlatButton(
+                      trailing: TextButton(
                           onPressed: () async {
                             try {
                               await Globals.client.addFriend(
@@ -45,12 +45,12 @@ class _FollowersPageState extends State<FollowersPage> {
                                 Globals.client.getCachedFriends.add(
                                     Globals.client.getCachedFollowers[index]);
                               });
-                              Scaffold.of(context).showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Added successfully'),
                                 backgroundColor: Colors.green,
                               ));
                             } catch (e) {
-                              Scaffold.of(context).showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('[${e.codeName}] ${e.message}'),
                                 backgroundColor: Colors.red,
                               ));
