@@ -111,7 +111,7 @@ func (server *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequ
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Mail: user.Email}, nil
 }
 
 // AddFriend adds a friend to the user
@@ -289,9 +289,9 @@ func (server *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequ
 	// Append the user to the response list, empty if less than 3 users in the DB
 	for i := 0; i < 3; i++ {
 		if i >= len(users) {
-			response = append(response, &pb.UserInfoResponse{FirstName: "", LastName: "", User_ID: ""})
+			response = append(response, &pb.UserInfoResponse{FirstName: "", LastName: "", Mail: ""})
 		} else {
-			response = append(response, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, User_ID: users[i].Email})
+			response = append(response, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, Mail: users[i].Email})
 		}
 	}
 

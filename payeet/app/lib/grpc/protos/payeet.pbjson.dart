@@ -92,7 +92,7 @@ const UserInfoResponse$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'User_ID', '3': 4, '4': 1, '5': 9, '10': 'UserID'},
+    const {'1': 'Mail', '3': 4, '4': 1, '5': 9, '10': 'Mail'},
   ],
 };
 
@@ -135,7 +135,7 @@ const GetFriendsResponse$json = const {
 const SearchFriendRequest$json = const {
   '1': 'SearchFriendRequest',
   '2': const [
-    const {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+    const {'1': 'Search', '3': 1, '4': 1, '5': 9, '10': 'Search'},
   ],
 };
 
@@ -149,7 +149,7 @@ const SearchFriendResponse$json = const {
 const TopUsersResponse$json = const {
   '1': 'TopUsersResponse',
   '2': const [
-    const {'1': 'users', '3': 1, '4': 3, '5': 11, '6': '.payeet.UserInfoResponse', '10': 'users'},
+    const {'1': 'Users', '3': 1, '4': 3, '5': 11, '6': '.payeet.UserInfoResponse', '10': 'Users'},
   ],
 };
 

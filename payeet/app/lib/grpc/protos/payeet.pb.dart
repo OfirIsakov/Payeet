@@ -542,7 +542,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UserInfoResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
     ..hasRequiredFields = false
   ;
 
@@ -588,13 +588,13 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   void clearLastName() => clearField(2);
 
   @$pb.TagNumber(4)
-  $core.String get userID => $_getSZ(2);
+  $core.String get mail => $_getSZ(2);
   @$pb.TagNumber(4)
-  set userID($core.String v) { $_setString(2, v); }
+  set mail($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(4)
-  $core.bool hasUserID() => $_has(2);
+  $core.bool hasMail() => $_has(2);
   @$pb.TagNumber(4)
-  void clearUserID() => clearField(4);
+  void clearMail() => clearField(4);
 }
 
 class AddFriendRequest extends $pb.GeneratedMessage {
@@ -813,7 +813,7 @@ class GetFriendsResponse extends $pb.GeneratedMessage {
 
 class SearchFriendRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SearchFriendRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'search')
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Search', protoName: 'Search')
     ..hasRequiredFields = false
   ;
 
@@ -891,7 +891,7 @@ class SearchFriendResponse extends $pb.GeneratedMessage {
 
 class TopUsersResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TopUsersResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
-    ..pc<UserInfoResponse>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'users', $pb.PbFieldType.PM, subBuilder: UserInfoResponse.create)
+    ..pc<UserInfoResponse>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Users', $pb.PbFieldType.PM, protoName: 'Users', subBuilder: UserInfoResponse.create)
     ..hasRequiredFields = false
   ;
 
