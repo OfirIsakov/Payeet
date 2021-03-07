@@ -59,7 +59,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                             child: Text(
-                              Globals.client.getTopUsers[1].mail,
+                            Globals.client.getTopUsers[1].mail.length > 0 ? Globals.client.getTopUsers[1].mail: " ", // need a space so the layout wont break, flutter limitations
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).highlightColor),
@@ -81,7 +81,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                               child: Text(
-                            Globals.client.getTopUsers[0].mail,
+                            Globals.client.getTopUsers[0].mail.length > 0 ? Globals.client.getTopUsers[0].mail: " ", // need a space so the layout wont break, flutter limitations
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).highlightColor),
@@ -111,7 +111,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                               child: Text(
-                            Globals.client.getTopUsers[2].mail,
+                            Globals.client.getTopUsers[2].mail.length > 0 ? Globals.client.getTopUsers[2].mail: " ", // need a space so the layout wont break, flutter limitations
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).highlightColor),
