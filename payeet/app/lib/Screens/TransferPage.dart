@@ -253,22 +253,19 @@ class _TransferPageState extends State<TransferPage> {
                                                   'assets/images/avatar.png'),
                                             ),
                                           ),
-                                          Stack(
-                                            alignment: Alignment.center,
-                                            overflow: Overflow.visible,
-                                            children: [
-                                              RichText(
-                                                  text: TextSpan(
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .accentColor),
-                                                text:
-                                                    "${Globals.client.getCachedFriends[index]}\n",
-                                              )),
-                                            ],
+
+                                          Center(
+                                            child: RichText(
+                                                text: TextSpan(
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline2
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
+                                              text:
+                                                  "${Globals.client.getCachedFriends[index]}\n",
+                                            )),
                                           ),
                                         ],
                                       ),
@@ -329,7 +326,8 @@ class _TransferPageState extends State<TransferPage> {
                                                           .removeAt(index);
                                                     });
                                                   } catch (e) {
-                                                    ScaffoldMessenger.of(context)
+                                                    ScaffoldMessenger.of(
+                                                            context)
                                                         .showSnackBar(SnackBar(
                                                       content: Text(
                                                           '[${e.codeName}] ${e.message}'),
@@ -494,9 +492,7 @@ class _MyFormState extends State<MyForm> {
               return null;
             },
           ),
-
           SizedBox(height: 25.0),
-
           TextFormField(
             focusNode: widget.amountNode,
             textInputAction: TextInputAction.done,
@@ -571,16 +567,16 @@ class _MyFormState extends State<MyForm> {
 
                               _loading = false;
                             });
-                          } on FormatException catch (e){
+                          } on FormatException catch (e) {
                             setState(() {
                               _loading = false;
                             });
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('${e.message}, is that number too big?'),
+                              content:
+                                  Text('${e.message}, is that number too big?'),
                               backgroundColor: Colors.red,
                             ));
-                          } 
-                          catch (e) {
+                          } catch (e) {
                             setState(() {
                               _loading = false;
                             });
