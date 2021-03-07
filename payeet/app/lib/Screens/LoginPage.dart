@@ -1,10 +1,12 @@
 import 'package:Payeet/Screens/RegisterPage.dart';
+import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 import 'AppBase.dart';
 
 class LoginPage extends StatefulWidget {
@@ -75,6 +77,7 @@ class _MyFormState extends State<MyForm> {
           setState(() {
             _loading = true;
           });
+
           await Globals.client
               .login(emailControler.text, passwordControler.text);
 
@@ -83,15 +86,24 @@ class _MyFormState extends State<MyForm> {
               return AppBase();
             }),
           );
-        } catch (e) {
+        } on GrpcError catch (e) {
           setState(() {
             _loading = false;
           });
 
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('[${e.codeName}] ${e.message}'),
-            backgroundColor: Colors.red,
-          ));
+          if (e.code == 7) {
+            // permission denied
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) {
+                return VerifyPage(emailControler.text, passwordControler.text);
+              }),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('[${e.codeName}] ${e.message}'),
+              backgroundColor: Colors.red,
+            ));
+          }
         }
       }
     }

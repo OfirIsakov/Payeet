@@ -201,7 +201,7 @@ class _TransferPageState extends State<TransferPage> {
                                                   .removeAt(index);
                                             });
                                           } catch (e) {
-                                            Scaffold.of(context)
+                                            ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                               content: Text(
                                                   '[${e.codeName}] ${e.message}'),
@@ -253,22 +253,19 @@ class _TransferPageState extends State<TransferPage> {
                                                   'assets/images/avatar.png'),
                                             ),
                                           ),
-                                          Stack(
-                                            alignment: Alignment.center,
-                                            overflow: Overflow.visible,
-                                            children: [
-                                              RichText(
-                                                  text: TextSpan(
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2
-                                                    .copyWith(
-                                                        color: Theme.of(context)
-                                                            .accentColor),
-                                                text:
-                                                    "${Globals.client.getCachedFriends[index]}\n",
-                                              )),
-                                            ],
+
+                                          Center(
+                                            child: RichText(
+                                                text: TextSpan(
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline2
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
+                                              text:
+                                                  "${Globals.client.getCachedFriends[index]}\n",
+                                            )),
                                           ),
                                         ],
                                       ),
@@ -329,7 +326,8 @@ class _TransferPageState extends State<TransferPage> {
                                                           .removeAt(index);
                                                     });
                                                   } catch (e) {
-                                                    Scaffold.of(context)
+                                                    ScaffoldMessenger.of(
+                                                            context)
                                                         .showSnackBar(SnackBar(
                                                       content: Text(
                                                           '[${e.codeName}] ${e.message}'),
@@ -494,9 +492,7 @@ class _MyFormState extends State<MyForm> {
               return null;
             },
           ),
-
           SizedBox(height: 25.0),
-
           TextFormField(
             focusNode: widget.amountNode,
             textInputAction: TextInputAction.done,
@@ -559,7 +555,7 @@ class _MyFormState extends State<MyForm> {
                                 emailControler.text,
                                 int.parse(amountControler.text));
 
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Transfered successfully'),
                               backgroundColor: Colors.green,
                             ));
@@ -571,27 +567,24 @@ class _MyFormState extends State<MyForm> {
 
                               _loading = false;
                             });
-                          } on FormatException catch (e){
+                          } on FormatException catch (e) {
                             setState(() {
                               _loading = false;
                             });
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('${e.message}, is that number too big?'),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content:
+                                  Text('${e.message}, is that number too big?'),
                               backgroundColor: Colors.red,
                             ));
-                          } 
-                          catch (e) {
+                          } catch (e) {
                             setState(() {
                               _loading = false;
                             });
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('[${e.codeName}] ${e.message}'),
                               backgroundColor: Colors.red,
                             ));
                           }
-                          // If the form is valid, display a Snackbar.
-                          // Scaffold.of(context)
-                          //     .showSnackBar(SnackBar(content: Text('Processing Data')));
 
                           Navigator.of(context).pop();
                           return true;
@@ -647,7 +640,7 @@ class _SearchFriendState extends State<SearchFriend> {
           leading: CircleAvatar(
             backgroundImage: AssetImage('assets/images/avatar.png'),
           ),
-          trailing: FlatButton(
+          trailing: TextButton(
               onPressed: () async {
                 showDialog(
                   context: context,
@@ -666,12 +659,12 @@ class _SearchFriendState extends State<SearchFriend> {
                         });
 
                         await Globals.client.getUserInfo();
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('Added successfully'),
                           backgroundColor: Colors.green,
                         ));
                       } catch (e) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('[${e.codeName}] ${e.message}'),
                           backgroundColor: Colors.red,
                         ));

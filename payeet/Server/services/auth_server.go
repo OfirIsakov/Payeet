@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
@@ -20,11 +19,12 @@ import (
 type AuthServer struct {
 	mongoDBWrapper MongoDBWrapper
 	jwtManager     *JWTManager
+	emailManager   *EmailManager
 }
 
 // NewAuthServer creates a new authentication server
-func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager) *AuthServer {
-	return &AuthServer{mongoDBWrapper, jwtManager}
+func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager) *AuthServer {
+	return &AuthServer{mongoDBWrapper, jwtManager, emailManager}
 }
 
 // Login checks if the details are good and sends a new jet token to the user
@@ -40,6 +40,10 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
+	if user.Activated != true {
+		return nil, status.Errorf(codes.PermissionDenied, "User not verified")
+	}
+
 	accessToken, refreshToken, expiresAt, err := server.GenerateTokens(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
@@ -50,7 +54,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	// we safely ignore it here
 	server.mongoDBWrapper.DailyBonus(user.Email)
 
-	log.WithFields(logrus.Fields{"email": user.Email}).Info("Login")
+	log.WithFields(log.Fields{"email": user.Email}).Info("Login")
 
 	// sending a new JWT token, expire time, new refresh token.
 	res := &pb.LoginResponse{AccessToken: accessToken, ExpiresOn: expiresAt, RefreshToken: refreshToken}
@@ -127,6 +131,11 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		return nil, status.Errorf(codes.Internal, "Something went wrong while creating the user!")
 	}
 
+	err = server.emailManager.SendVerficationCode(user)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+	}
+
 	return &pb.StatusResponse{}, nil
 }
 
@@ -181,4 +190,25 @@ func (server *AuthServer) GenerateTokens(user *User) (accessToken string, refres
 	expiresAt = userClaims.ExpiresAt
 
 	return
+}
+
+// Verify handles verifying and activating users.
+func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*pb.StatusResponse, error) {
+
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	if user.VerficationCode != req.GetCode() {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
+	}
+
+	err = server.mongoDBWrapper.ActivateUser(user.Email)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Activation failed")
+	}
+
+	return &pb.StatusResponse{}, nil
 }

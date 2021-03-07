@@ -49,14 +49,15 @@ func main() {
 	mongoDBWrapper.Connect()
 	defer mongoDBWrapper.Disconnect()
 	mongoDBWrapper.CheckConnection()
-	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
+	jwtManager, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
+	emailManager := services.NewEmailManager(config.SystemEmail, config.SystemEmailPassword)
 
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
-	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManger)
-	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManger)
+	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManager, emailManager)
+	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManager)
 
 	mongoDBWrapper.SetBonuses(
 		config.BaseDailyBonus,
@@ -67,7 +68,7 @@ func main() {
 		config.MinimumRequiredUniqueUsers,
 		config.MaximumTransfersToSameUser)
 
-	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
+	interceptor := services.NewAuthInterceptor(jwtManager, accessibleRoles())
 	srv := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)

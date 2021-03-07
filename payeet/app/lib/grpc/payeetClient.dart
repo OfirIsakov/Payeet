@@ -1,3 +1,4 @@
+import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:fixnum/fixnum.dart';
 
 import 'package:grpc/grpc.dart';
@@ -177,6 +178,14 @@ class PayeetClient {
   Future<StatusResponse> addFriend(String mail) async {
     final response =
         await _authenticatedClient.addFriend(AddFriendRequest()..mail = mail);
+
+    return response;
+  }
+
+  Future<StatusResponse> verify(String code, String mail) async {
+    final response = await _unauthenticatedClient.verify(VerifyRequest()
+      ..code = code
+      ..mail = mail);
 
     return response;
   }

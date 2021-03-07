@@ -1,15 +1,10 @@
-import 'dart:ffi';
-
 import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
-import '../main.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -303,10 +298,6 @@ class _MyFormState extends State<MyForm> {
                                   setState(() {
                                     _loading = true;
                                   });
-                                  print(firstNameController.text);
-                                  print(lastNameController.text);
-                                  print(emailController.text);
-                                  print(passwordController.text);
                                   await Globals.client.register(
                                       firstNameController.text,
                                       lastNameController.text,
@@ -322,7 +313,7 @@ class _MyFormState extends State<MyForm> {
                                     _loading = false;
                                   });
 
-                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content:
                                         Text('[${e.codeName}] ${e.message}'),
                                     backgroundColor: Colors.red,
