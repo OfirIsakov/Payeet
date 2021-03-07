@@ -63,6 +63,7 @@ type DBWrapper interface {
 	CalculateNewKarma(mail string) (float64, error)
 
 	GetFiveFriendsTransfers(mail string) ([]*Transaction, error)
+	ActivateUser(mail string) error
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -271,6 +272,11 @@ func (store *MongoDBWrapper) SetRefreshToken(mail string, refreshToken string) e
 //SetBalance sets the balance field.
 func (store *MongoDBWrapper) SetBalance(mail string, balance int) error {
 	return store.ChangeFieldValue(mail, "Balance", balance)
+}
+
+//ActivateUser sets the balance field.
+func (store *MongoDBWrapper) ActivateUser(mail string) error {
+	return store.ChangeFieldValue(mail, "Activated", true)
 }
 
 //ChangeFieldValue sets a new value in the given field name

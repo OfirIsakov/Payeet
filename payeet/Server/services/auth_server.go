@@ -205,7 +205,10 @@ func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*p
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
 	}
 
-	user.Activated = true
+	err = server.mongoDBWrapper.ActivateUser(user.Email)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Activation failed")
+	}
 
 	return &pb.StatusResponse{}, nil
 }
