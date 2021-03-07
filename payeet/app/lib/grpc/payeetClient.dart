@@ -161,7 +161,7 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _userID = response.userID;
+    _userID = response.mail;
 
     return response;
   }

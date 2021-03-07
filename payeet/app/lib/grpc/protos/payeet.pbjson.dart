@@ -107,17 +107,6 @@ const LoginRequest$json = const {
 
 /// Descriptor for `LoginRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List loginRequestDescriptor = $convert.base64Decode('CgxMb2dpblJlcXVlc3QSEgoETWFpbBgBIAEoCVIETWFpbBIaCghQYXNzd29yZBgCIAEoCVIIUGFzc3dvcmQ=');
-@$core.Deprecated('Use verifyRequestDescriptor instead')
-const VerifyRequest$json = const {
-  '1': 'VerifyRequest',
-  '2': const [
-    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
-    const {'1': 'code', '3': 2, '4': 1, '5': 9, '10': 'code'},
-  ],
-};
-
-/// Descriptor for `VerifyRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List verifyRequestDescriptor = $convert.base64Decode('Cg1WZXJpZnlSZXF1ZXN0EhIKBE1haWwYASABKAlSBE1haWwSEgoEY29kZRgCIAEoCVIEY29kZQ==');
 @$core.Deprecated('Use loginResponseDescriptor instead')
 const LoginResponse$json = const {
   '1': 'LoginResponse',
@@ -143,12 +132,12 @@ const UserInfoResponse$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'User_ID', '3': 4, '4': 1, '5': 9, '10': 'UserID'},
+    const {'1': 'Mail', '3': 4, '4': 1, '5': 9, '10': 'Mail'},
   ],
 };
 
 /// Descriptor for `UserInfoResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List userInfoResponseDescriptor = $convert.base64Decode('ChBVc2VySW5mb1Jlc3BvbnNlEhwKCUZpcnN0TmFtZRgBIAEoCVIJRmlyc3ROYW1lEhoKCExhc3ROYW1lGAIgASgJUghMYXN0TmFtZRIXCgdVc2VyX0lEGAQgASgJUgZVc2VySUQ=');
+final $typed_data.Uint8List userInfoResponseDescriptor = $convert.base64Decode('ChBVc2VySW5mb1Jlc3BvbnNlEhwKCUZpcnN0TmFtZRgBIAEoCVIJRmlyc3ROYW1lEhoKCExhc3ROYW1lGAIgASgJUghMYXN0TmFtZRISCgRNYWlsGAQgASgJUgRNYWls');
 @$core.Deprecated('Use addFriendRequestDescriptor instead')
 const AddFriendRequest$json = const {
   '1': 'AddFriendRequest',
@@ -207,12 +196,12 @@ final $typed_data.Uint8List getFriendsResponseDescriptor = $convert.base64Decode
 const SearchFriendRequest$json = const {
   '1': 'SearchFriendRequest',
   '2': const [
-    const {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+    const {'1': 'Search', '3': 1, '4': 1, '5': 9, '10': 'Search'},
   ],
 };
 
 /// Descriptor for `SearchFriendRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List searchFriendRequestDescriptor = $convert.base64Decode('ChNTZWFyY2hGcmllbmRSZXF1ZXN0EhYKBnNlYXJjaBgBIAEoCVIGc2VhcmNo');
+final $typed_data.Uint8List searchFriendRequestDescriptor = $convert.base64Decode('ChNTZWFyY2hGcmllbmRSZXF1ZXN0EhYKBlNlYXJjaBgBIAEoCVIGU2VhcmNo');
 @$core.Deprecated('Use searchFriendResponseDescriptor instead')
 const SearchFriendResponse$json = const {
   '1': 'SearchFriendResponse',
@@ -227,12 +216,12 @@ final $typed_data.Uint8List searchFriendResponseDescriptor = $convert.base64Deco
 const TopUsersResponse$json = const {
   '1': 'TopUsersResponse',
   '2': const [
-    const {'1': 'users', '3': 1, '4': 3, '5': 11, '6': '.payeet.UserInfoResponse', '10': 'users'},
+    const {'1': 'Users', '3': 1, '4': 3, '5': 11, '6': '.payeet.UserInfoResponse', '10': 'Users'},
   ],
 };
 
 /// Descriptor for `TopUsersResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List topUsersResponseDescriptor = $convert.base64Decode('ChBUb3BVc2Vyc1Jlc3BvbnNlEi4KBXVzZXJzGAEgAygLMhgucGF5ZWV0LlVzZXJJbmZvUmVzcG9uc2VSBXVzZXJz');
+final $typed_data.Uint8List topUsersResponseDescriptor = $convert.base64Decode('ChBUb3BVc2Vyc1Jlc3BvbnNlEi4KBVVzZXJzGAEgAygLMhgucGF5ZWV0LlVzZXJJbmZvUmVzcG9uc2VSBVVzZXJz');
 @$core.Deprecated('Use topUsersRequestDescriptor instead')
 const TopUsersRequest$json = const {
   '1': 'TopUsersRequest',
@@ -240,3 +229,14 @@ const TopUsersRequest$json = const {
 
 /// Descriptor for `TopUsersRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List topUsersRequestDescriptor = $convert.base64Decode('Cg9Ub3BVc2Vyc1JlcXVlc3Q=');
+@$core.Deprecated('Use verifyRequestDescriptor instead')
+const VerifyRequest$json = const {
+  '1': 'VerifyRequest',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'code', '3': 2, '4': 1, '5': 9, '10': 'code'},
+  ],
+};
+
+/// Descriptor for `VerifyRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List verifyRequestDescriptor = $convert.base64Decode('Cg1WZXJpZnlSZXF1ZXN0EhIKBE1haWwYASABKAlSBE1haWwSEgoEY29kZRgCIAEoCVIEY29kZQ==');

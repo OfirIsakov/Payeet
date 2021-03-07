@@ -47,11 +47,6 @@ message LoginRequest{
     string Password = 2;
 }
 
-message VerifyRequest{
-    string Mail = 1;
-    string code = 2;
-}
-
 
 message LoginResponse{
     string AccessToken = 1;
@@ -67,7 +62,7 @@ message UserInfoRequest{
 message UserInfoResponse{
     string FirstName = 1;
     string LastName = 2;
-    string User_ID = 4;
+    string Mail = 4;
 }
 
 message AddFriendRequest{
@@ -93,7 +88,7 @@ message GetFriendsResponse{
 }
 
 message SearchFriendRequest{
-    string search = 1;
+    string Search = 1;
 }
 
 message SearchFriendResponse{
@@ -101,18 +96,22 @@ message SearchFriendResponse{
 }
 
 message TopUsersResponse{
-    repeated UserInfoResponse users = 1;
+    repeated UserInfoResponse Users = 1;
 }
 
 message TopUsersRequest{
 
 }
 
+message VerifyRequest{
+    string Mail = 1;
+    string code = 2;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (StatusResponse);
-
     rpc Verify(VerifyRequest) returns (StatusResponse);
 }
 
