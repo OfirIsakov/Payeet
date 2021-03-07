@@ -158,8 +158,8 @@ class _VerifyPageState extends State<VerifyPage> {
                           blurRadius: 10,
                         )
                       ],
-                      onCompleted: (v) {
-                        print("Completed");
+                      onCompleted: (v) async {
+                        await _verify();
                       },
                       // onTap: () {
                       //   print("Pressed");
@@ -216,21 +216,7 @@ class _VerifyPageState extends State<VerifyPage> {
                   height: 50,
                   child: TextButton(
                     onPressed: () async {
-                      formKey.currentState.validate();
-
-                      try {
-                        await Globals.client.verify(currentText, widget.email);
-                        setState(() {
-                          hasError = false;
-                        });
-                        login();
-                      } catch (e) {
-                        errorController.add(ErrorAnimationType
-                            .shake); // Triggering error shake animation
-                        setState(() {
-                          hasError = true;
-                        });
-                      }
+                      await _verify();
                     },
                     child: Center(
                         child: Text(
@@ -243,15 +229,15 @@ class _VerifyPageState extends State<VerifyPage> {
                   ),
                 ),
                 decoration: BoxDecoration(
-                    color: Colors.green.shade300,
-                    borderRadius: BorderRadius.circular(5),
+                    color: Color(0xff01A0C7),
+                    borderRadius: BorderRadius.circular(30.0),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.green.shade200,
+                          color: Colors.blue.shade200,
                           offset: Offset(1, -2),
                           blurRadius: 5),
                       BoxShadow(
-                          color: Colors.green.shade200,
+                          color: Colors.blue.shade200,
                           offset: Offset(-1, 2),
                           blurRadius: 5)
                     ]),
@@ -283,5 +269,23 @@ class _VerifyPageState extends State<VerifyPage> {
         ),
       ),
     );
+  }
+
+  Future _verify() async {
+    formKey.currentState.validate();
+
+    try {
+      await Globals.client.verify(currentText, widget.email);
+      setState(() {
+        hasError = false;
+      });
+      login();
+    } catch (e) {
+      errorController
+          .add(ErrorAnimationType.shake); // Triggering error shake animation
+      setState(() {
+        hasError = true;
+      });
+    }
   }
 }
