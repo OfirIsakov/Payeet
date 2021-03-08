@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 
 	"net/smtp"
@@ -49,7 +50,7 @@ func (manager *EmailManager) sendEmail(to []string, body bytes.Buffer) error {
 // SendVerficationCode sends the given user an email with code.
 func (manager *EmailManager) SendVerficationCode(user *User) error {
 
-	t, err := template.ParseFiles("mail_templates//template.html")
+	verficationCodeTemplate, err := template.ParseFiles("mail_templates//template.html")
 
 	if err != nil {
 		return err
@@ -62,12 +63,40 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 
 	code := user.VerficationCode
 
-	t.Execute(&body, struct {
+	verficationCodeTemplate.Execute(&body, struct {
 		Name string
 		CODE string
 	}{
-		Name: user.FirstName + user.LastName,
+		Name: strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
 		CODE: code,
+	})
+
+	err = manager.sendEmail([]string{user.Email}, body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SendNewLoginMessage sends the given user a mail that a login from a new device occurred
+func (manager *EmailManager) SendNewLoginMessage(user *User) error {
+
+	newLoginTemplate, err := template.ParseFiles("mail_templates//new_login_template.html")
+
+	if err != nil {
+		return err
+	}
+
+	var body bytes.Buffer
+
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: New Device Login \n%s\n\n", mimeHeaders)))
+
+	newLoginTemplate.Execute(&body, struct {
+		Name string
+	}{
+		Name: strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
 	})
 
 	err = manager.sendEmail([]string{user.Email}, body)
