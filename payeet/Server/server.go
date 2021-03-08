@@ -22,6 +22,7 @@ func accessibleRoles() map[string][]string {
 		path + "TransferBalance": {"user"},
 		path + "GetBalance":      {"user"},
 		path + "SearchFriend":    {"user"},
+		path + "GetTopUsers":     {"user"},
 	}
 
 }
@@ -32,30 +33,42 @@ func init() {
 	if err := godotenv.Load("config.env"); err != nil {
 		log.Warning("No .env file found")
 	}
+
+	// log debuglevel or higher
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
-	log.SetLevel(log.DebugLevel)
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
-	userStore := services.NewMongoUserStore(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection)
+	mongoDBWrapper := services.NewMongoDBWrapper(config.ConnectionString, config.DBName, config.UserCollection, config.TransactionCollection, config.LogsCollection)
 	log.Info("Connecting to DB...")
-	userStore.Connect()
-	defer userStore.Disconnect()
-	userStore.CheckConnection()
-	jwtManger, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
+	mongoDBWrapper.Connect()
+	defer mongoDBWrapper.Disconnect()
+	mongoDBWrapper.CheckConnection()
+	jwtManager, err := services.NewJWTManager(config.AccessTokenDuration, config.RefreshTokenDuration, config.AccessTokenKey, config.RefreshTokenKey)
+	emailManager := services.NewEmailManager(config.SystemEmail, config.SystemEmailPassword)
 
 	if err != nil {
 		log.Fatal("❌\n", err)
 	}
 
-	authServer := services.NewAuthServer(userStore, jwtManger)
-	logic := services.NewPayeetServer(userStore, jwtManger)
+	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManager, emailManager)
+	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManager)
 
-	interceptor := services.NewAuthInterceptor(jwtManger, accessibleRoles())
+	mongoDBWrapper.SetBonuses(
+		config.BaseDailyBonus,
+		config.StreakDailyBonus,
+		config.MinimumRequiredTransferDays,
+		config.MinimumRequiredTransferAmount,
+		config.KarmaMultiplierFactor,
+		config.MinimumRequiredUniqueUsers,
+		config.MaximumTransfersToSameUser)
+
+	interceptor := services.NewAuthInterceptor(jwtManager, accessibleRoles())
 	srv := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.Unary()),
 	)
@@ -65,15 +78,22 @@ func main() {
 	reflection.Register(srv)
 
 	log.Infof("Starting server on port [%s]", config.Port)
-	lis, err := net.Listen("tcp", ":"+config.Port)
+	listener, err := net.Listen("tcp", ":"+config.Port)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Done! ✅")
 
 	log.Info("Serving... 🥳")
-	if e := srv.Serve(lis); e != nil {
-		log.Fatal("❌\n", e)
+	log.Info("All logs now will be logged to the MongoDB database!... 📃")
+	log.SetOutput(mongoDBWrapper)
+
+	// start logging as JSON
+	log.SetFormatter(&log.JSONFormatter{})
+
+	log.Info("Server up")
+	if err := srv.Serve(listener); err != nil {
+		log.Fatal("❌\n", err)
 	}
 
 }

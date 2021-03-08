@@ -264,6 +264,35 @@ class HistoryRequest extends $pb.GeneratedMessage {
   void clearSenderMail() => clearField(1);
 }
 
+class FiveFriendsHistoryRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'FiveFriendsHistoryRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  FiveFriendsHistoryRequest._() : super();
+  factory FiveFriendsHistoryRequest() => create();
+  factory FiveFriendsHistoryRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FiveFriendsHistoryRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FiveFriendsHistoryRequest clone() => FiveFriendsHistoryRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FiveFriendsHistoryRequest copyWith(void Function(FiveFriendsHistoryRequest) updates) => super.copyWith((message) => updates(message as FiveFriendsHistoryRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static FiveFriendsHistoryRequest create() => FiveFriendsHistoryRequest._();
+  FiveFriendsHistoryRequest createEmptyInstance() => create();
+  static $pb.PbList<FiveFriendsHistoryRequest> createRepeated() => $pb.PbList<FiveFriendsHistoryRequest>();
+  @$core.pragma('dart2js:noInline')
+  static FiveFriendsHistoryRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FiveFriendsHistoryRequest>(create);
+  static FiveFriendsHistoryRequest _defaultInstance;
+}
+
 class HistoryResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HistoryResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'SenderMail', protoName: 'SenderMail')
@@ -376,6 +405,7 @@ class LoginRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LoginRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Password', protoName: 'Password')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Identifier', protoName: 'Identifier')
     ..hasRequiredFields = false
   ;
 
@@ -419,6 +449,15 @@ class LoginRequest extends $pb.GeneratedMessage {
   $core.bool hasPassword() => $_has(1);
   @$pb.TagNumber(2)
   void clearPassword() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get identifier => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set identifier($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasIdentifier() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearIdentifier() => clearField(3);
 }
 
 class LoginResponse extends $pb.GeneratedMessage {
@@ -513,7 +552,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UserInfoResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
-    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'UserID', protoName: 'User_ID')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
     ..hasRequiredFields = false
   ;
 
@@ -559,13 +598,13 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   void clearLastName() => clearField(2);
 
   @$pb.TagNumber(4)
-  $core.String get userID => $_getSZ(2);
+  $core.String get mail => $_getSZ(2);
   @$pb.TagNumber(4)
-  set userID($core.String v) { $_setString(2, v); }
+  set mail($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(4)
-  $core.bool hasUserID() => $_has(2);
+  $core.bool hasMail() => $_has(2);
   @$pb.TagNumber(4)
-  void clearUserID() => clearField(4);
+  void clearMail() => clearField(4);
 }
 
 class AddFriendRequest extends $pb.GeneratedMessage {
@@ -784,7 +823,7 @@ class GetFriendsResponse extends $pb.GeneratedMessage {
 
 class SearchFriendRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SearchFriendRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'search')
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Search', protoName: 'Search')
     ..hasRequiredFields = false
   ;
 
@@ -858,5 +897,116 @@ class SearchFriendResponse extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(0);
   @$pb.TagNumber(1)
   void clearMail() => clearField(1);
+}
+
+class TopUsersResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TopUsersResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..pc<UserInfoResponse>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Users', $pb.PbFieldType.PM, protoName: 'Users', subBuilder: UserInfoResponse.create)
+    ..hasRequiredFields = false
+  ;
+
+  TopUsersResponse._() : super();
+  factory TopUsersResponse() => create();
+  factory TopUsersResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory TopUsersResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  TopUsersResponse clone() => TopUsersResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  TopUsersResponse copyWith(void Function(TopUsersResponse) updates) => super.copyWith((message) => updates(message as TopUsersResponse)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static TopUsersResponse create() => TopUsersResponse._();
+  TopUsersResponse createEmptyInstance() => create();
+  static $pb.PbList<TopUsersResponse> createRepeated() => $pb.PbList<TopUsersResponse>();
+  @$core.pragma('dart2js:noInline')
+  static TopUsersResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TopUsersResponse>(create);
+  static TopUsersResponse _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<UserInfoResponse> get users => $_getList(0);
+}
+
+class TopUsersRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TopUsersRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  TopUsersRequest._() : super();
+  factory TopUsersRequest() => create();
+  factory TopUsersRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory TopUsersRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  TopUsersRequest clone() => TopUsersRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  TopUsersRequest copyWith(void Function(TopUsersRequest) updates) => super.copyWith((message) => updates(message as TopUsersRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static TopUsersRequest create() => TopUsersRequest._();
+  TopUsersRequest createEmptyInstance() => create();
+  static $pb.PbList<TopUsersRequest> createRepeated() => $pb.PbList<TopUsersRequest>();
+  @$core.pragma('dart2js:noInline')
+  static TopUsersRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TopUsersRequest>(create);
+  static TopUsersRequest _defaultInstance;
+}
+
+class VerifyRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'VerifyRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'code')
+    ..hasRequiredFields = false
+  ;
+
+  VerifyRequest._() : super();
+  factory VerifyRequest() => create();
+  factory VerifyRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory VerifyRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  VerifyRequest clone() => VerifyRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  VerifyRequest copyWith(void Function(VerifyRequest) updates) => super.copyWith((message) => updates(message as VerifyRequest)); // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static VerifyRequest create() => VerifyRequest._();
+  VerifyRequest createEmptyInstance() => create();
+  static $pb.PbList<VerifyRequest> createRepeated() => $pb.PbList<VerifyRequest>();
+  @$core.pragma('dart2js:noInline')
+  static VerifyRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<VerifyRequest>(create);
+  static VerifyRequest _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get mail => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set mail($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMail() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMail() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get code => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set code($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasCode() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCode() => clearField(2);
 }
 

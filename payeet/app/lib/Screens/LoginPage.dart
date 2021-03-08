@@ -1,15 +1,13 @@
-import 'dart:ffi';
-
 import 'package:Payeet/Screens/RegisterPage.dart';
+import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
-import '../main.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grpc/grpc_connection_interface.dart';
+import 'AppBase.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -79,33 +77,34 @@ class _MyFormState extends State<MyForm> {
           setState(() {
             _loading = true;
           });
-          print(emailControler.text);
-          print(passwordControler.text);
+
           await Globals.client
               .login(emailControler.text, passwordControler.text);
-          context.read(Globals.selectedIndex).state = 0;
-          context.read(Globals.radioIndex).state = 1;
-          context.read(Globals.transfer_email).state = "";
-          await Globals.client.getUserInfo();
-          Globals.client.getFriends();
+
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) {
               return AppBase();
             }),
           );
-        } catch (e) {
+        } on GrpcError catch (e) {
           setState(() {
             _loading = false;
           });
 
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('[${e.codeName}] ${e.message}'),
-            backgroundColor: Colors.red,
-          ));
+          if (e.code == 7) {
+            // permission denied
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) {
+                return VerifyPage(emailControler.text, passwordControler.text);
+              }),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('[${e.codeName}] ${e.message}'),
+              backgroundColor: Colors.red,
+            ));
+          }
         }
-        // If the form is valid, display a Snackbar.
-        // Scaffold.of(context)
-        //     .showSnackBar(SnackBar(content: Text('Processing Data')));
       }
     }
 
@@ -116,6 +115,7 @@ class _MyFormState extends State<MyForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
+                autocorrect: false,
                 controller: emailControler,
                 style: style,
                 textInputAction: TextInputAction.next,
@@ -141,8 +141,8 @@ class _MyFormState extends State<MyForm> {
                 },
               ),
               SizedBox(height: 25.0),
-
               TextFormField(
+                autocorrect: false,
                 textInputAction: TextInputAction.send,
                 onFieldSubmitted: (s) {
                   login();
@@ -170,22 +170,6 @@ class _MyFormState extends State<MyForm> {
                   return null;
                 },
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              //   child: ElevatedButton(
-              //     onPressed: () {
-              //       // Validate returns true if the form is valid, or false
-              //       // otherwise.
-              //       if (_formKey.currentState.validate()) {
-              //         // If the form is valid, display a Snackbar.
-              //         Scaffold.of(context)
-              //             .showSnackBar(SnackBar(content: Text('Processing Data')));
-              //       }
-              //     },
-              //     child: Text('Submit'),
-              //   ),
-              // ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Material(
@@ -204,8 +188,7 @@ class _MyFormState extends State<MyForm> {
                             style: style.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold))
-                        : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-                        CupertinoActivityIndicator(),
+                        : CupertinoActivityIndicator(),
                   ),
                 ),
               ),

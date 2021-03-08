@@ -1,8 +1,11 @@
+import 'package:Payeet/Screens/FollowersPage.dart';
 import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Payeet/globals.dart';
 import 'package:Payeet/UI_Elements/confirm.dart';
+import 'package:Payeet/secure_storage.dart';
+import 'package:Payeet/grpc/helpers.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -36,11 +39,35 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           Text(
-              "${Globals.client.getCachedFirstName} ${Globals.client.getCachedLastName}",
+              "${Globals.client.getCachedFirstName.capitalize()} ${Globals.client.getCachedLastName.capitalize()}",
               style: Theme.of(context).textTheme.bodyText1),
 
           Text(Globals.client.getCachedUserID,
               style: Theme.of(context).textTheme.subtitle1),
+
+          GestureDetector(
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  Text("Followers", style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).highlightColor),),
+                  Text("${Globals.client.getCachedFollowers.length}", style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).highlightColor),),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("Following",style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).highlightColor),),
+                  Text("${Globals.client.getCachedFriends.length}", style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).highlightColor),),
+                ],
+              )
+            ],
+          ),
+          onTap: () async{
+            await Globals.client.fetchFollowers();
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FollowersPage()));
+          },
+          ),
 
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 50),
@@ -57,13 +84,15 @@ class _UserPageState extends State<UserPage> {
                       builder: (_) => ConfirmDialog(
                           danger: true,
                           title: 'Log out?',
-                          content: Text( "Are you sure you want to log out?"),
+                          content: Text("Are you sure you want to log out?"),
                           cancelFunction: () {
                             Navigator.of(context).pop();
                             return false;
                           },
                           actionText: Text('logout'),
                           actionFunction: () async {
+                            SecureStorage
+                                .deleteSecureData('refreshToken');
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) {
                                 return LoginPage();

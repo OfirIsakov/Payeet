@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "galil-maaravi-802-payeet/payeet/Server/protos"
+	"sort"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -14,28 +15,28 @@ import (
 
 // PayeetServer is the logic for the server
 type PayeetServer struct {
-	userStore  UserStore
-	jwtManager *JWTManager
+	mongoDBWrapper MongoDBWrapper
+	jwtManager     *JWTManager
 }
 
 // NewPayeetServer creates a logic server
-func NewPayeetServer(userStore UserStore, jwtManager *JWTManager) *PayeetServer {
-	return &PayeetServer{userStore, jwtManager}
+func NewPayeetServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager) *PayeetServer {
+	return &PayeetServer{mongoDBWrapper, jwtManager}
 }
 
 // GetBalance returns the blances of the user.
-func (s *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*pb.BalanceResponse, error) {
+func (server *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*pb.BalanceResponse, error) {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(ctx)
+	claims, err := server.jwtManager.ExtractClaims(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "%v", err)
+		return nil, err
 	}
 
 	// get the balance of the user with the email from claims.
-	balance, err := s.userStore.GetBalance(claims.Email)
+	balance, err := server.mongoDBWrapper.GetBalance(claims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cant get balance")
+		return nil, status.Errorf(codes.Internal, "Something went wrong while fetching balance!")
 	}
 
 	log.WithFields(log.Fields{"balance": balance, "user": claims.Email}).Info()
@@ -43,91 +44,86 @@ func (s *PayeetServer) GetBalance(ctx context.Context, in *pb.BalanceRequest) (*
 }
 
 // TransferBalance moves balance from one user to another.
-func (s *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferRequest) (*pb.StatusResponse, error) {
+func (server *PayeetServer) TransferBalance(ctx context.Context, in *pb.TransferRequest) (*pb.StatusResponse, error) {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(ctx)
+	claims, err := server.jwtManager.ExtractClaims(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "%v", err)
+		return nil, err
 	}
 
 	if in.GetReceiverMail() == claims.Email {
-		return nil, status.Errorf(codes.InvalidArgument, "same mail used.")
+		return nil, status.Errorf(codes.InvalidArgument, "Same mail used")
 	}
 
 	// get the balance of the user with the email from claims.
-	senderBalance, err := s.userStore.GetBalance(claims.Email)
+	senderBalance, err := server.mongoDBWrapper.GetBalance(claims.Email)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cant get balance")
+		return nil, status.Errorf(codes.Internal, "Cant get balance")
 	}
 
 	if int(in.GetAmount()) < 0 {
-		return nil, status.Errorf(codes.InvalidArgument, "amount cant be below zero")
+		return nil, status.Errorf(codes.InvalidArgument, "Amount cant be below zero")
 	}
 
 	if senderBalance >= int(in.GetAmount()) {
-
-		recvBalance, err := s.userStore.GetBalance(in.GetReceiverMail())
+		recvBalance, err := server.mongoDBWrapper.GetBalance(in.GetReceiverMail())
 		if err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "no such user.")
+			return nil, status.Errorf(codes.InvalidArgument, "No such user")
 		}
 
 		senderBalance = senderBalance - int(in.GetAmount())
 		recvBalance = recvBalance + int(in.GetAmount())
 
 		// create a doc in the transaction collecion.
-		t := &Transaction{
+		transaction := &Transaction{
 			Sender:   claims.Email,
 			Receiver: in.GetReceiverMail(),
 			Amount:   int(in.GetAmount()),
 			Time:     time.Now().Unix()}
 
-		s.userStore.AddTransaction(t)
+		server.mongoDBWrapper.AddTransaction(transaction)
 
 		// update the fields.
-		s.userStore.SetBalance(in.GetReceiverMail(), recvBalance)
-		s.userStore.SetBalance(claims.Email, senderBalance)
+		server.mongoDBWrapper.SetBalance(in.GetReceiverMail(), recvBalance)
+		server.mongoDBWrapper.SetBalance(claims.Email, senderBalance)
 
-		log.WithFields(log.Fields{"ReceiverBalance": recvBalance, "SenderBalance": senderBalance, "Sender": claims.Email, "Receiver": in.GetReceiverMail()}).Infof("transfered $%v", in.GetAmount())
-
-		//log.Infof("➤ transfered $%v \n%s --> %s", in.GetAmount(), claims.Email, in.GetReceiverMail())
+		log.WithFields(log.Fields{"ReceiverBalance": recvBalance, "SenderBalance": senderBalance, "Sender": claims.Email, "Receiver": in.GetReceiverMail(), "Amount": in.GetAmount()}).Infof("Transfered")
 
 	} else {
-		log.Println("Transfer aborted insufficient balance in " + claims.Email + "'s account")
-
-		return nil, status.Errorf(codes.Aborted, "insufficient balance")
+		return nil, status.Errorf(codes.Aborted, "Insufficient balance")
 	}
 
 	return &pb.StatusResponse{}, nil
 }
 
 // GetUserInfo returns the blances of the user.
-func (s *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) (*pb.UserInfoResponse, error) {
+func (server *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequest) (*pb.UserInfoResponse, error) {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(ctx)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "")
-	}
-
-	user, err := s.userStore.GetUserByEmail(claims.Email)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "")
-	}
-
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, User_ID: user.Email}, nil
-}
-
-// AddFriend adds a friend to the user
-func (s *PayeetServer) AddFriend(ctx context.Context, in *pb.AddFriendRequest) (*pb.StatusResponse, error) {
-
-	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(ctx)
+	claims, err := server.jwtManager.ExtractClaims(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = s.userStore.AddFriend(claims.Email, in.GetMail())
+	user, err := server.mongoDBWrapper.GetUserByEmail(claims.Email)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "")
+	}
+
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Mail: user.Email}, nil
+}
+
+// AddFriend adds a friend to the user
+func (server *PayeetServer) AddFriend(ctx context.Context, in *pb.AddFriendRequest) (*pb.StatusResponse, error) {
+
+	// get the claims from ctx.
+	claims, err := server.jwtManager.ExtractClaims(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = server.mongoDBWrapper.AddFriend(claims.Email, in.GetMail())
 	if err != nil {
 		return nil, err
 	}
@@ -136,15 +132,15 @@ func (s *PayeetServer) AddFriend(ctx context.Context, in *pb.AddFriendRequest) (
 }
 
 // RemoveFriend removes a friend from the user
-func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequest) (*pb.StatusResponse, error) {
+func (server *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequest) (*pb.StatusResponse, error) {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(ctx)
+	claims, err := server.jwtManager.ExtractClaims(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = s.userStore.RemoveFriend(claims.Email, in.GetMail())
+	err = server.mongoDBWrapper.RemoveFriend(claims.Email, in.GetMail())
 	if err != nil {
 		return nil, err
 	}
@@ -152,31 +148,38 @@ func (s *PayeetServer) RemoveFriend(ctx context.Context, in *pb.RemoveFriendRequ
 	return &pb.StatusResponse{}, nil
 }
 
-
 // SearchFriend gets a sub mail and returns a stream of mails
-func (s *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
-	mails, err := s.userStore.GetMailsByStart(in.GetSearch())
+func (server *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.Payeet_SearchFriendServer) error {
+	// get the claims from ctx.
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	mails, err := server.mongoDBWrapper.GetMailsByStart(in.GetSearch())
 	if err != nil {
 		return err
 	}
 
 	for _, mail := range mails {
-		stream.Send(&pb.SearchFriendResponse{Mail: mail})
+		if mail != claims.Email {
+			stream.Send(&pb.SearchFriendResponse{Mail: mail})
+		}
 	}
 
 	return nil
 }
 
-// GetFullSelfHistory is a function that sends the full message history of the user in a stream
-func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullSelfHistoryServer) error {
+// GetFullHistory sends the full message history of the user if the requster is him or someone that follows him
+func (server *PayeetServer) GetFullHistory(in *pb.HistoryRequest, stream pb.Payeet_GetFullHistoryServer) error {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
 	if err != nil {
 		return err
 	}
 
-	user, err := s.userStore.GetUserByEmail(claims.Email)
+	user, err := server.mongoDBWrapper.GetUserByEmail(claims.Email)
 	if err != nil {
 		return err
 	}
@@ -199,8 +202,8 @@ func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payee
 	}
 
 	// get the full history of the user
-	senderTransfers, senderErr := s.userStore.GetSenderHistory(in.SenderMail)
-	receiverTransfers, receiverErr := s.userStore.GetReceiverHistory(in.SenderMail)
+	senderTransfers, senderErr := server.mongoDBWrapper.GetSenderHistory(in.SenderMail)
+	receiverTransfers, receiverErr := server.mongoDBWrapper.GetReceiverHistory(in.SenderMail)
 
 	// if both of the functions gave an error return the first one
 	if senderErr != nil && receiverErr != nil {
@@ -222,15 +225,15 @@ func (s *PayeetServer) GetFullSelfHistory(in *pb.HistoryRequest, stream pb.Payee
 }
 
 // GetFriends returns all the user's friends as a stream
-func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_GetFriendsServer) error {
+func (server *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_GetFriendsServer) error {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
 	if err != nil {
 		return status.Errorf(codes.Internal, err.Error())
 	}
 
-	user, err := s.userStore.GetUserByEmail(claims.Email)
+	user, err := server.mongoDBWrapper.GetUserByEmail(claims.Email)
 	if err != nil {
 		return status.Errorf(codes.Internal, err.Error())
 	}
@@ -246,15 +249,15 @@ func (s *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payeet_Get
 }
 
 // GetFollowers returns a stream of all the users that follow the requeseter
-func (s *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet_GetFollowersServer) error {
+func (server *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet_GetFollowersServer) error {
 
 	// get the claims from ctx.
-	claims, err := s.jwtManager.ExtractClaims(stream.Context())
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
 	if err != nil {
 		return err
 	}
 
-	followers, err := s.userStore.GetFollowers(claims.Email)
+	followers, err := server.mongoDBWrapper.GetFollowers(claims.Email)
 	if err != nil {
 		return err
 	}
@@ -269,3 +272,48 @@ func (s *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.Payeet
 	return nil
 }
 
+// GetTopUsers returns the 3 users with the most balance in the database.
+func (server *PayeetServer) GetTopUsers(ctx context.Context, in *pb.TopUsersRequest) (*pb.TopUsersResponse, error) {
+
+	users, err := server.mongoDBWrapper.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	sort.Slice(users, func(i, j int) bool {
+		return users[i].Balance > users[j].Balance
+	})
+
+	response := []*pb.UserInfoResponse{}
+
+	// Append the user to the response list, empty if less than 3 users in the DB
+	for i := 0; i < 3; i++ {
+		if i >= len(users) {
+			response = append(response, &pb.UserInfoResponse{FirstName: "", LastName: "", Mail: ""})
+		} else {
+			response = append(response, &pb.UserInfoResponse{FirstName: users[i].FirstName, LastName: users[i].LastName, Mail: users[i].Email})
+		}
+	}
+
+	return &pb.TopUsersResponse{Users: response}, nil
+}
+
+// GetFiveFriendsTransfers returns the 5 latest friend's transactions of the user
+func (server *PayeetServer) GetFiveFriendsTransfers(in *pb.FiveFriendsHistoryRequest, stream pb.Payeet_GetFiveFriendsTransfersServer) error {
+	// get the claims from ctx.
+	claims, err := server.jwtManager.ExtractClaims(stream.Context())
+	if err != nil {
+		return err
+	}
+
+	transactions, err := server.mongoDBWrapper.GetFiveFriendsTransfers(claims.Email)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	for _, transaction := range transactions {
+		stream.Send(&pb.HistoryResponse{SenderMail: transaction.Sender, ReceiverMail: transaction.Receiver, Amount: int32(transaction.Amount), Time: transaction.Time})
+	}
+
+	return nil
+}

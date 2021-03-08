@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:device_info/device_info.dart';
+import 'package:flutter/services.dart';
 
 import 'package:grpc/grpc.dart';
 import 'package:grpc/service_api.dart' as $grpc;
@@ -8,7 +13,10 @@ import 'dart:async';
 import 'protos/payeet.pb.dart';
 import 'protos/payeet.pbgrpc.dart';
 
+import '../secure_storage.dart';
+
 class PayeetClient {
+  final SecureStorage secureStorage = SecureStorage();
   final PayeetChannel channel;
 
   String _accessToken;
@@ -27,6 +35,10 @@ class PayeetClient {
   String _firstName;
   String _lastName;
   List<String> _friends;
+  List<String> _followers;
+
+  List<UserInfoResponse> _topUsers;
+
   String _userID;
 
   // ctor
@@ -42,14 +54,33 @@ class PayeetClient {
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
   List<String> get getCachedFriends => _friends;
+  List<String> get getCachedFollowers => _followers;
+  List<UserInfoResponse> get getTopUsers => _topUsers;
   String get getCachedUserID => _userID;
 
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
+
+    String identifier = '';
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        identifier = build.androidId;  //UUID for Android
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        identifier = data.identifierForVendor;  //UUID for iOS
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+
+    print(identifier);
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
-        ..password = password);
+        ..password = password
+        ..identifier = identifier);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
@@ -58,6 +89,8 @@ class PayeetClient {
     tokenExpiresOn = response.expiresOn;
     _refreshToken = response.refreshToken;
 
+    await SecureStorage.writeSecureData('refreshToken', _refreshToken);
+
     channel.setAccessTokenMetadata(_accessToken);
     _authenticatedClient =
         payeetClient(channel); // create the authenticated client
@@ -65,6 +98,33 @@ class PayeetClient {
     await getUserInfo();
 
     return response;
+  }
+
+  Future<bool> loginWithRefresh() async {
+    _refreshToken = await SecureStorage.readSecureData('refreshToken');
+    LoginResponse response;
+
+    try {
+      response = await _unauthenticatedClient
+          .refreshToken(RefreshTokenRequest()..refreshToken = _refreshToken);
+    } catch (e) {
+      //rethrow; // cant login so throw the error
+      return false;
+    }
+
+    _accessToken = response.accessToken;
+    tokenExpiresOn = response.expiresOn;
+    _refreshToken = response.refreshToken;
+
+    await SecureStorage.writeSecureData('refreshToken', _refreshToken);
+
+    channel.setAccessTokenMetadata(_accessToken);
+    _authenticatedClient =
+        payeetClient(channel); // create the authenticated client
+
+    await getUserInfo();
+
+    return true;
   }
 
   Future<StatusResponse> register(
@@ -82,7 +142,14 @@ class PayeetClient {
 
   ResponseStream<HistoryResponse> getTransferHistory(String mail) {
     final response = _authenticatedClient
-        .getFullSelfHistory(HistoryRequest()..senderMail = mail);
+        .getFullHistory(HistoryRequest()..senderMail = mail);
+
+    return response;
+  }
+
+  ResponseStream<SearchFriendResponse> searchFriend(String text) {
+    final response =
+        _authenticatedClient.searchFriend(SearchFriendRequest()..search = text);
 
     return response;
   }
@@ -114,7 +181,7 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _userID = response.userID;
+    _userID = response.mail;
 
     return response;
   }
@@ -135,6 +202,14 @@ class PayeetClient {
     return response;
   }
 
+  Future<StatusResponse> verify(String code, String mail) async {
+    final response = await _unauthenticatedClient.verify(VerifyRequest()
+      ..code = code
+      ..mail = mail);
+
+    return response;
+  }
+
   Future<StatusResponse> removeFriend(String mail) async {
     final response = await _authenticatedClient
         .removeFriend(RemoveFriendRequest()..mail = mail);
@@ -142,9 +217,22 @@ class PayeetClient {
     return response;
   }
 
-  void getFriends() async{
-    List<GetFriendsResponse> d = await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
+  Future<void> getFriends() async {
+    List<GetFriendsResponse> d =
+        await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
     _friends = d.map((e) => e.mail).toList();
+  }
+
+  Future<void> fetchFollowers() async {
+    var d =
+        await _authenticatedClient.getFollowers(GetFollowersRequest()).toList();
+    _followers = d.map((e) => e.mail).toList();
+  }
+
+  Future<void> fetchTopUsers() async {
+    final response = await _authenticatedClient.getTopUsers(TopUsersRequest());
+
+    this._topUsers = response.users;
   }
 }
 

@@ -41,12 +41,6 @@ class _HomePageState extends State<HomePage> {
                       "Balance",
                       style: style,
                     ),
-
-                    // Text(
-                    //   "\$${_getBalance()}",
-                    //   style: Theme.of(context).textTheme.bodyText1,
-                    // ),
-
                     DefaultTextStyle(
                       style: Theme.of(context).textTheme.bodyText1,
                       textAlign: TextAlign.center,

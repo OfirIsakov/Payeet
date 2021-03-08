@@ -45,6 +45,10 @@ const HistoryRequest$json = const {
   ],
 };
 
+const FiveFriendsHistoryRequest$json = const {
+  '1': 'FiveFriendsHistoryRequest',
+};
+
 const HistoryResponse$json = const {
   '1': 'HistoryResponse',
   '2': const [
@@ -67,6 +71,7 @@ const LoginRequest$json = const {
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
     const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
+    const {'1': 'Identifier', '3': 3, '4': 1, '5': 9, '10': 'Identifier'},
   ],
 };
 
@@ -88,7 +93,7 @@ const UserInfoResponse$json = const {
   '2': const [
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
-    const {'1': 'User_ID', '3': 4, '4': 1, '5': 9, '10': 'UserID'},
+    const {'1': 'Mail', '3': 4, '4': 1, '5': 9, '10': 'Mail'},
   ],
 };
 
@@ -131,7 +136,7 @@ const GetFriendsResponse$json = const {
 const SearchFriendRequest$json = const {
   '1': 'SearchFriendRequest',
   '2': const [
-    const {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+    const {'1': 'Search', '3': 1, '4': 1, '5': 9, '10': 'Search'},
   ],
 };
 
@@ -139,6 +144,25 @@ const SearchFriendResponse$json = const {
   '1': 'SearchFriendResponse',
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+
+const TopUsersResponse$json = const {
+  '1': 'TopUsersResponse',
+  '2': const [
+    const {'1': 'Users', '3': 1, '4': 3, '5': 11, '6': '.payeet.UserInfoResponse', '10': 'Users'},
+  ],
+};
+
+const TopUsersRequest$json = const {
+  '1': 'TopUsersRequest',
+};
+
+const VerifyRequest$json = const {
+  '1': 'VerifyRequest',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'code', '3': 2, '4': 1, '5': 9, '10': 'code'},
   ],
 };
 
