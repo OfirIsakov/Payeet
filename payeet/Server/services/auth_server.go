@@ -49,6 +49,21 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
+	// logging the device identifier
+	if len(req.GetIdentifier()) == 0 {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	isNew, err := server.mongoDBWrapper.CheckIdentifier(req.GetMail(), req.GetIdentifier())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	if isNew {
+		err = server.mongoDBWrapper.AddIdentifier(req.GetMail(), req.GetIdentifier())
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+	}
+
 	// grant user his daily bonus if he should
 	// the function returns an error if it shouldnt add the bonus,
 	// we safely ignore it here

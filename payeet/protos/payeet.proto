@@ -45,6 +45,7 @@ message RefreshTokenRequest{
 message LoginRequest{
     string Mail = 1;
     string Password = 2;
+    string Identifier = 3;
 }
 
 

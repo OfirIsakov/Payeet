@@ -64,6 +64,9 @@ type DBWrapper interface {
 
 	GetFiveFriendsTransfers(mail string) ([]*Transaction, error)
 	ActivateUser(mail string) error
+
+	CheckIdentifier(mail, identifier string) (bool, error)
+	AddIdentifier(mail, identifier string) error
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -657,4 +660,46 @@ func (store *MongoDBWrapper) GetFiveFriendsTransfers(mail string) ([]*Transactio
 	}
 
 	return transactions, nil
+}
+
+// CheckIdentifier will check if the given device identifier was logged before, true if yes else false
+func (store *MongoDBWrapper) CheckIdentifier(mail, identifier string) (bool, error) {
+
+	user, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return false, err
+	}
+
+	// Check if the identifier was seen before
+	for _, loggedIdentifier := range user.Identifiers {
+		if loggedIdentifier == identifier {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+// AddIdentifier will add the given identifier to the DB
+func (store *MongoDBWrapper) AddIdentifier(mail, identifier string) error {
+
+	user, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return err
+	}
+
+	// check if identifier already exists
+	for _, loggedIdentifier := range user.Friends {
+		if loggedIdentifier == identifier {
+			return status.Errorf(codes.Aborted, "Identifier was already logged!")
+		}
+	}
+
+	user.Identifiers = append(user.Identifiers, identifier)
+
+	err = store.ChangeFieldValue(mail, "Identifiers", user.Identifiers)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

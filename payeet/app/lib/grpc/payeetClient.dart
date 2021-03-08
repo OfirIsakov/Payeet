@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:device_info/device_info.dart';
+import 'package:flutter/services.dart';
 
 import 'package:grpc/grpc.dart';
 import 'package:grpc/service_api.dart' as $grpc;
@@ -57,10 +61,26 @@ class PayeetClient {
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
 
+    String identifier = '';
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        identifier = build.androidId;  //UUID for Android
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        identifier = data.identifierForVendor;  //UUID for iOS
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+
+    print(identifier);
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
-        ..password = password);
+        ..password = password
+        ..identifier = identifier);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
