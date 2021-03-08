@@ -50,7 +50,7 @@ func (manager *EmailManager) sendEmail(to []string, body bytes.Buffer) error {
 // SendVerficationCode sends the given user an email with code.
 func (manager *EmailManager) SendVerficationCode(user *User) error {
 
-	t, err := template.ParseFiles("mail_templates//template.html")
+	verficationCodeTemplate, err := template.ParseFiles("mail_templates//template.html")
 
 	if err != nil {
 		return err
@@ -63,11 +63,11 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 
 	code := user.VerficationCode
 
-	t.Execute(&body, struct {
+	verficationCodeTemplate.Execute(&body, struct {
 		Name string
 		CODE string
 	}{
-		Name: user.FirstName + user.LastName,
+		Name: strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
 		CODE: code,
 	})
 
