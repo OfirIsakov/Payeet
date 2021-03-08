@@ -58,6 +58,12 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 	if isNew {
+		// send the user that a new device was recorded, dont log the user in if it fails to send
+		err = server.emailManager.SendNewLoginMessage(user)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+		// add the device to the DB
 		err = server.mongoDBWrapper.AddIdentifier(req.GetMail(), req.GetIdentifier())
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "Something went wrong!")
