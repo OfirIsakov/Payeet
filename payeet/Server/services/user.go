@@ -22,6 +22,7 @@ type User struct {
 	Karma                float64  `bson:"Karma" json:"Karma"`
 	VerficationCode      string   `bson:"VerficationCode" json:"VerficationCode"`
 	Activated            bool     `bson:"Activated" json:"Activated"`
+	Identifiers          []string `bson:"Identifiers" json:"Identifiers"`
 }
 
 // NewUser returns a new user.
@@ -51,6 +52,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Karma:                1.0,
 		VerficationCode:      code,
 		Activated:            false,
+		Identifiers:          []string{},
 	}
 
 	return user, nil
@@ -97,6 +99,7 @@ func (user *User) Clone() *User {
 		Karma:                user.Karma,
 		VerficationCode:      user.VerficationCode,
 		Activated:            user.Activated,
+		Identifiers:          user.Identifiers,
 	}
 }
 
@@ -116,6 +119,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Karma", Value: user.Karma},
 		{Key: "VerficationCode", Value: user.VerficationCode},
 		{Key: "Activated", Value: user.Activated},
+		{Key: "Identifiers", Value: user.Identifiers},
 	}
 
 	return a
