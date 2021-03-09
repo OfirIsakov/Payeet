@@ -109,11 +109,16 @@ message VerifyRequest{
     string code = 2;
 }
 
+message CodeRequest{
+    string Mail = 1;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (StatusResponse);
     rpc Verify(VerifyRequest) returns (StatusResponse);
+    rpc GetVerifyCode(CodeRequest) returns (StatusResponse);
 }
 
 service payeet{

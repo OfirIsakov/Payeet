@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: payeet.proto
 //
-// @dart = 2.3
+// @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:async' as $async;
@@ -33,31 +33,41 @@ class payeet_authClient extends $grpc.Client {
           '/payeet.payeet_auth/Verify',
           ($0.VerifyRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
+  static final _$getVerifyCode =
+      $grpc.ClientMethod<$0.CodeRequest, $0.StatusResponse>(
+          '/payeet.payeet_auth/GetVerifyCode',
+          ($0.CodeRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.StatusResponse.fromBuffer(value));
 
   payeet_authClient($grpc.ClientChannel channel,
-      {$grpc.CallOptions options,
-      $core.Iterable<$grpc.ClientInterceptor> interceptors})
+      {$grpc.CallOptions? options,
+      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
       : super(channel, options: options, interceptors: interceptors);
 
   $grpc.ResponseFuture<$0.LoginResponse> login($0.LoginRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$login, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.LoginResponse> refreshToken(
       $0.RefreshTokenRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$refreshToken, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> register($0.RegisterRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$register, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> verify($0.VerifyRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$verify, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.StatusResponse> getVerifyCode($0.CodeRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getVerifyCode, request, options: options);
   }
 }
 
@@ -94,6 +104,13 @@ abstract class payeet_authServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.VerifyRequest.fromBuffer(value),
         ($0.StatusResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.CodeRequest, $0.StatusResponse>(
+        'GetVerifyCode',
+        getVerifyCode_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.CodeRequest.fromBuffer(value),
+        ($0.StatusResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.LoginResponse> login_Pre(
@@ -116,6 +133,11 @@ abstract class payeet_authServiceBase extends $grpc.Service {
     return verify(call, await request);
   }
 
+  $async.Future<$0.StatusResponse> getVerifyCode_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.CodeRequest> request) async {
+    return getVerifyCode(call, await request);
+  }
+
   $async.Future<$0.LoginResponse> login(
       $grpc.ServiceCall call, $0.LoginRequest request);
   $async.Future<$0.LoginResponse> refreshToken(
@@ -124,6 +146,8 @@ abstract class payeet_authServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.RegisterRequest request);
   $async.Future<$0.StatusResponse> verify(
       $grpc.ServiceCall call, $0.VerifyRequest request);
+  $async.Future<$0.StatusResponse> getVerifyCode(
+      $grpc.ServiceCall call, $0.CodeRequest request);
 }
 
 class payeetClient extends $grpc.Client {
@@ -192,41 +216,41 @@ class payeetClient extends $grpc.Client {
               $0.HistoryResponse.fromBuffer(value));
 
   payeetClient($grpc.ClientChannel channel,
-      {$grpc.CallOptions options,
-      $core.Iterable<$grpc.ClientInterceptor> interceptors})
+      {$grpc.CallOptions? options,
+      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
       : super(channel, options: options, interceptors: interceptors);
 
   $grpc.ResponseFuture<$0.UserInfoResponse> getUserInfo(
       $0.UserInfoRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getUserInfo, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.BalanceResponse> getBalance($0.BalanceRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getBalance, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> transferBalance(
       $0.TransferRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$transferBalance, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> addFriend($0.AddFriendRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$addFriend, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StatusResponse> removeFriend(
       $0.RemoveFriendRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$removeFriend, request, options: options);
   }
 
   $grpc.ResponseStream<$0.GetFollowersResponse> getFollowers(
       $0.GetFollowersRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createStreamingCall(
         _$getFollowers, $async.Stream.fromIterable([request]),
         options: options);
@@ -234,7 +258,7 @@ class payeetClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.GetFriendsResponse> getFriends(
       $0.GetFriendsRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createStreamingCall(
         _$getFriends, $async.Stream.fromIterable([request]),
         options: options);
@@ -242,7 +266,7 @@ class payeetClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.SearchFriendResponse> searchFriend(
       $0.SearchFriendRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createStreamingCall(
         _$searchFriend, $async.Stream.fromIterable([request]),
         options: options);
@@ -250,7 +274,7 @@ class payeetClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.HistoryResponse> getFullHistory(
       $0.HistoryRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createStreamingCall(
         _$getFullHistory, $async.Stream.fromIterable([request]),
         options: options);
@@ -258,13 +282,13 @@ class payeetClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.TopUsersResponse> getTopUsers(
       $0.TopUsersRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getTopUsers, request, options: options);
   }
 
   $grpc.ResponseStream<$0.HistoryResponse> getFiveFriendsTransfers(
       $0.FiveFriendsHistoryRequest request,
-      {$grpc.CallOptions options}) {
+      {$grpc.CallOptions? options}) {
     return $createStreamingCall(
         _$getFiveFriendsTransfers, $async.Stream.fromIterable([request]),
         options: options);
