@@ -5,6 +5,7 @@ import (
 	"net"
 	"regexp"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -232,4 +233,47 @@ func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*p
 	}
 
 	return &pb.StatusResponse{}, nil
+}
+
+// GetVerifyCode send the user a new code to their mail, if they are not on timeout.
+func (server *AuthServer) GetVerifyCode(ctx context.Context, req *pb.CodeRequest) (*pb.StatusResponse, error) {
+
+	// get the user from the mail
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	// check if the user is not on timeout
+
+	if userOnTimeout(user) {
+		return nil, status.Errorf(codes.Unavailable, "please wait between requests")
+	}
+
+	// generate a new verification code.
+	user.VerficationCode, err = generateNewCode(6)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "something went worng")
+	}
+	server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
+	server.mongoDBWrapper.ResetLastCodeRequest(req.GetMail())
+
+	// send the user a mail with a new verification code.
+	err = server.emailManager.SendVerficationCode(user)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+	}
+
+	return &pb.StatusResponse{}, nil
+}
+
+func userOnTimeout(user *User) bool {
+	currTime := time.Now().Unix()
+
+	// 300 is 5 min
+	if currTime-user.LastCodeRequest > 300 {
+		return false
+	}
+	return true
 }
