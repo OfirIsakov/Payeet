@@ -277,7 +277,7 @@ func (store *MongoDBWrapper) SetVerficationCode(mail string, code string) error 
 
 //ResetLastCodeRequest sets the value to current time.
 func (store *MongoDBWrapper) ResetLastCodeRequest(mail string) error {
-	return store.ChangeFieldValue(mail, "ResetLastCodeRequest", time.Now().Unix())
+	return store.ChangeFieldValue(mail, "LastCodeRequest", time.Now().Unix())
 }
 
 //SetRefreshToken makes changes to a field name.

@@ -102,6 +102,7 @@ func (user *User) Clone() *User {
 		Karma:                user.Karma,
 		VerficationCode:      user.VerficationCode,
 		Activated:            user.Activated,
+		LastCodeRequest:      user.LastCodeRequest,
 		Identifiers:          user.Identifiers,
 	}
 }
@@ -122,6 +123,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Karma", Value: user.Karma},
 		{Key: "VerficationCode", Value: user.VerficationCode},
 		{Key: "Activated", Value: user.Activated},
+		{Key: "LastCodeRequest", Value: user.LastCodeRequest},
 		{Key: "Identifiers", Value: user.Identifiers},
 	}
 

@@ -153,9 +153,11 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		return nil, status.Errorf(codes.Internal, "Something went wrong while creating the user!")
 	}
 
-	err = server.emailManager.SendVerficationCode(user)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+	if !userOnTimeout(user) {
+		err = server.emailManager.SendVerficationCode(user)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+		}
 	}
 
 	return &pb.StatusResponse{}, nil
