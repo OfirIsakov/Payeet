@@ -21,11 +21,12 @@ type AuthServer struct {
 	mongoDBWrapper MongoDBWrapper
 	jwtManager     *JWTManager
 	emailManager   *EmailManager
+	TotalImages    int
 }
 
 // NewAuthServer creates a new authentication server
-func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager) *AuthServer {
-	return &AuthServer{mongoDBWrapper, jwtManager, emailManager}
+func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager, TotalImages int) *AuthServer {
+	return &AuthServer{mongoDBWrapper, jwtManager, emailManager, TotalImages}
 }
 
 // Login checks if the details are good and sends a new jet token to the user
@@ -117,7 +118,7 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 // Register creates a new user.
 func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
 
-	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
+	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user", server.TotalImages)
 
 	if err != nil {
 		return nil, err

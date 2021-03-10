@@ -1,8 +1,8 @@
 package services
 
 import (
-	"crypto/rand"
 	"fmt"
+	"math/rand"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,10 +25,11 @@ type User struct {
 	Activated            bool     `bson:"Activated" json:"Activated"`
 	LastCodeRequest      int64    `bson:"LastCodeRequest" json:"LastCodeRequest"`
 	Identifiers          []string `bson:"Identifiers" json:"Identifiers"`
+	ImageID              int      `bson:"ImageID" json:"ImageID"`
 }
 
 // NewUser returns a new user.
-func NewUser(firstName string, lastName string, email string, password string, Role string) (*User, error) {
+func NewUser(firstName string, lastName string, email string, password string, Role string, TotalImages int) (*User, error) {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -56,6 +57,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Activated:            false,
 		LastCodeRequest:      time.Now().Unix(),
 		Identifiers:          []string{},
+		ImageID:              rand.Intn(TotalImages),
 	}
 
 	return user, nil
@@ -104,6 +106,7 @@ func (user *User) Clone() *User {
 		Activated:            user.Activated,
 		LastCodeRequest:      user.LastCodeRequest,
 		Identifiers:          user.Identifiers,
+		ImageID:              user.ImageID,
 	}
 }
 
@@ -125,6 +128,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Activated", Value: user.Activated},
 		{Key: "LastCodeRequest", Value: user.LastCodeRequest},
 		{Key: "Identifiers", Value: user.Identifiers},
+		{Key: "ImageID", Value: user.ImageID},
 	}
 
 	return a
