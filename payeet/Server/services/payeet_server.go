@@ -17,11 +17,18 @@ import (
 type PayeetServer struct {
 	mongoDBWrapper MongoDBWrapper
 	jwtManager     *JWTManager
+	ProfileImages  []string
 }
 
 // NewPayeetServer creates a logic server
-func NewPayeetServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager) *PayeetServer {
-	return &PayeetServer{mongoDBWrapper, jwtManager}
+func NewPayeetServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, ProfileImages []string) *PayeetServer {
+	return &PayeetServer{mongoDBWrapper, jwtManager, ProfileImages}
+}
+
+//GetProfileImages returns the profile images from the config.
+func (server *PayeetServer) GetProfileImages(ctx context.Context, in *pb.ImagesRequest) (*pb.ImagesResponse, error) {
+
+	return &pb.ImagesResponse{Images: server.ProfileImages}, nil
 }
 
 // GetBalance returns the blances of the user.

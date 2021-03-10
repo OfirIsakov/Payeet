@@ -64,6 +64,7 @@ message UserInfoResponse{
     string FirstName = 1;
     string LastName = 2;
     string Mail = 4;
+    int64 ImageID = 5;
 }
 
 message AddFriendRequest{
@@ -113,6 +114,14 @@ message CodeRequest{
     string Mail = 1;
 }
 
+message ImagesResponse{
+    repeated string images = 1;
+}
+
+message ImagesRequest{
+
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
@@ -122,7 +131,7 @@ service payeet_auth{
 }
 
 service payeet{
-
+    rpc GetProfileImages(ImagesRequest) returns (ImagesResponse);
     rpc GetUserInfo(UserInfoRequest) returns (UserInfoResponse);
 
     rpc GetBalance (BalanceRequest) returns (BalanceResponse);

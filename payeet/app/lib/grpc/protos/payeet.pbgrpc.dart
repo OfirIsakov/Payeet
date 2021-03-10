@@ -151,6 +151,11 @@ abstract class payeet_authServiceBase extends $grpc.Service {
 }
 
 class payeetClient extends $grpc.Client {
+  static final _$getProfileImages =
+      $grpc.ClientMethod<$0.ImagesRequest, $0.ImagesResponse>(
+          '/payeet.payeet/GetProfileImages',
+          ($0.ImagesRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $0.ImagesResponse.fromBuffer(value));
   static final _$getUserInfo =
       $grpc.ClientMethod<$0.UserInfoRequest, $0.UserInfoResponse>(
           '/payeet.payeet/GetUserInfo',
@@ -219,6 +224,12 @@ class payeetClient extends $grpc.Client {
       {$grpc.CallOptions? options,
       $core.Iterable<$grpc.ClientInterceptor>? interceptors})
       : super(channel, options: options, interceptors: interceptors);
+
+  $grpc.ResponseFuture<$0.ImagesResponse> getProfileImages(
+      $0.ImagesRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getProfileImages, request, options: options);
+  }
 
   $grpc.ResponseFuture<$0.UserInfoResponse> getUserInfo(
       $0.UserInfoRequest request,
@@ -299,6 +310,13 @@ abstract class payeetServiceBase extends $grpc.Service {
   $core.String get $name => 'payeet.payeet';
 
   payeetServiceBase() {
+    $addMethod($grpc.ServiceMethod<$0.ImagesRequest, $0.ImagesResponse>(
+        'GetProfileImages',
+        getProfileImages_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.ImagesRequest.fromBuffer(value),
+        ($0.ImagesResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.UserInfoRequest, $0.UserInfoResponse>(
         'GetUserInfo',
         getUserInfo_Pre,
@@ -385,6 +403,11 @@ abstract class payeetServiceBase extends $grpc.Service {
             ($0.HistoryResponse value) => value.writeToBuffer()));
   }
 
+  $async.Future<$0.ImagesResponse> getProfileImages_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.ImagesRequest> request) async {
+    return getProfileImages(call, await request);
+  }
+
   $async.Future<$0.UserInfoResponse> getUserInfo_Pre(
       $grpc.ServiceCall call, $async.Future<$0.UserInfoRequest> request) async {
     return getUserInfo(call, await request);
@@ -443,6 +466,8 @@ abstract class payeetServiceBase extends $grpc.Service {
     yield* getFiveFriendsTransfers(call, await request);
   }
 
+  $async.Future<$0.ImagesResponse> getProfileImages(
+      $grpc.ServiceCall call, $0.ImagesRequest request);
   $async.Future<$0.UserInfoResponse> getUserInfo(
       $grpc.ServiceCall call, $0.UserInfoRequest request);
   $async.Future<$0.BalanceResponse> getBalance(

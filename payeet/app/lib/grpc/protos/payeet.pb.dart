@@ -661,6 +661,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ImageID', protoName: 'ImageID')
     ..hasRequiredFields = false
   ;
 
@@ -669,6 +670,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     $core.String? firstName,
     $core.String? lastName,
     $core.String? mail,
+    $fixnum.Int64? imageID,
   }) {
     final _result = create();
     if (firstName != null) {
@@ -679,6 +681,9 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     }
     if (mail != null) {
       _result.mail = mail;
+    }
+    if (imageID != null) {
+      _result.imageID = imageID;
     }
     return _result;
   }
@@ -729,6 +734,15 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(2);
   @$pb.TagNumber(4)
   void clearMail() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get imageID => $_getI64(3);
+  @$pb.TagNumber(5)
+  set imageID($fixnum.Int64 v) { $_setInt64(3, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasImageID() => $_has(3);
+  @$pb.TagNumber(5)
+  void clearImageID() => clearField(5);
 }
 
 class AddFriendRequest extends $pb.GeneratedMessage {
@@ -1247,5 +1261,75 @@ class CodeRequest extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(0);
   @$pb.TagNumber(1)
   void clearMail() => clearField(1);
+}
+
+class ImagesResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ImagesResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'images')
+    ..hasRequiredFields = false
+  ;
+
+  ImagesResponse._() : super();
+  factory ImagesResponse({
+    $core.Iterable<$core.String>? images,
+  }) {
+    final _result = create();
+    if (images != null) {
+      _result.images.addAll(images);
+    }
+    return _result;
+  }
+  factory ImagesResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ImagesResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ImagesResponse clone() => ImagesResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ImagesResponse copyWith(void Function(ImagesResponse) updates) => super.copyWith((message) => updates(message as ImagesResponse)) as ImagesResponse; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ImagesResponse create() => ImagesResponse._();
+  ImagesResponse createEmptyInstance() => create();
+  static $pb.PbList<ImagesResponse> createRepeated() => $pb.PbList<ImagesResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ImagesResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ImagesResponse>(create);
+  static ImagesResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get images => $_getList(0);
+}
+
+class ImagesRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ImagesRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ImagesRequest._() : super();
+  factory ImagesRequest() => create();
+  factory ImagesRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ImagesRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ImagesRequest clone() => ImagesRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ImagesRequest copyWith(void Function(ImagesRequest) updates) => super.copyWith((message) => updates(message as ImagesRequest)) as ImagesRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ImagesRequest create() => ImagesRequest._();
+  ImagesRequest createEmptyInstance() => create();
+  static $pb.PbList<ImagesRequest> createRepeated() => $pb.PbList<ImagesRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ImagesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ImagesRequest>(create);
+  static ImagesRequest? _defaultInstance;
 }
 
