@@ -3,6 +3,7 @@ package services
 import (
 	"crypto/rand"
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -22,6 +23,7 @@ type User struct {
 	Karma                float64  `bson:"Karma" json:"Karma"`
 	VerficationCode      string   `bson:"VerficationCode" json:"VerficationCode"`
 	Activated            bool     `bson:"Activated" json:"Activated"`
+	LastCodeRequest      int64    `bson:"LastCodeRequest" json:"LastCodeRequest"`
 	Identifiers          []string `bson:"Identifiers" json:"Identifiers"`
 }
 
@@ -52,6 +54,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Karma:                1.0,
 		VerficationCode:      code,
 		Activated:            false,
+		LastCodeRequest:      time.Now().Unix(),
 		Identifiers:          []string{},
 	}
 
@@ -99,6 +102,7 @@ func (user *User) Clone() *User {
 		Karma:                user.Karma,
 		VerficationCode:      user.VerficationCode,
 		Activated:            user.Activated,
+		LastCodeRequest:      user.LastCodeRequest,
 		Identifiers:          user.Identifiers,
 	}
 }
@@ -119,6 +123,7 @@ func (user *User) ToBson() bson.D {
 		{Key: "Karma", Value: user.Karma},
 		{Key: "VerficationCode", Value: user.VerficationCode},
 		{Key: "Activated", Value: user.Activated},
+		{Key: "LastCodeRequest", Value: user.LastCodeRequest},
 		{Key: "Identifiers", Value: user.Identifiers},
 	}
 

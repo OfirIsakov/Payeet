@@ -67,6 +67,9 @@ type DBWrapper interface {
 
 	CheckIdentifier(mail, identifier string) (bool, error)
 	AddIdentifier(mail, identifier string) error
+
+	SetVerficationCode(mail string, code string) error
+	ResetLastCodeRequest(mail string) error
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -265,6 +268,16 @@ func (store *MongoDBWrapper) GetAllUsers() (a []*User, err error) {
 
 	return a, nil
 
+}
+
+//SetVerficationCode sets a new code in the field.
+func (store *MongoDBWrapper) SetVerficationCode(mail string, code string) error {
+	return store.ChangeFieldValue(mail, "VerficationCode", code)
+}
+
+//ResetLastCodeRequest sets the value to current time.
+func (store *MongoDBWrapper) ResetLastCodeRequest(mail string) error {
+	return store.ChangeFieldValue(mail, "LastCodeRequest", time.Now().Unix())
 }
 
 //SetRefreshToken makes changes to a field name.

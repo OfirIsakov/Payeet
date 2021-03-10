@@ -66,10 +66,10 @@ class PayeetClient {
     try {
       if (Platform.isAndroid) {
         var build = await deviceInfoPlugin.androidInfo;
-        identifier = build.androidId;  //UUID for Android
+        identifier = build.androidId; //UUID for Android
       } else if (Platform.isIOS) {
         var data = await deviceInfoPlugin.iosInfo;
-        identifier = data.identifierForVendor;  //UUID for iOS
+        identifier = data.identifierForVendor; //UUID for iOS
       }
     } on PlatformException {
       print('Failed to get platform version');
@@ -137,6 +137,14 @@ class PayeetClient {
               password // add a small hash logic as sending a plain text password isnt a good practice
         );
 
+    return response;
+  }
+
+  // resendCode asks the server to send the given mail a new otp code
+  // getVerifyCode may fail and return Unavailable because the user is on timeout.
+  Future<StatusResponse> resendCode(String mail) async {
+    final response =
+        await _unauthenticatedClient.getVerifyCode(CodeRequest()..mail = mail);
     return response;
   }
 
