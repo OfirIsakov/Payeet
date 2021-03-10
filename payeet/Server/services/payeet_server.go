@@ -202,24 +202,13 @@ func (server *PayeetServer) GetFullHistory(in *pb.HistoryRequest, stream pb.Paye
 	}
 
 	// get the full history of the user
-	senderTransfers, senderErr := server.mongoDBWrapper.GetSenderHistory(in.SenderMail)
-	receiverTransfers, receiverErr := server.mongoDBWrapper.GetReceiverHistory(in.SenderMail)
-
-	// if both of the functions gave an error return the first one
-	if senderErr != nil && receiverErr != nil {
-		return senderErr
+	transfers, err := server.mongoDBWrapper.GetFullHistory(in.SenderMail)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Something went wrong!")
 	}
 
-	// send the history of the functions that succeeded
-	if senderErr == nil {
-		for _, transfer := range senderTransfers {
-			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
-		}
-	}
-	if receiverErr == nil {
-		for _, transfer := range receiverTransfers {
-			stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
-		}
+	for _, transfer := range transfers {
+		stream.Send(&pb.HistoryResponse{SenderMail: transfer.Sender, ReceiverMail: transfer.Receiver, Amount: int32(transfer.Amount), Time: transfer.Time})
 	}
 	return nil
 }
