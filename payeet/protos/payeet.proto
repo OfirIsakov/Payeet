@@ -78,24 +78,26 @@ message RemoveFriendRequest{
 message GetFollowersRequest{
 }
 
-message GetFollowersResponse{
-    string Mail = 1;
-}
+// message GetFollowersResponse{
+//     string Mail = 1;
+// }
 
 message GetFriendsRequest{
 }
 
-message GetFriendsResponse{
+message GenericUser{
     string Mail = 1;
+    int64 ImageID = 2;
 }
 
 message SearchFriendRequest{
     string Search = 1;
 }
 
-message SearchFriendResponse{
-    string Mail = 1;
-}
+// message SearchFriendResponse{
+//     string Mail = 1;
+//     int64 ImageID = 2;
+// }
 
 message TopUsersResponse{
     repeated UserInfoResponse Users = 1;
@@ -141,11 +143,11 @@ service payeet{
     rpc AddFriend (AddFriendRequest) returns (StatusResponse);
     rpc RemoveFriend (RemoveFriendRequest) returns (StatusResponse);
 
-    rpc GetFollowers (GetFollowersRequest) returns (stream GetFollowersResponse);
+    rpc GetFollowers (GetFollowersRequest) returns (stream GenericUser);
     
-    rpc GetFriends (GetFriendsRequest) returns (stream GetFriendsResponse);
+    rpc GetFriends (GetFriendsRequest) returns (stream GenericUser);
     
-    rpc SearchFriend (SearchFriendRequest) returns (stream SearchFriendResponse);
+    rpc SearchFriend (SearchFriendRequest) returns (stream GenericUser);
 
     rpc GetFullHistory (HistoryRequest) returns (stream HistoryResponse);
 
