@@ -118,7 +118,7 @@ func (server *PayeetServer) GetUserInfo(ctx context.Context, in *pb.UserInfoRequ
 		return nil, status.Errorf(codes.Internal, "")
 	}
 
-	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Mail: user.Email}, nil
+	return &pb.UserInfoResponse{FirstName: user.FirstName, LastName: user.LastName, Mail: user.Email, ImageID: int64(user.ImageID)}, nil
 }
 
 // AddFriend adds a friend to the user
@@ -170,7 +170,10 @@ func (server *PayeetServer) SearchFriend(in *pb.SearchFriendRequest, stream pb.P
 
 	for _, mail := range mails {
 		if mail != claims.Email {
-			stream.Send(&pb.SearchFriendResponse{Mail: mail})
+
+			user, _ := server.mongoDBWrapper.GetUserByEmail(mail)
+
+			stream.Send(&pb.GenericUser{Mail: mail, ImageID: int64(user.ImageID)})
 		}
 	}
 
@@ -246,7 +249,11 @@ func (server *PayeetServer) GetFriends(in *pb.GetFriendsRequest, stream pb.Payee
 	}
 
 	for _, friend := range user.Friends {
-		err = stream.Send(&pb.GetFriendsResponse{Mail: friend})
+		f, err := server.mongoDBWrapper.GetUserByEmail(friend)
+		if err != nil {
+			continue
+		}
+		err = stream.Send(&pb.GenericUser{Mail: friend, ImageID: int64(f.ImageID)})
 		if err != nil {
 			return status.Errorf(codes.Internal, "Could not send friend")
 		}
@@ -270,7 +277,8 @@ func (server *PayeetServer) GetFollowers(in *pb.GetFollowersRequest, stream pb.P
 	}
 
 	for _, follower := range followers {
-		err = stream.Send(&pb.GetFollowersResponse{Mail: follower})
+		user, _ := server.mongoDBWrapper.GetUserByEmail(follower)
+		err = stream.Send(&pb.GenericUser{Mail: follower, ImageID: int64(user.ImageID)})
 		if err != nil {
 			return status.Errorf(codes.Internal, "Error while trying to send the stream message")
 		}
