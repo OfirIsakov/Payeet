@@ -34,12 +34,14 @@ class PayeetClient {
       _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
-  List<String> _friends;
-  List<String> _followers;
+  List<GenericUser> _friends;
+  List<GenericUser> _followers;
 
   List<UserInfoResponse> _topUsers;
+  List<String> _profileImages;
 
-  String _userID;
+  String _mail;
+  int _imageID;
 
   // ctor
   PayeetClient(this.channel) {
@@ -53,10 +55,12 @@ class PayeetClient {
   bool get cachedInfo => _cachedInfo;
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
-  List<String> get getCachedFriends => _friends;
-  List<String> get getCachedFollowers => _followers;
+  List<GenericUser> get getCachedFriends => _friends;
+  List<GenericUser> get getCachedFollowers => _followers;
+  List<String> get getCachedProfileImages => _profileImages;
   List<UserInfoResponse> get getTopUsers => _topUsers;
-  String get getCachedUserID => _userID;
+  String get getCachedMail => _mail;
+  int get getCachedImageID => _imageID;
 
   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
@@ -155,7 +159,7 @@ class PayeetClient {
     return response;
   }
 
-  ResponseStream<SearchFriendResponse> searchFriend(String text) {
+  ResponseStream<GenericUser> searchFriend(String text) {
     final response =
         _authenticatedClient.searchFriend(SearchFriendRequest()..search = text);
 
@@ -189,7 +193,8 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _userID = response.mail;
+    _mail = response.mail;
+    _imageID = response.imageID.toInt();
 
     return response;
   }
@@ -226,21 +231,25 @@ class PayeetClient {
   }
 
   Future<void> getFriends() async {
-    List<GetFriendsResponse> d =
+    _friends =
         await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
-    _friends = d.map((e) => e.mail).toList();
   }
 
   Future<void> fetchFollowers() async {
-    var d =
+    _followers =
         await _authenticatedClient.getFollowers(GetFollowersRequest()).toList();
-    _followers = d.map((e) => e.mail).toList();
   }
 
   Future<void> fetchTopUsers() async {
     final response = await _authenticatedClient.getTopUsers(TopUsersRequest());
 
     this._topUsers = response.users;
+  }
+
+  Future<void> fetchProfileImages() async {
+    final response =
+        await _authenticatedClient.getProfileImages(ImagesRequest());
+    this._profileImages = response.images;
   }
 }
 

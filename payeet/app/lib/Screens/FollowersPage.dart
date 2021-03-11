@@ -40,7 +40,7 @@ class _FollowersPageState extends State<FollowersPage> {
                           onPressed: () async {
                             try {
                               await Globals.client.addFriend(
-                                  Globals.client.getCachedFollowers[index]);
+                                  Globals.client.getCachedFollowers[index].mail);
                               setState(() {
                                 Globals.client.getCachedFriends.add(
                                     Globals.client.getCachedFollowers[index]);

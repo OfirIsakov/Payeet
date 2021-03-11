@@ -194,8 +194,10 @@ class _TransferPageState extends State<TransferPage> {
                                         actionFunction: () async {
                                           try {
                                             await Globals.client.removeFriend(
-                                                Globals.client
-                                                    .getCachedFriends[index]);
+                                                Globals
+                                                    .client
+                                                    .getCachedFriends[index]
+                                                    .mail);
                                             setState(() {
                                               Globals.client.getCachedFriends
                                                   .removeAt(index);
@@ -220,8 +222,8 @@ class _TransferPageState extends State<TransferPage> {
                                       context
                                               .read(Globals.transfer_email)
                                               .state =
-                                          Globals
-                                              .client.getCachedFriends[index];
+                                          Globals.client.getCachedFriends[index]
+                                              .mail;
                                       selected_index = index;
                                     });
                                   },
@@ -249,8 +251,8 @@ class _TransferPageState extends State<TransferPage> {
                                           Container(
                                             child: CircleAvatar(
                                               radius: 30,
-                                              backgroundImage: AssetImage(
-                                                  'assets/images/avatar.png'),
+                                              backgroundImage: NetworkImage(
+                                                  Globals.client.getCachedProfileImages[Globals.client.getCachedFriends[index].imageID.toInt()]),
                                             ),
                                           ),
 
@@ -264,7 +266,7 @@ class _TransferPageState extends State<TransferPage> {
                                                       color: Theme.of(context)
                                                           .accentColor),
                                               text:
-                                                  "${Globals.client.getCachedFriends[index]}\n",
+                                                  "${Globals.client.getCachedFriends[index].mail}\n",
                                             )),
                                           ),
                                         ],
@@ -287,10 +289,12 @@ class _TransferPageState extends State<TransferPage> {
                                               DismissDirection.endToStart) {
                                             setState(() {
                                               context
-                                                  .read(Globals.transfer_email)
-                                                  .state = Globals
-                                                      .client.getCachedFriends[
-                                                  index];
+                                                      .read(Globals.transfer_email)
+                                                      .state =
+                                                  Globals
+                                                      .client
+                                                      .getCachedFriends[index]
+                                                      .mail;
                                               selected_index = index;
                                             });
                                           }
@@ -317,9 +321,10 @@ class _TransferPageState extends State<TransferPage> {
                                                   try {
                                                     await Globals.client
                                                         .removeFriend(Globals
-                                                                .client
-                                                                .getCachedFriends[
-                                                            index]);
+                                                            .client
+                                                            .getCachedFriends[
+                                                                index]
+                                                            .mail);
                                                     setState(() {
                                                       Globals.client
                                                           .getCachedFriends
@@ -363,10 +368,12 @@ class _TransferPageState extends State<TransferPage> {
                                           onTap: () async {
                                             setState(() {
                                               context
-                                                  .read(Globals.transfer_email)
-                                                  .state = Globals
-                                                      .client.getCachedFriends[
-                                                  index];
+                                                      .read(Globals.transfer_email)
+                                                      .state =
+                                                  Globals
+                                                      .client
+                                                      .getCachedFriends[index]
+                                                      .mail;
                                               selected_index = index;
                                             });
                                           },
@@ -616,14 +623,14 @@ class SearchFriend extends StatefulWidget {
 }
 
 class _SearchFriendState extends State<SearchFriend> {
-  Future<List<SearchFriendResponse>> search(String search) async {
+  Future<List<GenericUser>> search(String search) async {
     await Future.delayed(Duration(seconds: 1));
     return await Globals.client.searchFriend(search.split('@')[0]).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SearchBar<SearchFriendResponse>(
+    return SearchBar<GenericUser>(
       searchBarStyle: SearchBarStyle(borderRadius: BorderRadius.circular(16.0)),
       minimumChars: 1,
       iconActiveColor: Theme.of(context).highlightColor,
@@ -635,10 +642,11 @@ class _SearchFriendState extends State<SearchFriend> {
             fontWeight: FontWeight.bold),
       ),
       onSearch: search,
-      onItemFound: (SearchFriendResponse response, int index) {
+      onItemFound: (GenericUser response, int index) {
         return ListTile(
           leading: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/avatar.png'),
+            backgroundImage: NetworkImage(Globals
+                .client.getCachedProfileImages[response.imageID.toInt()]),
           ),
           trailing: TextButton(
               onPressed: () async {
@@ -655,7 +663,7 @@ class _SearchFriendState extends State<SearchFriend> {
                       try {
                         await Globals.client.addFriend(response.mail);
                         setState(() {
-                          Globals.client.getCachedFriends.add(response.mail);
+                          Globals.client.getCachedFriends.add(response);
                         });
 
                         await Globals.client.getUserInfo();

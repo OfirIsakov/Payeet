@@ -35,14 +35,14 @@ class _UserPageState extends State<UserPage> {
             backgroundColor: Theme.of(context).highlightColor,
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/images/avatar.png'),
+              backgroundImage: NetworkImage(Globals.client.getCachedProfileImages[Globals.client.getCachedImageID]),
             ),
           ),
           Text(
               "${Globals.client.getCachedFirstName.capitalize()} ${Globals.client.getCachedLastName.capitalize()}",
               style: Theme.of(context).textTheme.bodyText1),
 
-          Text(Globals.client.getCachedUserID,
+          Text(Globals.client.getCachedMail,
               style: Theme.of(context).textTheme.subtitle1),
 
           GestureDetector(
