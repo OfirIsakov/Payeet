@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-passwd/validator"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 )
 
@@ -59,8 +60,16 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 	if isNew {
+		// get the ip from the context
+		p, ok := peer.FromContext(ctx)
+		if !ok {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+		deviceIPAndPort := p.Addr.String()
+		deviceIP := strings.Split(deviceIPAndPort, ":")[0]
+
 		// send the user that a new device was recorded, dont log the user in if it fails to send
-		err = server.emailManager.SendNewLoginMessage(user)
+		err = server.emailManager.SendNewLoginMessage(user, req.GetDeviceName(), deviceIP)
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "Something went wrong!")
 		}

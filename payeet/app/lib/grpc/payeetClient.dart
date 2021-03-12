@@ -62,25 +62,28 @@ class PayeetClient {
     LoginResponse response;
 
     String identifier = '';
+    String deviceName = '';
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
       if (Platform.isAndroid) {
-        var build = await deviceInfoPlugin.androidInfo;
-        identifier = build.androidId; //UUID for Android
+        var data = await deviceInfoPlugin.androidInfo;
+        identifier = data.androidId; // ID for Android
+        deviceName = data.brand + ' ' + data.model; // brand and model. eg: "Xiaomi MI 8"
       } else if (Platform.isIOS) {
         var data = await deviceInfoPlugin.iosInfo;
-        identifier = data.identifierForVendor; //UUID for iOS
+        identifier = data.identifierForVendor; // ID for iOS
+        deviceName = data.utsname.machine; // model. eg: "iphone 7"
       }
     } on PlatformException {
       print('Failed to get platform version');
     }
 
-    print(identifier);
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
         ..password = password
-        ..identifier = identifier);
+        ..identifier = identifier
+        ..deviceName = deviceName);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
