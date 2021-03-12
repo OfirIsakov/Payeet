@@ -134,11 +134,12 @@ const UserInfoResponse$json = const {
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
     const {'1': 'Mail', '3': 4, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'ImageID', '3': 5, '4': 1, '5': 3, '10': 'ImageID'},
   ],
 };
 
 /// Descriptor for `UserInfoResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List userInfoResponseDescriptor = $convert.base64Decode('ChBVc2VySW5mb1Jlc3BvbnNlEhwKCUZpcnN0TmFtZRgBIAEoCVIJRmlyc3ROYW1lEhoKCExhc3ROYW1lGAIgASgJUghMYXN0TmFtZRISCgRNYWlsGAQgASgJUgRNYWls');
+final $typed_data.Uint8List userInfoResponseDescriptor = $convert.base64Decode('ChBVc2VySW5mb1Jlc3BvbnNlEhwKCUZpcnN0TmFtZRgBIAEoCVIJRmlyc3ROYW1lEhoKCExhc3ROYW1lGAIgASgJUghMYXN0TmFtZRISCgRNYWlsGAQgASgJUgRNYWlsEhgKB0ltYWdlSUQYBSABKANSB0ltYWdlSUQ=');
 @$core.Deprecated('Use addFriendRequestDescriptor instead')
 const AddFriendRequest$json = const {
   '1': 'AddFriendRequest',
@@ -166,16 +167,6 @@ const GetFollowersRequest$json = const {
 
 /// Descriptor for `GetFollowersRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getFollowersRequestDescriptor = $convert.base64Decode('ChNHZXRGb2xsb3dlcnNSZXF1ZXN0');
-@$core.Deprecated('Use getFollowersResponseDescriptor instead')
-const GetFollowersResponse$json = const {
-  '1': 'GetFollowersResponse',
-  '2': const [
-    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
-  ],
-};
-
-/// Descriptor for `GetFollowersResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List getFollowersResponseDescriptor = $convert.base64Decode('ChRHZXRGb2xsb3dlcnNSZXNwb25zZRISCgRNYWlsGAEgASgJUgRNYWls');
 @$core.Deprecated('Use getFriendsRequestDescriptor instead')
 const GetFriendsRequest$json = const {
   '1': 'GetFriendsRequest',
@@ -183,16 +174,17 @@ const GetFriendsRequest$json = const {
 
 /// Descriptor for `GetFriendsRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getFriendsRequestDescriptor = $convert.base64Decode('ChFHZXRGcmllbmRzUmVxdWVzdA==');
-@$core.Deprecated('Use getFriendsResponseDescriptor instead')
-const GetFriendsResponse$json = const {
-  '1': 'GetFriendsResponse',
+@$core.Deprecated('Use genericUserDescriptor instead')
+const GenericUser$json = const {
+  '1': 'GenericUser',
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'ImageID', '3': 2, '4': 1, '5': 3, '10': 'ImageID'},
   ],
 };
 
-/// Descriptor for `GetFriendsResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List getFriendsResponseDescriptor = $convert.base64Decode('ChJHZXRGcmllbmRzUmVzcG9uc2USEgoETWFpbBgBIAEoCVIETWFpbA==');
+/// Descriptor for `GenericUser`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List genericUserDescriptor = $convert.base64Decode('CgtHZW5lcmljVXNlchISCgRNYWlsGAEgASgJUgRNYWlsEhgKB0ltYWdlSUQYAiABKANSB0ltYWdlSUQ=');
 @$core.Deprecated('Use searchFriendRequestDescriptor instead')
 const SearchFriendRequest$json = const {
   '1': 'SearchFriendRequest',
@@ -203,16 +195,6 @@ const SearchFriendRequest$json = const {
 
 /// Descriptor for `SearchFriendRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List searchFriendRequestDescriptor = $convert.base64Decode('ChNTZWFyY2hGcmllbmRSZXF1ZXN0EhYKBlNlYXJjaBgBIAEoCVIGU2VhcmNo');
-@$core.Deprecated('Use searchFriendResponseDescriptor instead')
-const SearchFriendResponse$json = const {
-  '1': 'SearchFriendResponse',
-  '2': const [
-    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
-  ],
-};
-
-/// Descriptor for `SearchFriendResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List searchFriendResponseDescriptor = $convert.base64Decode('ChRTZWFyY2hGcmllbmRSZXNwb25zZRISCgRNYWlsGAEgASgJUgRNYWls');
 @$core.Deprecated('Use topUsersResponseDescriptor instead')
 const TopUsersResponse$json = const {
   '1': 'TopUsersResponse',
@@ -251,3 +233,20 @@ const CodeRequest$json = const {
 
 /// Descriptor for `CodeRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List codeRequestDescriptor = $convert.base64Decode('CgtDb2RlUmVxdWVzdBISCgRNYWlsGAEgASgJUgRNYWls');
+@$core.Deprecated('Use imagesResponseDescriptor instead')
+const ImagesResponse$json = const {
+  '1': 'ImagesResponse',
+  '2': const [
+    const {'1': 'images', '3': 1, '4': 3, '5': 9, '10': 'images'},
+  ],
+};
+
+/// Descriptor for `ImagesResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List imagesResponseDescriptor = $convert.base64Decode('Cg5JbWFnZXNSZXNwb25zZRIWCgZpbWFnZXMYASADKAlSBmltYWdlcw==');
+@$core.Deprecated('Use imagesRequestDescriptor instead')
+const ImagesRequest$json = const {
+  '1': 'ImagesRequest',
+};
+
+/// Descriptor for `ImagesRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List imagesRequestDescriptor = $convert.base64Decode('Cg1JbWFnZXNSZXF1ZXN0');

@@ -31,7 +31,8 @@ class _AppBaseState extends State<AppBase> {
     Timer.periodic(Duration(minutes: 5), (timer) async {
       await Globals.client.loginWithRefresh();
     });
-
+    
+    await Globals.client.fetchProfileImages();
     await Globals.client.getFriends();
     await Globals.client.fetchTopUsers();
     await Globals.client.fetchFollowers();
@@ -69,7 +70,7 @@ class _AppBaseState extends State<AppBase> {
       HomePage(),
       FriendsPage(),
       TransferPage(),
-      StatsPage(transferEmail: Globals.client.getCachedUserID,),
+      StatsPage(transferEmail: Globals.client.getCachedMail,),
       UserPage(),
     ];
     void _onItemTapped(int index) {

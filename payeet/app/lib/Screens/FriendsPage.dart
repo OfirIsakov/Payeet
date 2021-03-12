@@ -59,7 +59,9 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                             child: Text(
-                            Globals.client.getTopUsers[1].mail.length > 0 ? Globals.client.getTopUsers[1].mail: " ", // need a space so the layout wont break, flutter limitations
+                              Globals.client.getTopUsers[1].mail.length > 0
+                                  ? Globals.client.getTopUsers[1].mail
+                                  : " ", // need a space so the layout wont break, flutter limitations
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).highlightColor),
@@ -81,7 +83,9 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                               child: Text(
-                            Globals.client.getTopUsers[0].mail.length > 0 ? Globals.client.getTopUsers[0].mail: " ", // need a space so the layout wont break, flutter limitations
+                            Globals.client.getTopUsers[0].mail.length > 0
+                                ? Globals.client.getTopUsers[0].mail
+                                : " ", // need a space so the layout wont break, flutter limitations
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).highlightColor),
@@ -111,7 +115,9 @@ class _FriendsPageState extends State<FriendsPage> {
                         FittedBox(
                           child: Container(
                               child: Text(
-                            Globals.client.getTopUsers[2].mail.length > 0 ? Globals.client.getTopUsers[2].mail: " ", // need a space so the layout wont break, flutter limitations
+                            Globals.client.getTopUsers[2].mail.length > 0
+                                ? Globals.client.getTopUsers[2].mail
+                                : " ", // need a space so the layout wont break, flutter limitations
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).highlightColor),
@@ -140,7 +146,7 @@ class _FriendsPageState extends State<FriendsPage> {
                       onTap: () async {
                         setState(() {
                           context.read(Globals.transfer_email).state =
-                              Globals.client.getCachedFriends[index];
+                              Globals.client.getCachedFriends[index].mail;
                           selected_index = index;
                           Navigator.push(
                               context,
@@ -152,31 +158,39 @@ class _FriendsPageState extends State<FriendsPage> {
                                                   .highlightColor),
                                           backgroundColor: Theme.of(context)
                                               .bottomAppBarColor,
-                                          title: Text(Globals
-                                              .client.getCachedFriends[index], style: TextStyle(color: Theme.of(context).highlightColor),),
+                                          title: Text(
+                                            Globals.client
+                                                .getCachedFriends[index].mail,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .highlightColor),
+                                          ),
                                         ),
                                         backgroundColor:
                                             Theme.of(context).backgroundColor,
                                         body: StatsPage(
-                                          transferEmail: Globals
-                                              .client.getCachedFriends[index],
+                                          transferEmail: Globals.client
+                                              .getCachedFriends[index].mail,
                                         ),
                                       )));
                         });
                       },
                       selected: selected_index == index,
                       leading: CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/avatar.png'),
+                        backgroundImage: NetworkImage(
+                            Globals.client.getCachedProfileImages[Globals
+                                .client.getCachedFriends[index].imageID
+                                .toInt()]),
                       ),
                       dense: false,
                       enabled: true,
                       title: Text(
-                        "${Globals.client.getCachedFriends[index]}\n",
+                        "${Globals.client.getCachedFriends[index]}",
                         // style:
                         // TextStyle(color: Theme.of(context).highlightColor),
                       ),
                       subtitle: Text(
-                        "${Globals.client.getCachedFriends[index]}",
+                        "${Globals.client.getCachedFriends[index].mail}",
                         style:
                             TextStyle(color: Theme.of(context).highlightColor),
                       ),

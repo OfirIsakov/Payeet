@@ -56,8 +56,8 @@ func main() {
 		log.Fatal("❌\n", err)
 	}
 
-	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManager, emailManager)
-	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManager)
+	authServer := services.NewAuthServer(*mongoDBWrapper, jwtManager, emailManager, config.TotalImages)
+	logic := services.NewPayeetServer(*mongoDBWrapper, jwtManager, config.ProfileImages)
 
 	mongoDBWrapper.SetBonuses(
 		config.BaseDailyBonus,

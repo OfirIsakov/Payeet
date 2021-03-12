@@ -661,6 +661,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'FirstName', protoName: 'FirstName')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'LastName', protoName: 'LastName')
     ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ImageID', protoName: 'ImageID')
     ..hasRequiredFields = false
   ;
 
@@ -669,6 +670,7 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     $core.String? firstName,
     $core.String? lastName,
     $core.String? mail,
+    $fixnum.Int64? imageID,
   }) {
     final _result = create();
     if (firstName != null) {
@@ -679,6 +681,9 @@ class UserInfoResponse extends $pb.GeneratedMessage {
     }
     if (mail != null) {
       _result.mail = mail;
+    }
+    if (imageID != null) {
+      _result.imageID = imageID;
     }
     return _result;
   }
@@ -729,6 +734,15 @@ class UserInfoResponse extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(2);
   @$pb.TagNumber(4)
   void clearMail() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get imageID => $_getI64(3);
+  @$pb.TagNumber(5)
+  set imageID($fixnum.Int64 v) { $_setInt64(3, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasImageID() => $_has(3);
+  @$pb.TagNumber(5)
+  void clearImageID() => clearField(5);
 }
 
 class AddFriendRequest extends $pb.GeneratedMessage {
@@ -854,53 +868,6 @@ class GetFollowersRequest extends $pb.GeneratedMessage {
   static GetFollowersRequest? _defaultInstance;
 }
 
-class GetFollowersResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GetFollowersResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
-    ..hasRequiredFields = false
-  ;
-
-  GetFollowersResponse._() : super();
-  factory GetFollowersResponse({
-    $core.String? mail,
-  }) {
-    final _result = create();
-    if (mail != null) {
-      _result.mail = mail;
-    }
-    return _result;
-  }
-  factory GetFollowersResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory GetFollowersResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  GetFollowersResponse clone() => GetFollowersResponse()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  GetFollowersResponse copyWith(void Function(GetFollowersResponse) updates) => super.copyWith((message) => updates(message as GetFollowersResponse)) as GetFollowersResponse; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static GetFollowersResponse create() => GetFollowersResponse._();
-  GetFollowersResponse createEmptyInstance() => create();
-  static $pb.PbList<GetFollowersResponse> createRepeated() => $pb.PbList<GetFollowersResponse>();
-  @$core.pragma('dart2js:noInline')
-  static GetFollowersResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetFollowersResponse>(create);
-  static GetFollowersResponse? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get mail => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set mail($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasMail() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearMail() => clearField(1);
-}
-
 class GetFriendsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GetFriendsRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..hasRequiredFields = false
@@ -930,42 +897,47 @@ class GetFriendsRequest extends $pb.GeneratedMessage {
   static GetFriendsRequest? _defaultInstance;
 }
 
-class GetFriendsResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GetFriendsResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+class GenericUser extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'GenericUser', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ImageID', protoName: 'ImageID')
     ..hasRequiredFields = false
   ;
 
-  GetFriendsResponse._() : super();
-  factory GetFriendsResponse({
+  GenericUser._() : super();
+  factory GenericUser({
     $core.String? mail,
+    $fixnum.Int64? imageID,
   }) {
     final _result = create();
     if (mail != null) {
       _result.mail = mail;
     }
+    if (imageID != null) {
+      _result.imageID = imageID;
+    }
     return _result;
   }
-  factory GetFriendsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory GetFriendsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory GenericUser.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GenericUser.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  GetFriendsResponse clone() => GetFriendsResponse()..mergeFromMessage(this);
+  GenericUser clone() => GenericUser()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  GetFriendsResponse copyWith(void Function(GetFriendsResponse) updates) => super.copyWith((message) => updates(message as GetFriendsResponse)) as GetFriendsResponse; // ignore: deprecated_member_use
+  GenericUser copyWith(void Function(GenericUser) updates) => super.copyWith((message) => updates(message as GenericUser)) as GenericUser; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static GetFriendsResponse create() => GetFriendsResponse._();
-  GetFriendsResponse createEmptyInstance() => create();
-  static $pb.PbList<GetFriendsResponse> createRepeated() => $pb.PbList<GetFriendsResponse>();
+  static GenericUser create() => GenericUser._();
+  GenericUser createEmptyInstance() => create();
+  static $pb.PbList<GenericUser> createRepeated() => $pb.PbList<GenericUser>();
   @$core.pragma('dart2js:noInline')
-  static GetFriendsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetFriendsResponse>(create);
-  static GetFriendsResponse? _defaultInstance;
+  static GenericUser getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GenericUser>(create);
+  static GenericUser? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get mail => $_getSZ(0);
@@ -975,6 +947,15 @@ class GetFriendsResponse extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(0);
   @$pb.TagNumber(1)
   void clearMail() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get imageID => $_getI64(1);
+  @$pb.TagNumber(2)
+  set imageID($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasImageID() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearImageID() => clearField(2);
 }
 
 class SearchFriendRequest extends $pb.GeneratedMessage {
@@ -1022,53 +1003,6 @@ class SearchFriendRequest extends $pb.GeneratedMessage {
   $core.bool hasSearch() => $_has(0);
   @$pb.TagNumber(1)
   void clearSearch() => clearField(1);
-}
-
-class SearchFriendResponse extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SearchFriendResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
-    ..hasRequiredFields = false
-  ;
-
-  SearchFriendResponse._() : super();
-  factory SearchFriendResponse({
-    $core.String? mail,
-  }) {
-    final _result = create();
-    if (mail != null) {
-      _result.mail = mail;
-    }
-    return _result;
-  }
-  factory SearchFriendResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SearchFriendResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  SearchFriendResponse clone() => SearchFriendResponse()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  SearchFriendResponse copyWith(void Function(SearchFriendResponse) updates) => super.copyWith((message) => updates(message as SearchFriendResponse)) as SearchFriendResponse; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static SearchFriendResponse create() => SearchFriendResponse._();
-  SearchFriendResponse createEmptyInstance() => create();
-  static $pb.PbList<SearchFriendResponse> createRepeated() => $pb.PbList<SearchFriendResponse>();
-  @$core.pragma('dart2js:noInline')
-  static SearchFriendResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SearchFriendResponse>(create);
-  static SearchFriendResponse? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get mail => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set mail($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasMail() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearMail() => clearField(1);
 }
 
 class TopUsersResponse extends $pb.GeneratedMessage {
@@ -1247,5 +1181,75 @@ class CodeRequest extends $pb.GeneratedMessage {
   $core.bool hasMail() => $_has(0);
   @$pb.TagNumber(1)
   void clearMail() => clearField(1);
+}
+
+class ImagesResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ImagesResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..pPS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'images')
+    ..hasRequiredFields = false
+  ;
+
+  ImagesResponse._() : super();
+  factory ImagesResponse({
+    $core.Iterable<$core.String>? images,
+  }) {
+    final _result = create();
+    if (images != null) {
+      _result.images.addAll(images);
+    }
+    return _result;
+  }
+  factory ImagesResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ImagesResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ImagesResponse clone() => ImagesResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ImagesResponse copyWith(void Function(ImagesResponse) updates) => super.copyWith((message) => updates(message as ImagesResponse)) as ImagesResponse; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ImagesResponse create() => ImagesResponse._();
+  ImagesResponse createEmptyInstance() => create();
+  static $pb.PbList<ImagesResponse> createRepeated() => $pb.PbList<ImagesResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ImagesResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ImagesResponse>(create);
+  static ImagesResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.String> get images => $_getList(0);
+}
+
+class ImagesRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ImagesRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'payeet'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ImagesRequest._() : super();
+  factory ImagesRequest() => create();
+  factory ImagesRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ImagesRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ImagesRequest clone() => ImagesRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ImagesRequest copyWith(void Function(ImagesRequest) updates) => super.copyWith((message) => updates(message as ImagesRequest)) as ImagesRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ImagesRequest create() => ImagesRequest._();
+  ImagesRequest createEmptyInstance() => create();
+  static $pb.PbList<ImagesRequest> createRepeated() => $pb.PbList<ImagesRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ImagesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ImagesRequest>(create);
+  static ImagesRequest? _defaultInstance;
 }
 
