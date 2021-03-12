@@ -51,8 +51,7 @@ type DBWrapper interface {
 
 	GetFollowers(mail string) ([]string, error)
 
-	GetSenderHistory(mail string) ([]*Transaction, error)
-	GetReceiverHistory(mail string) ([]*Transaction, error)
+	GetFullHistory(mail string) ([]*Transaction, error)
 
 	Write(message []byte) (int, error) // we must implement an io.Writer function to log into mongo
 
@@ -417,15 +416,18 @@ func (store *MongoDBWrapper) GetMailsByStart(search string) ([]string, error) {
 	return results, nil
 }
 
-// GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
-func (store *MongoDBWrapper) GetSenderHistory(mail string) ([]*Transaction, error) {
+// GetFullHistory will return a transaction array of all the transactions of the given user
+func (store *MongoDBWrapper) GetFullHistory(mail string) ([]*Transaction, error) {
+
+	findOptions := options.Find()
+	findOptions.SetSort(bson.M{"Time": 1}) // sort from newest to oldest
 
 	_, err := store.GetUserByEmail(mail)
 	if err != nil {
 		return nil, err
 	}
 
-	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail})
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"$or": []interface{}{bson.M{"Sender": mail}, bson.M{"Receiver": mail}}}, findOptions)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
@@ -436,27 +438,6 @@ func (store *MongoDBWrapper) GetSenderHistory(mail string) ([]*Transaction, erro
 	}
 
 	return senderResults, nil
-}
-
-// GetReceiverHistory will fetch all of the transaction history of a given mail where the user is the receiver
-func (store *MongoDBWrapper) GetReceiverHistory(mail string) ([]*Transaction, error) {
-
-	_, err := store.GetUserByEmail(mail)
-	if err != nil {
-		return nil, err
-	}
-
-	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Receiver": mail})
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "Wrong mail")
-	}
-
-	receiverResults := []*Transaction{}
-	if err = cursor.All(context.TODO(), &receiverResults); err != nil {
-		return receiverResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
-	}
-
-	return receiverResults, nil
 }
 
 // GetFollowers fetches all the users the follow the user
