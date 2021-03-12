@@ -103,11 +103,12 @@ const LoginRequest$json = const {
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
     const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
     const {'1': 'Identifier', '3': 3, '4': 1, '5': 9, '10': 'Identifier'},
+    const {'1': 'DeviceName', '3': 4, '4': 1, '5': 9, '10': 'DeviceName'},
   ],
 };
 
 /// Descriptor for `LoginRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List loginRequestDescriptor = $convert.base64Decode('CgxMb2dpblJlcXVlc3QSEgoETWFpbBgBIAEoCVIETWFpbBIaCghQYXNzd29yZBgCIAEoCVIIUGFzc3dvcmQSHgoKSWRlbnRpZmllchgDIAEoCVIKSWRlbnRpZmllcg==');
+final $typed_data.Uint8List loginRequestDescriptor = $convert.base64Decode('CgxMb2dpblJlcXVlc3QSEgoETWFpbBgBIAEoCVIETWFpbBIaCghQYXNzd29yZBgCIAEoCVIIUGFzc3dvcmQSHgoKSWRlbnRpZmllchgDIAEoCVIKSWRlbnRpZmllchIeCgpEZXZpY2VOYW1lGAQgASgJUgpEZXZpY2VOYW1l');
 @$core.Deprecated('Use loginResponseDescriptor instead')
 const LoginResponse$json = const {
   '1': 'LoginResponse',

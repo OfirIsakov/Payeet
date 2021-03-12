@@ -482,6 +482,7 @@ class LoginRequest extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mail', protoName: 'Mail')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Password', protoName: 'Password')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Identifier', protoName: 'Identifier')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'DeviceName', protoName: 'DeviceName')
     ..hasRequiredFields = false
   ;
 
@@ -490,6 +491,7 @@ class LoginRequest extends $pb.GeneratedMessage {
     $core.String? mail,
     $core.String? password,
     $core.String? identifier,
+    $core.String? deviceName,
   }) {
     final _result = create();
     if (mail != null) {
@@ -500,6 +502,9 @@ class LoginRequest extends $pb.GeneratedMessage {
     }
     if (identifier != null) {
       _result.identifier = identifier;
+    }
+    if (deviceName != null) {
+      _result.deviceName = deviceName;
     }
     return _result;
   }
@@ -550,6 +555,15 @@ class LoginRequest extends $pb.GeneratedMessage {
   $core.bool hasIdentifier() => $_has(2);
   @$pb.TagNumber(3)
   void clearIdentifier() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get deviceName => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set deviceName($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasDeviceName() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearDeviceName() => clearField(4);
 }
 
 class LoginResponse extends $pb.GeneratedMessage {
