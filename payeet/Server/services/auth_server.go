@@ -239,18 +239,6 @@ func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*p
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
 	}
 
-	// generate a new verification code so the same code cannot be used in order to change the password again
-	user.VerficationCode, err = generateNewCode(6)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
-	// set it in the DB
-	err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
-
 	err = server.mongoDBWrapper.ActivateUser(user.Email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Activation failed")
@@ -323,7 +311,13 @@ func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswo
 			return nil, status.Errorf(codes.Internal, "Something went wrong!")
 		}
 
-		return nil, status.Errorf(codes.OK, "Sent reset password code to mail")
+		// send the user a mail with a new verification code.
+		err = server.emailManager.SendResetPasswordMessage(user)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+		}
+
+		return &pb.StatusResponse{}, nil // tell the user we created a code and didnt raise an error
 	}
 
 	if user.VerficationCode != req.GetCode() {
