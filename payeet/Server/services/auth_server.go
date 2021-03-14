@@ -43,7 +43,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
-	if user.Activated != true {
+	if !user.Activated {
 		return nil, status.Errorf(codes.PermissionDenied, "User not verified")
 	}
 
@@ -239,6 +239,18 @@ func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*p
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
 	}
 
+	// generate a new verification code so the same code cannot be used in order to change the password again
+	user.VerficationCode, err = generateNewCode(6)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	// set it in the DB
+	err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
 	err = server.mongoDBWrapper.ActivateUser(user.Email)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Activation failed")
@@ -280,12 +292,88 @@ func (server *AuthServer) GetVerifyCode(ctx context.Context, req *pb.CodeRequest
 	return &pb.StatusResponse{}, nil
 }
 
+// Verify handles verifying and activating users.
+func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswordRequest) (*pb.StatusResponse, error) {
+
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	// if the code is empty and he isnt on a cooldown send a mail
+	if len(req.GetCode()) == 0 {
+		if userOnTimeout(user) {
+			return nil, status.Errorf(codes.Unavailable, "Please wait between requests")
+		}
+
+		// generate a new verification code.
+		user.VerficationCode, err = generateNewCode(6)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+
+		// set it in the DB
+		err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+		err = server.mongoDBWrapper.ResetLastCodeRequest(req.GetMail())
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+
+		return nil, status.Errorf(codes.OK, "Sent reset password code to mail")
+	}
+
+	if user.VerficationCode != req.GetCode() {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
+	}
+
+	passwordValidator := validator.New(
+		validator.MinLength(
+			5,
+			status.Errorf(codes.InvalidArgument, "Password is too short")),
+		validator.ContainsAtLeast(
+			"~<=>+-@!#$%^&*",
+			1,
+			status.Errorf(codes.InvalidArgument, "Password must contain at least 1 special character(~<=>+-@!#$%%^&*)")), // %% is escaping the %
+		validator.CommonPassword(nil),
+		validator.Similarity(
+			[]string{
+				user.FirstName,
+				user.LastName,
+				user.Email},
+			nil,
+			nil))
+	err = passwordValidator.Validate(req.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+
+	err = server.mongoDBWrapper.ChangePassword(user.Email, req.GetPassword())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	// generate a new verification code so the same code cannot be used in order to change the password again
+	user.VerficationCode, err = generateNewCode(6)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	// set it in the DB
+	err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	return &pb.StatusResponse{}, nil
+}
+
 func userOnTimeout(user *User) bool {
 	currTime := time.Now().Unix()
 
 	// 300 is 5 min
-	if currTime-user.LastCodeRequest > 300 {
-		return false
-	}
-	return true
+	return currTime-user.LastCodeRequest <= 300
 }

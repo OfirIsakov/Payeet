@@ -110,3 +110,35 @@ func (manager *EmailManager) SendNewLoginMessage(user *User, deviceName, deviceI
 
 	return nil
 }
+
+// SendNewLoginMessage sends the given user a mail that a login from a new device occurred
+func (manager *EmailManager) SendResetPasswordMessage(user *User) error {
+
+	passwordResetTemplate, err := template.ParseFiles("mail_templates//reset_password_template.html")
+
+	if err != nil {
+		return err
+	}
+
+	var body bytes.Buffer
+
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: Payeet - Password Reset Code \n%s\n\n", mimeHeaders)))
+
+	code := user.VerficationCode
+
+	passwordResetTemplate.Execute(&body, struct {
+		Name string
+		CODE string
+	}{
+		Name: strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
+		CODE: code,
+	})
+
+	err = manager.sendEmail([]string{user.Email}, body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -69,6 +69,8 @@ type DBWrapper interface {
 
 	SetVerficationCode(mail string, code string) error
 	ResetLastCodeRequest(mail string) error
+
+	ChangePassword(mail, newPassword string) error
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -691,6 +693,30 @@ func (store *MongoDBWrapper) AddIdentifier(mail, identifier string) error {
 	user.Identifiers = append(user.Identifiers, identifier)
 
 	err = store.ChangeFieldValue(mail, "Identifiers", user.Identifiers)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddIdentifier will add the given identifier to the DB
+func (store *MongoDBWrapper) ChangePassword(mail, newPassword string) error {
+
+	// get the user
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return err
+	}
+
+	// generate the new hashed password
+	hashedPassword, err := generatePassword(newPassword)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Cannot hash password")
+	}
+
+	// set the new password
+	err = store.ChangeFieldValue(mail, "Password", hashedPassword)
 	if err != nil {
 		return err
 	}

@@ -31,7 +31,7 @@ type User struct {
 // NewUser returns a new user.
 func NewUser(firstName string, lastName string, email string, password string, Role string, TotalImages int) (*User, error) {
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := generatePassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("cannot hash password")
 	}
@@ -46,7 +46,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		FirstName:            firstName,
 		LastName:             lastName,
 		Email:                email,
-		Password:             string(hashedPassword),
+		Password:             hashedPassword,
 		Role:                 Role,
 		Balance:              0,
 		RefreshToken:         "",
@@ -62,6 +62,16 @@ func NewUser(firstName string, lastName string, email string, password string, R
 
 	return user, nil
 
+}
+
+// the function will perform our hash algorithm on the password and return it
+func generatePassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", fmt.Errorf("cannot hash password")
+	}
+
+	return string(hashedPassword), nil
 }
 
 const otpChars = "1234567890"
