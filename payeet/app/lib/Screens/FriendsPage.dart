@@ -185,14 +185,7 @@ class _FriendsPageState extends State<FriendsPage> {
                       dense: false,
                       enabled: true,
                       title: Text(
-                        "${Globals.client.getCachedFriends[index]}",
-                        // style:
-                        // TextStyle(color: Theme.of(context).highlightColor),
-                      ),
-                      subtitle: Text(
                         "${Globals.client.getCachedFriends[index].mail}",
-                        style:
-                            TextStyle(color: Theme.of(context).highlightColor),
                       ),
                       trailing: Icon(
                         Icons.transfer_within_a_station,
@@ -200,7 +193,7 @@ class _FriendsPageState extends State<FriendsPage> {
                       ),
                     )),
                 separatorBuilder: (_, index) => SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 itemCount: Globals.client.getCachedFriends.length,
               ),
