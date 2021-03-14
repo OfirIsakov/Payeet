@@ -163,6 +163,13 @@ class PayeetClient {
     return response;
   }
 
+  ResponseStream<HistoryResponse> getFiveFriendsTransfers() {
+    final response = _authenticatedClient
+        .getFiveFriendsTransfers(FiveFriendsHistoryRequest());
+
+    return response;
+  }
+
   ResponseStream<GenericUser> searchFriend(String text) {
     final response =
         _authenticatedClient.searchFriend(SearchFriendRequest()..search = text);

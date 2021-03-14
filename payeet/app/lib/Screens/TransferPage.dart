@@ -385,19 +385,14 @@ class _TransferPageState extends State<TransferPage> {
                                           dense: false,
                                           enabled: true,
                                           title: Text(
-                                            "${Globals.client.getCachedFriends[index]}\n",
+                                            "${Globals.client.getCachedFriends[index].mail}\n",
                                           ),
-                                          subtitle: Text(
-                                            "${Globals.client.getCachedFriends[index]}",
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .highlightColor),
-                                          ),
+                                          
                                           trailing: Icon(
                                               Icons.transfer_within_a_station),
                                         ))),
                                 separatorBuilder: (_, index) => SizedBox(
-                                  height: 0,
+                                  height: 5,
                                 ),
                                 itemCount:
                                     Globals.client.getCachedFriends.length,
