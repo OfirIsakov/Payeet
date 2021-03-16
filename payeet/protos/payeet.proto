@@ -116,12 +116,19 @@ message ImagesRequest{
 
 }
 
+message ResetPasswordRequest{
+    string Mail = 1;
+    string Password = 2;
+    string Code = 3;
+}
+
 service payeet_auth{
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (StatusResponse);
     rpc Verify(VerifyRequest) returns (StatusResponse);
     rpc GetVerifyCode(CodeRequest) returns (StatusResponse);
+    rpc ResetPassword(ResetPasswordRequest) returns (StatusResponse);
 }
 
 service payeet{

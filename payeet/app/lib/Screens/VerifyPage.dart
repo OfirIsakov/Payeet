@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,8 @@ import 'AppBase.dart';
 class VerifyPage extends StatefulWidget {
   final String email;
   final String password;
-  VerifyPage(this.email, this.password);
+  final bool isResetPassword;
+  VerifyPage(this.email, this.password, this.isResetPassword);
   @override
   _VerifyPageState createState() => _VerifyPageState();
 }
@@ -43,6 +45,24 @@ class _VerifyPageState extends State<VerifyPage> {
     }
   }
 
+  void resetPassword() async {
+    try {
+      await Globals.client.resetPassword(widget.email, widget.password, currentText);
+
+      // redirect to the login page
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) {
+          return LoginPage();
+        }),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('[${e.codeName}] ${e.message}'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   void initState() {
     onTapRecognizer = TapGestureRecognizer()
@@ -51,7 +71,10 @@ class _VerifyPageState extends State<VerifyPage> {
           print("resend");
           Globals.client.resendCode(widget.email);
         } catch (e) {
-          print(e);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('[${e.codeName}] ${e.message}'),
+            backgroundColor: Colors.red,
+          ));
         }
       };
     errorController = StreamController<ErrorAnimationType>();
@@ -277,7 +300,11 @@ class _VerifyPageState extends State<VerifyPage> {
       setState(() {
         hasError = false;
       });
-      login();
+      if (widget.isResetPassword) {
+        resetPassword();
+      } else{
+        login();
+      }
     } catch (e) {
       // display error
       errorController

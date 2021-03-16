@@ -1,5 +1,7 @@
 import 'package:Payeet/Screens/RegisterPage.dart';
+import 'package:Payeet/Screens/ResetPasswordPage.dart';
 import 'package:Payeet/Screens/VerifyPage.dart';
+import 'package:Payeet/grpc/protos/payeet.pb.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -95,7 +97,7 @@ class _MyFormState extends State<MyForm> {
             // permission denied
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) {
-                return VerifyPage(emailControler.text, passwordControler.text);
+                return VerifyPage(emailControler.text, passwordControler.text, false);
               }),
             );
           } else {
@@ -208,6 +210,27 @@ class _MyFormState extends State<MyForm> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => RegisterPage()),
+                            );
+                          }),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  style: style,
+                  children: <TextSpan>[
+                    TextSpan(text: 'Forgot your password? '),
+                    TextSpan(
+                        text: 'Reset',
+                        style: style.copyWith(
+                            color: Colors.blue[400],
+                            fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ResetPasswordPage()),
                             );
                           }),
                   ],

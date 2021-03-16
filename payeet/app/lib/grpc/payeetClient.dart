@@ -262,6 +262,17 @@ class PayeetClient {
         await _authenticatedClient.getProfileImages(ImagesRequest());
     this._profileImages = response.images;
   }
+
+  Future<StatusResponse> resetPassword(String mail, String password, String code) async {
+    final response = await _unauthenticatedClient.resetPassword(ResetPasswordRequest()
+      ..mail = mail
+      ..password = password
+      ..code = code);
+
+    return response;
+  }
+
+  
 }
 
 // implementing the ClientChannel to have an interceptor to set the authorization
