@@ -1,4 +1,5 @@
 import 'package:Payeet/Screens/LoginPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +9,6 @@ import 'package:grpc/grpc.dart';
 
 import 'AppBase.dart';
 import 'VerifyPage.dart';
-
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -78,7 +78,8 @@ class _MyFormState extends State<MyForm> {
 
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) {
-              return VerifyPage(emailController.text, passwordController.text, true);
+              return VerifyPage(
+                  emailController.text, passwordController.text, true);
             }),
           );
         } on GrpcError catch (e) {
@@ -90,7 +91,8 @@ class _MyFormState extends State<MyForm> {
             // unavailable - probably hes on cooldown, let him in the verify page
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) {
-                return VerifyPage(emailController.text, passwordController.text, true);
+                return VerifyPage(
+                    emailController.text, passwordController.text, true);
               }),
             );
           } else {
@@ -112,7 +114,8 @@ class _MyFormState extends State<MyForm> {
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[                      TextFormField(
+                    children: <Widget>[
+                      TextFormField(
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
@@ -215,10 +218,17 @@ class _MyFormState extends State<MyForm> {
                               text: TextSpan(
                                 style: style.copyWith(fontSize: 15),
                                 children: <TextSpan>[
-                                  TextSpan(text: 'Password Requirements:\n', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                                  TextSpan(text: '∙ minumum length of 5 characters\n'),
-                                  TextSpan(text: '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
-                                  
+                                  TextSpan(
+                                      text: 'Password Requirements:\n',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18)),
+                                  TextSpan(
+                                      text:
+                                          '∙ minumum length of 5 characters\n'),
+                                  TextSpan(
+                                      text:
+                                          '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
                                 ],
                               ),
                             ),
@@ -231,20 +241,12 @@ class _MyFormState extends State<MyForm> {
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(30.0),
                           color: Color(0xff01A0C7),
-                          child: MaterialButton(
-                            minWidth: MediaQuery.of(context).size.width,
-                            padding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            onPressed: () async {
+                          child: AppButton(
+                            text: "Request Reset",
+                            isLoading: _loading,
+                            clickFunction: () async {
                               resetPassword();
                             },
-                            child: !_loading
-                                ? Text("Request Reset",
-                                    textAlign: TextAlign.center,
-                                    style: style.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold))
-                                : CupertinoActivityIndicator(),
                           ),
                         ),
                       ),

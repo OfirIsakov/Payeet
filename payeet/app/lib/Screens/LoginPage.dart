@@ -1,6 +1,7 @@
 import 'package:Payeet/Screens/RegisterPage.dart';
 import 'package:Payeet/Screens/ResetPasswordPage.dart';
 import 'package:Payeet/Screens/VerifyPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/grpc/protos/payeet.pb.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -178,19 +179,12 @@ class _MyFormState extends State<MyForm> {
                   elevation: 5.0,
                   borderRadius: BorderRadius.circular(30.0),
                   color: Color(0xff01A0C7),
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    onPressed: () async {
+                  child: AppButton(
+                    text: "Login",
+                    isLoading: _loading,
+                    clickFunction: () async {
                       login();
                     },
-                    child: !_loading
-                        ? Text("Login",
-                            textAlign: TextAlign.center,
-                            style: style.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold))
-                        : CupertinoActivityIndicator(),
                   ),
                 ),
               ),

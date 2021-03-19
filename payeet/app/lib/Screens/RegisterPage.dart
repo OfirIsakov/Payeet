@@ -1,10 +1,10 @@
 import 'package:Payeet/Screens/LoginPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -272,10 +272,17 @@ class _MyFormState extends State<MyForm> {
                               text: TextSpan(
                                 style: style.copyWith(fontSize: 15),
                                 children: <TextSpan>[
-                                  TextSpan(text: 'Password Requirements:\n', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                                  TextSpan(text: '∙ minumum length of 5 characters\n'),
-                                  TextSpan(text: '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
-                                  
+                                  TextSpan(
+                                      text: 'Password Requirements:\n',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18)),
+                                  TextSpan(
+                                      text:
+                                          '∙ minumum length of 5 characters\n'),
+                                  TextSpan(
+                                      text:
+                                          '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
                                 ],
                               ),
                             ),
@@ -288,11 +295,10 @@ class _MyFormState extends State<MyForm> {
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(30.0),
                           color: Color(0xff01A0C7),
-                          child: MaterialButton(
-                            minWidth: MediaQuery.of(context).size.width,
-                            padding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            onPressed: () async {
+                          child: AppButton(
+                            text: "Register",
+                            isLoading: _loading,
+                            clickFunction: () async {
                               if (_formKey.currentState.validate()) {
                                 try {
                                   setState(() {
@@ -313,7 +319,8 @@ class _MyFormState extends State<MyForm> {
                                     _loading = false;
                                   });
 
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
                                     content:
                                         Text('[${e.codeName}] ${e.message}'),
                                     backgroundColor: Colors.red,
@@ -321,13 +328,6 @@ class _MyFormState extends State<MyForm> {
                                 }
                               }
                             },
-                            child: !_loading
-                                ? Text("Register",
-                                    textAlign: TextAlign.center,
-                                    style: style.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold))
-                                : CupertinoActivityIndicator(),
                           ),
                         ),
                       ),
