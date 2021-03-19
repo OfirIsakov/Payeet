@@ -27,11 +27,13 @@ class AppButton extends StatelessWidget {
     if (icon != null) {
       children.add(icon);
     }
-    children.add(Text(text,
-        textAlign: TextAlign.center,
-        style: style.copyWith(
-            color: Theme.of(context).accentColor,
-            fontWeight: FontWeight.bold)));
+    children.add(!isLoading
+        ? Text(text,
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.bold))
+        : CupertinoActivityIndicator());
 
     return MaterialButton(
         minWidth: MediaQuery.of(context).size.width,

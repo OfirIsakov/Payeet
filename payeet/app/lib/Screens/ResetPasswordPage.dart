@@ -1,5 +1,6 @@
 import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:Payeet/UI_Elements/AppButton.dart';
+import 'package:Payeet/UI_Elements/AppInputField.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -115,27 +116,11 @@ class _MyFormState extends State<MyForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Email',
                         controller: emailController,
-                        style: style,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Email",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
+                        textInputAction: TextInputAction.next,
+                        inputType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -144,28 +129,12 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 20.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        autocorrect: false,
+                      
+                      AppInputField(
+                        placeholderText: 'Password',
                         controller: passwordController,
-                        style: style,
+                        textInputAction: TextInputAction.next,
                         obscureText: true,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Password",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -174,28 +143,11 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 10.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.text,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Confirm Password',
                         controller: confirmPasswordController,
-                        style: style,
+                        textInputAction: TextInputAction.next,
                         obscureText: true,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Confirm Password",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
