@@ -124,14 +124,8 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 
 }
 
-// Register creates a new user.
-func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
 
-	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user", server.TotalImages)
-
-	if err != nil {
-		return nil, err
-	}
+func (server *AuthServer) ValidatePassword(firstName , lastName , email , password string) error {
 
 	passwordValidator := validator.New(
 		validator.MinLength(
@@ -144,15 +138,33 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		validator.CommonPassword(nil),
 		validator.Similarity(
 			[]string{
-				req.GetFirstName(),
-				req.GetLastName(),
-				req.GetMail()},
+				firstName,
+				lastName,
+				email},
 			nil,
 			nil))
-	err = passwordValidator.Validate(req.GetPassword())
+	err := passwordValidator.Validate(password)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// Register creates a new user.
+func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
+
+	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user", server.TotalImages)
+
 	if err != nil {
 		return nil, err
 	}
+	err = server.ValidatePassword(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword())
+	if err != nil{
+		return nil, err
+	}	
 
 	if !IsEmailValid(req.GetMail()) {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid mail format!")
@@ -264,12 +276,10 @@ func (server *AuthServer) GetVerifyCode(ctx context.Context, req *pb.CodeRequest
 	}
 
 	// generate a new verification code.
-	user.VerficationCode, err = generateNewCode(6)
+	user.VerficationCode, err = server.refreshCode(user)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "something went worng")
+		return nil, err 
 	}
-	server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
-	server.mongoDBWrapper.ResetLastCodeRequest(req.GetMail())
 
 	// send the user a mail with a new verification code.
 	err = server.emailManager.SendVerficationCode(user)
@@ -296,19 +306,9 @@ func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswo
 		}
 
 		// generate a new verification code.
-		user.VerficationCode, err = generateNewCode(6)
+		user.VerficationCode, err = server.refreshCode(user)
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, "Something went wrong!")
-		}
-
-		// set it in the DB
-		err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, "Something went wrong!")
-		}
-		err = server.mongoDBWrapper.ResetLastCodeRequest(req.GetMail())
-		if err != nil {
-			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+			return nil, err 
 		}
 
 		// send the user a mail with a new verification code.
@@ -324,26 +324,12 @@ func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswo
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
 	}
 
-	passwordValidator := validator.New(
-		validator.MinLength(
-			5,
-			status.Errorf(codes.InvalidArgument, "Password is too short")),
-		validator.ContainsAtLeast(
-			"~<=>+-@!#$%^&*",
-			1,
-			status.Errorf(codes.InvalidArgument, "Password must contain at least 1 special character(~<=>+-@!#$%%^&*)")), // %% is escaping the %
-		validator.CommonPassword(nil),
-		validator.Similarity(
-			[]string{
-				user.FirstName,
-				user.LastName,
-				user.Email},
-			nil,
-			nil))
-	err = passwordValidator.Validate(req.GetPassword())
-	if err != nil {
+	err = server.ValidatePassword(user.FirstName,
+		user.LastName,
+		user.Email, req.GetPassword())
+	if err != nil{
 		return nil, err
-	}
+	}	
 
 	err = server.mongoDBWrapper.ChangePassword(user.Email, req.GetPassword())
 	if err != nil {
@@ -351,20 +337,38 @@ func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswo
 	}
 
 	// generate a new verification code so the same code cannot be used in order to change the password again
-	user.VerficationCode, err = generateNewCode(6)
+	user.VerficationCode, err = server.refreshCode(user)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		return nil, err 
 	}
 
-	// set it in the DB
-	err = server.mongoDBWrapper.SetVerficationCode(req.GetMail(), user.VerficationCode)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Something went wrong!")
-	}
 
 	return &pb.StatusResponse{}, nil
 }
 
+// refreshCode generates a new verification code and updates the database.
+func (server *AuthServer) refreshCode(user *User) (string, error){
+	// generate a new verification code.
+	var err error
+	user.VerficationCode, err = generateNewCode(6)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	// set it in the DB
+	err = server.mongoDBWrapper.SetVerficationCode(user.Email, user.VerficationCode)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	err = server.mongoDBWrapper.ResetLastCodeRequest(user.Email)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	return user.VerficationCode, nil
+}
+
+// userOnTimeout checks if the is on timeout
+// if the user is on timeout he cannot call ciretin functions.
 func userOnTimeout(user *User) bool {
 	currTime := time.Now().Unix()
 
