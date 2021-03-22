@@ -1,3 +1,5 @@
+import 'package:Payeet/UI_Elements/AppButton.dart';
+import 'package:Payeet/UI_Elements/AppInputField.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -252,7 +254,14 @@ class _TransferPageState extends State<TransferPage> {
                                             child: CircleAvatar(
                                               radius: 30,
                                               backgroundImage: NetworkImage(
-                                                  Globals.client.getCachedProfileImages[Globals.client.getCachedFriends[index].imageID.toInt()]),
+                                                  Globals.client
+                                                          .getCachedProfileImages[
+                                                      Globals
+                                                          .client
+                                                          .getCachedFriends[
+                                                              index]
+                                                          .imageID
+                                                          .toInt()]),
                                             ),
                                           ),
 
@@ -387,7 +396,6 @@ class _TransferPageState extends State<TransferPage> {
                                           title: Text(
                                             "${Globals.client.getCachedFriends[index].mail}\n",
                                           ),
-                                          
                                           trailing: Icon(
                                               Icons.transfer_within_a_station),
                                         ))),
@@ -471,22 +479,12 @@ class _MyFormState extends State<MyForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextFormField(
+          AppInputField(
             focusNode: widget.emailNode,
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.emailAddress,
+            placeholderText: 'Email',
             controller: emailControler,
-            style: style,
-            decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32.0),
-                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                ),
-                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Email",
-                hintStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0))),
+            textInputAction: TextInputAction.next,
+            inputType: TextInputType.emailAddress,
             validator: (value) {
               if (value.isEmpty) {
                 return 'Please enter the recipient email.';
@@ -495,22 +493,12 @@ class _MyFormState extends State<MyForm> {
             },
           ),
           SizedBox(height: 25.0),
-          TextFormField(
+          AppInputField(
             focusNode: widget.amountNode,
-            textInputAction: TextInputAction.done,
+            placeholderText: 'Amount',
             controller: amountControler,
-            style: style,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32.0),
-                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                ),
-                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                hintText: "Amount",
-                hintStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0))),
+            textInputAction: TextInputAction.done,
+            inputType: TextInputType.number,
             validator: (value) {
               if (value.isEmpty) {
                 return 'Please enter the amount you would like to transfer';
@@ -533,10 +521,10 @@ class _MyFormState extends State<MyForm> {
               elevation: 5,
               borderRadius: BorderRadius.circular(30.0),
               color: Theme.of(context).highlightColor,
-              child: MaterialButton(
-                minWidth: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                onPressed: () async {
+              child: AppButton(
+                text: "Transfer",
+                isLoading: _loading,
+                clickFunction: () async {
                   if (_formKey.currentState.validate()) {
                     showDialog(
                       context: context,
@@ -595,14 +583,6 @@ class _MyFormState extends State<MyForm> {
                     );
                   }
                 },
-                child: !_loading
-                    ? Text("Transfer",
-                        textAlign: TextAlign.center,
-                        style: style.copyWith(
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold))
-                    : //CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-                    CupertinoActivityIndicator(),
               ),
             ),
           ),

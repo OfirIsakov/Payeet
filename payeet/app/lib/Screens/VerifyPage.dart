@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Payeet/Screens/LoginPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -240,18 +241,11 @@ class _VerifyPageState extends State<VerifyPage> {
                     const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30),
                 child: ButtonTheme(
                   height: 50,
-                  child: TextButton(
-                    onPressed: () async {
+                  child: AppButton(
+                    text: "VERIFY",
+                    clickFunction: () async {
                       await _verify();
                     },
-                    child: Center(
-                        child: Text(
-                      "VERIFY".toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    )),
                   ),
                 ),
                 decoration: BoxDecoration(

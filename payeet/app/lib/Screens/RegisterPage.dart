@@ -1,10 +1,11 @@
 import 'package:Payeet/Screens/LoginPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
+import 'package:Payeet/UI_Elements/AppInputField.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
-
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -78,27 +79,11 @@ class _MyFormState extends State<MyForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      TextFormField(
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'First Name',
                         controller: firstNameController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
-                        style: style,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "First Name",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
+                        inputType: TextInputType.name,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -107,27 +92,11 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 10.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Last Name',
                         controller: lastNameController,
-                        style: style,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Last Name",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
+                        textInputAction: TextInputAction.next,
+                        inputType: TextInputType.name,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -136,27 +105,11 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 25.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Email',
                         controller: emailController,
-                        style: style,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Email",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
+                        textInputAction: TextInputAction.next,
+                        inputType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -165,27 +118,11 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 10.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Confirm Email',
                         controller: confirmEmailController,
-                        style: style,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Confirm Email",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
+                        textInputAction: TextInputAction.next,
+                        inputType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -193,33 +130,15 @@ class _MyFormState extends State<MyForm> {
                           if (value != emailController.text) {
                             return 'No no, email not match';
                           }
-
                           return null;
                         },
                       ),
                       SizedBox(height: 25.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Password',
                         controller: passwordController,
-                        style: style,
+                        textInputAction: TextInputAction.next,
                         obscureText: true,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Password",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -228,28 +147,11 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 10.0),
-                      TextFormField(
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.text,
-                        autocorrect: false,
+                      AppInputField(
+                        placeholderText: 'Confirm Password',
                         controller: confirmPasswordController,
-                        style: style,
+                        textInputAction: TextInputAction.next,
                         obscureText: true,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Confirm Password",
-                            hintStyle: style,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).highlightColor,
-                                    width: 2.5),
-                                borderRadius: BorderRadius.circular(32.0))),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -272,10 +174,17 @@ class _MyFormState extends State<MyForm> {
                               text: TextSpan(
                                 style: style.copyWith(fontSize: 15),
                                 children: <TextSpan>[
-                                  TextSpan(text: 'Password Requirements:\n', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                                  TextSpan(text: '∙ minumum length of 5 characters\n'),
-                                  TextSpan(text: '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
-                                  
+                                  TextSpan(
+                                      text: 'Password Requirements:\n',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18)),
+                                  TextSpan(
+                                      text:
+                                          '∙ minumum length of 5 characters\n'),
+                                  TextSpan(
+                                      text:
+                                          '∙ password must contains at least 1 special character ~<=>+-@!#\$%^&* \n'),
                                 ],
                               ),
                             ),
@@ -288,11 +197,10 @@ class _MyFormState extends State<MyForm> {
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(30.0),
                           color: Color(0xff01A0C7),
-                          child: MaterialButton(
-                            minWidth: MediaQuery.of(context).size.width,
-                            padding:
-                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            onPressed: () async {
+                          child: AppButton(
+                            text: "Register",
+                            isLoading: _loading,
+                            clickFunction: () async {
                               if (_formKey.currentState.validate()) {
                                 try {
                                   setState(() {
@@ -313,7 +221,8 @@ class _MyFormState extends State<MyForm> {
                                     _loading = false;
                                   });
 
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
                                     content:
                                         Text('[${e.codeName}] ${e.message}'),
                                     backgroundColor: Colors.red,
@@ -321,13 +230,6 @@ class _MyFormState extends State<MyForm> {
                                 }
                               }
                             },
-                            child: !_loading
-                                ? Text("Register",
-                                    textAlign: TextAlign.center,
-                                    style: style.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold))
-                                : CupertinoActivityIndicator(),
                           ),
                         ),
                       ),

@@ -1,3 +1,4 @@
+import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -153,28 +154,17 @@ class _HomePageState extends State<HomePage> {
               elevation: 5.0,
               borderRadius: BorderRadius.circular(30.0),
               color: Theme.of(context).highlightColor,
-              child: MaterialButton(
-                  minWidth: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  onPressed: () {
-                    context.read(Globals.selectedIndex).state = 2;
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
+              child: AppButton(
+                    text: "Pay",
+                    icon: Icon(
                         Icons.payment_rounded,
                         color: Theme.of(context).accentColor,
                       ),
-                      Text("Pay",
-                          textAlign: TextAlign.center,
-                          style: style.copyWith(
-                              color: Theme.of(context).accentColor,
-                              fontWeight: FontWeight.bold))
-                    ],
+                    clickFunction: () async {
+                      context.read(Globals.selectedIndex).state = 2;
+                    },
                   )),
             ),
-          ),
           LimitedBox(
             maxHeight: 400,
             child: ListView.builder(
