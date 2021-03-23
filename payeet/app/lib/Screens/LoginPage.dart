@@ -32,9 +32,9 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 100,
+                  height: 200,
                   child: SvgPicture.asset(
-                    'assets/icon/payeet_icon.svg',
+                    'assets/icon/payeet_full.svg',
                   ),
                 ),
                 SizedBox(height: 45.0),
@@ -99,7 +99,8 @@ class _MyFormState extends State<MyForm> {
             // permission denied
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) {
-                return VerifyPage(emailControler.text, passwordControler.text, false);
+                return VerifyPage(
+                    emailControler.text, passwordControler.text, false);
               }),
             );
           } else {
@@ -120,6 +121,7 @@ class _MyFormState extends State<MyForm> {
             children: <Widget>[
               AppInputField(
                 placeholderText: 'Email',
+                title: 'Email Address',
                 controller: emailControler,
                 textInputAction: TextInputAction.next,
                 inputType: TextInputType.emailAddress,
@@ -133,6 +135,7 @@ class _MyFormState extends State<MyForm> {
               SizedBox(height: 25.0),
               AppInputField(
                 placeholderText: 'Password',
+                title: 'Password',
                 obscureText: true,
                 controller: passwordControler,
                 textInputAction: TextInputAction.send,
@@ -143,6 +146,31 @@ class _MyFormState extends State<MyForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 5.0),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      style: style,
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Forgot password?',
+                            style: style.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: style.fontSize / 1.5),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ResetPasswordPage()),
+                                );
+                              }),
+                      ],
+                    ),
+                  )),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Material(
@@ -158,48 +186,37 @@ class _MyFormState extends State<MyForm> {
                   ),
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  style: style,
-                  children: <TextSpan>[
-                    TextSpan(text: 'Not registered? '),
-                    TextSpan(
-                        text: 'Register',
-                        style: style.copyWith(
-                            color: Colors.blue[400],
-                            fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterPage()),
-                            );
-                          }),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  style: style,
-                  children: <TextSpan>[
-                    TextSpan(text: 'Forgot your password? '),
-                    TextSpan(
-                        text: 'Reset',
-                        style: style.copyWith(
-                            color: Colors.blue[400],
-                            fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ResetPasswordPage()),
-                            );
-                          }),
-                  ],
-                ),
-              )
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                      child: RichText(
+                    text: TextSpan(
+                      style: style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Not registered? ',
+                          style: style.copyWith(
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: style.fontSize / 1.5),
+                        ),
+                        TextSpan(
+                            text: 'Register',
+                            style: style.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: style.fontSize / 1.5),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()),
+                                );
+                              }),
+                      ],
+                    ),
+                  ))),
             ],
           ),
         ));

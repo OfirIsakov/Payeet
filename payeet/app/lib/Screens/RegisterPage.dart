@@ -22,9 +22,9 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(children: <Widget>[
         SizedBox(height: 45.0),
         Container(
-          height: 100,
+          height: 200,
           child: SvgPicture.asset(
-            'assets/icon/payeet_icon.svg',
+            'assets/icon/payeet_full.svg',
           ),
         ),
         SizedBox(height: 45.0),
@@ -81,6 +81,7 @@ class _MyFormState extends State<MyForm> {
                     children: <Widget>[
                       AppInputField(
                         placeholderText: 'First Name',
+                        title: 'First Name',
                         controller: firstNameController,
                         textInputAction: TextInputAction.next,
                         inputType: TextInputType.name,
@@ -94,6 +95,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 10.0),
                       AppInputField(
                         placeholderText: 'Last Name',
+                        title: 'Last Name',
                         controller: lastNameController,
                         textInputAction: TextInputAction.next,
                         inputType: TextInputType.name,
@@ -107,6 +109,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 25.0),
                       AppInputField(
                         placeholderText: 'Email',
+                        title: 'Email Address',
                         controller: emailController,
                         textInputAction: TextInputAction.next,
                         inputType: TextInputType.emailAddress,
@@ -120,6 +123,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 10.0),
                       AppInputField(
                         placeholderText: 'Confirm Email',
+                        title: 'Confirm Email Address',
                         controller: confirmEmailController,
                         textInputAction: TextInputAction.next,
                         inputType: TextInputType.emailAddress,
@@ -136,6 +140,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 25.0),
                       AppInputField(
                         placeholderText: 'Password',
+                        title: 'Password',
                         controller: passwordController,
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -149,6 +154,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 10.0),
                       AppInputField(
                         placeholderText: 'Confirm Password',
+                        title: 'Confirm Password',
                         controller: confirmPasswordController,
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -233,27 +239,38 @@ class _MyFormState extends State<MyForm> {
                           ),
                         ),
                       ),
-                      RichText(
-                        text: TextSpan(
-                          style: style,
-                          children: <TextSpan>[
-                            TextSpan(text: 'Already registered? '),
-                            TextSpan(
-                                text: 'Login',
-                                style: style.copyWith(
-                                    color: Colors.blue[400],
-                                    fontWeight: FontWeight.bold),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pop(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginPage()),
-                                    );
-                                  }),
-                          ],
-                        ),
-                      )
+                      Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                              child: RichText(
+                            text: TextSpan(
+                              style: style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Already registered? ',
+                                  style: style.copyWith(
+                                      color: Theme.of(context).hintColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: style.fontSize / 1.5),
+                                ),
+                                TextSpan(
+                                    text: 'Login',
+                                    style: style.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: style.fontSize / 1.5),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.pop(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()),
+                                        );
+                                      }),
+                              ],
+                            ),
+                          ))),
                     ],
                   ),
                 ))));

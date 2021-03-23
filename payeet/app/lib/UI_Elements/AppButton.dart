@@ -35,15 +35,19 @@ class AppButton extends StatelessWidget {
                 fontWeight: FontWeight.bold))
         : CupertinoActivityIndicator());
 
-    return MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () async {
-          clickFunction?.call();
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: children,
-        ));
+    return Material(
+        color: Theme.of(context).primaryColor,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        child: MaterialButton(
+            minWidth: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            onPressed: () async {
+              clickFunction?.call();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            )));
   }
 }
