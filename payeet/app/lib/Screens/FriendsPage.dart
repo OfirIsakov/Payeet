@@ -1,3 +1,4 @@
+import 'package:Payeet/UI_Elements/confirm.dart';
 import 'package:Payeet/grpc/protos/payeet.pbgrpc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,56 +143,127 @@ class _FriendsPageState extends State<FriendsPage> {
               child: ListView.separated(
                 itemBuilder: (_, index) => Padding(
                     padding: const EdgeInsets.only(bottom: 5),
-                    child: ListTile(
-                      onTap: () async {
-                        setState(() {
-                          context.read(Globals.transfer_email).state =
-                              Globals.client.getCachedFriends[index].mail;
-                          selected_index = index;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) => Scaffold(
-                                        appBar: AppBar(
-                                          iconTheme: IconThemeData(
-                                              color: Theme.of(context)
-                                                  .highlightColor),
-                                          backgroundColor: Theme.of(context)
-                                              .accentColor,
-                                          title: Text(
-                                            Globals.client
-                                                .getCachedFriends[index].mail,
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .highlightColor),
-                                          ),
-                                        ),
-                                        backgroundColor:
-                                            Theme.of(context).backgroundColor,
-                                        body: StatsPage(
-                                          transferEmail: Globals.client
-                                              .getCachedFriends[index].mail,
-                                        ),
-                                      )));
-                        });
-                      },
-                      selected: selected_index == index,
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            Globals.client.getCachedProfileImages[Globals
-                                .client.getCachedFriends[index].imageID
-                                .toInt()]),
-                      ),
-                      dense: false,
-                      enabled: true,
-                      title: Text(
-                        "${Globals.client.getCachedFriends[index].mail}",
-                      ),
-                      trailing: Icon(
-                        CupertinoIcons.money_dollar_circle,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                    )),
+                    child: Dismissible(
+                        confirmDismiss: (direction) async {
+                          if (direction == DismissDirection.endToStart) {
+                            context.read(Globals.selectedIndex).state = 2;
+                            setState(() {
+                              context.read(Globals.transfer_email).state =
+                                  Globals.client.getCachedFriends[index].mail;
+                              selected_index = index;
+                            });
+                          }
+
+                          // remove friend.
+                          if (direction == DismissDirection.startToEnd) {
+                            showDialog(
+                              context: context,
+                              builder: (_) => ConfirmDialog(
+                                danger: true,
+                                title: 'Unfollow',
+                                content: Text(
+                                    'Would you like to remove ${Globals.client.getCachedFriends[index].mail} from your favorites?',
+                                    style: TextStyle(
+                                        color: Theme.of(context).highlightColor,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18)),
+                                cancelFunction: () {
+                                  setState(() {
+                                    Globals.client.getCachedFriends;
+                                  });
+                                  Navigator.of(context).pop();
+                                  return false;
+                                },
+                                actionText: Text('Approve'),
+                                actionFunction: () async {
+                                  try {
+                                    await Globals.client.removeFriend(Globals
+                                        .client.getCachedFriends[index].mail);
+                                    setState(() {
+                                      Globals.client.getCachedFriends
+                                          .removeAt(index);
+                                    });
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content:
+                                          Text('[${e.codeName}] ${e.message}'),
+                                      backgroundColor: Colors.red,
+                                    ));
+                                  }
+
+                                  Navigator.of(context).pop();
+                                  return true;
+                                },
+                              ),
+                            );
+                          }
+
+                          return false;
+                        },
+                        secondaryBackground: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(8)),
+                          alignment: Alignment.centerRight,
+                          child: Icon(CupertinoIcons.money_dollar_circle),
+                        ),
+                        background: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8)),
+                          alignment: Alignment.centerLeft,
+                          child: Icon(Icons.delete_forever_outlined),
+                        ),
+                        key: ValueKey(Globals.client.getCachedFriends[index]),
+                        child: ListTile(
+                          onTap: () async {
+                            setState(() {
+                              context.read(Globals.transfer_email).state =
+                                  Globals.client.getCachedFriends[index].mail;
+                              selected_index = index;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Scaffold(
+                                            appBar: AppBar(
+                                              iconTheme: IconThemeData(
+                                                  color: Theme.of(context)
+                                                      .highlightColor),
+                                              backgroundColor:
+                                                  Theme.of(context).accentColor,
+                                              title: Text(
+                                                Globals
+                                                    .client
+                                                    .getCachedFriends[index]
+                                                    .mail,
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .highlightColor),
+                                              ),
+                                            ),
+                                            backgroundColor: Theme.of(context)
+                                                .backgroundColor,
+                                            body: StatsPage(
+                                              transferEmail: Globals.client
+                                                  .getCachedFriends[index].mail,
+                                            ),
+                                          )));
+                            });
+                          },
+                          selected: selected_index == index,
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/avatar.png'),
+                          ),
+                          dense: false,
+                          enabled: true,
+                          title: Text(
+                            "${Globals.client.getCachedFriends[index].mail}\n",
+                          ),
+                          trailing: Icon(CupertinoIcons.arrow_right_arrow_left),
+                        ))),
                 separatorBuilder: (_, index) => SizedBox(
                   height: 10,
                 ),

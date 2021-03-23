@@ -88,10 +88,10 @@ class _HomePageState extends State<HomePage> {
                         if (snapshot.hasData) {
                           children = <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 16),
+                              padding: const EdgeInsets.only(top: 4, bottom: 16),
                               child: Text(
                                 "\$ ${snapshot.data}",
-                                style: style.copyWith(fontSize: 60),
+                                style: style.copyWith(fontSize: 60, fontWeight: FontWeight.w600),
                               ),
                             ),
                           ];
@@ -178,9 +178,8 @@ class _HomePageState extends State<HomePage> {
                             maxHeight: 360,
                             child: ListView.builder(
                               itemBuilder: (_, int index) => ListTile(
-                                hoverColor: Colors.red,
-                                selectedTileColor: Colors.pink,
-                                focusColor: Colors.green,
+                                tileColor: Theme.of(context).accentColor,
+                                selectedTileColor: Theme.of(context).accentColor,
                                 title: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
