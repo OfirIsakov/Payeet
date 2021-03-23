@@ -37,9 +37,9 @@ class _FriendsPageState extends State<FriendsPage> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40),
+              padding: const EdgeInsets.only(bottom: 40),
               child: Text(
-                "TopUsers",
+                "Top Users",
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -157,7 +157,7 @@ class _FriendsPageState extends State<FriendsPage> {
                                               color: Theme.of(context)
                                                   .highlightColor),
                                           backgroundColor: Theme.of(context)
-                                              .bottomAppBarColor,
+                                              .accentColor,
                                           title: Text(
                                             Globals.client
                                                 .getCachedFriends[index].mail,
@@ -188,7 +188,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         "${Globals.client.getCachedFriends[index].mail}",
                       ),
                       trailing: Icon(
-                        Icons.transfer_within_a_station,
+                        CupertinoIcons.money_dollar_circle,
                         color: Theme.of(context).highlightColor,
                       ),
                     )),

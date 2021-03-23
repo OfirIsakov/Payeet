@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
           unselectedWidgetColor: Colors.white,
           accentColor: Colors.black,
           primarySwatch: createMaterialColor(Colors.white),
-          primaryColor: Colors.white,
+            primaryColor: Color(0xffeeeeee),
           hintColor: Colors.white30,
           inputDecorationTheme:
               InputDecorationTheme(fillColor: Colors.grey[900]),

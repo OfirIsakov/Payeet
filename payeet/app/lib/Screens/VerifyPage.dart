@@ -198,11 +198,20 @@ class _VerifyPageState extends State<VerifyPage> {
                       controller: textEditingController,
                       useHapticFeedback: true,
                       keyboardType: TextInputType.number,
+                      onTap: () async {
+                        if (hasError) {
+                          if(currentText.length == 6) {
+                            textEditingController.clear();
+                          }
+                          hasError = false;
+                        }
+                      },
                       onCompleted: (v) async {
                         await _verify();
                       },
                       onChanged: (value) {
                         setState(() {
+                          hasError = false;
                           currentText = value;
                         });
                       },
@@ -212,19 +221,6 @@ class _VerifyPageState extends State<VerifyPage> {
                         return false;
                       },
                     )),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                      child: TextButton(
-                    child: Text("Clear"),
-                    onPressed: () {
-                      textEditingController.clear();
-                      hasError = false;
-                    },
-                  )),
-                ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
