@@ -97,7 +97,7 @@ class _TransferPageState extends State<TransferPage> {
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Theme.of(context).highlightColor,
-                            fontSize: 40)))
+                            fontSize: 56)))
               ])));
             }),
           ),

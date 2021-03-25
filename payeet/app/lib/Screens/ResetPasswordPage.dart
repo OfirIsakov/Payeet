@@ -28,7 +28,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         Container(
           height: 200,
           child: SvgPicture.asset(
-            'assets/icon/payeet_full.svg',
+            'assets/icon/PayeetLogoNoBackground.svg',
           ),
         ),
         SizedBox(height: 45.0),

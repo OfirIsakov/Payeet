@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/globals.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:Payeet/grpc/protos/payeet.pbgrpc.dart';
 import 'package:vibration/vibration.dart';
+import 'package:intl/intl.dart';
 import './StatsPage.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +64,8 @@ class _HomePageState extends State<HomePage> {
         fontFamily: 'Montserrat',
         fontSize: 20.0,
         color: Theme.of(context).highlightColor);
+    final formatCurrency =
+        new NumberFormat.simpleCurrency(decimalDigits: 0);
 
     return Column(
       children: [
@@ -81,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                     textAlign: TextAlign.center,
                     child: FutureBuilder<String>(
                       future:
-                          _getBalance(), // a previously-obtained Future<String> or null
+                          _getBalance().then((value) => formatCurrency.format(int.parse(value))), // a previously-obtained Future<String> or null
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         List<Widget> children;
@@ -90,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 4, bottom: 16),
                               child: Text(
-                                "\$ ${snapshot.data}",
+                                "${snapshot.data}",
                                 style: style.copyWith(fontSize: 60, fontWeight: FontWeight.w600),
                               ),
                             ),

@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   height: 200,
                   child: SvgPicture.asset(
-                    'assets/icon/payeet_full.svg',
+                    'assets/icon/PayeetLogoNoBackground.svg',
                   ),
                 ),
                 SizedBox(height: 45.0),

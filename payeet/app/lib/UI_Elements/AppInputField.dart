@@ -29,18 +29,18 @@ class AppInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle style = TextStyle(
         fontFamily: 'Montserrat',
-        fontSize: 20.0,
+        fontSize: 18.0,
         color: Theme.of(context).highlightColor);
 
     return Column(children: [
       Align(
-        alignment: Alignment.bottomLeft,
-        child: RichText(
-          text: TextSpan(
-              style: style.copyWith(
-                  fontWeight: FontWeight.w300, fontSize: style.fontSize / 1.5),
-              text: title))
-      ),
+          alignment: Alignment.bottomLeft,
+          child: RichText(
+              text: TextSpan(
+                  style: style.copyWith(
+                      fontWeight: FontWeight.w300,
+                      fontSize: style.fontSize / 1.5),
+                  text: title))),
       TextFormField(
         focusNode: focusNode,
         autocorrect: false,
@@ -58,7 +58,9 @@ class AppInputField extends StatelessWidget {
             ),
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             hintText: placeholderText,
-            hintStyle: style.copyWith(color: Theme.of(context).hintColor),
+            hintStyle: style.copyWith(
+                color: Theme.of(context).hintColor,
+                fontWeight: FontWeight.w300),
             border: OutlineInputBorder(
               borderSide: BorderSide(
                   color: Theme.of(context).highlightColor, width: 2.5),

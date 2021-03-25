@@ -98,7 +98,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                       maxY: 20,
                       barTouchData: BarTouchData(
                           touchTooltipData: BarTouchTooltipData(
-                            tooltipBgColor: Colors.grey,
+                            tooltipBgColor: Theme.of(context).backgroundColor,
                             getTooltipItem: (_a, _b, _c, _d) => null,
                           ),
                           touchCallback: (response) {
@@ -149,8 +149,8 @@ class BarChartSample2State extends State<BarChartSample2> {
                         show: true,
                         bottomTitles: SideTitles(
                           showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Color(0xff7589a2),
+                          getTextStyles: (value) => TextStyle(
+                              color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 14),
                           margin: 20,
@@ -177,10 +177,10 @@ class BarChartSample2State extends State<BarChartSample2> {
                         ),
                         leftTitles: SideTitles(
                           showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Color(0xff7589a2),
+                          getTextStyles: (value) => TextStyle(
+                              color: Theme.of(context).highlightColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 14),
+                              fontSize: 16),
                           margin: 32,
                           reservedSize: 14,
                           getTitles: (value) {
@@ -295,16 +295,8 @@ class _Chart1State extends State<Chart1> {
   void func() {
     incomeData.clear();
     outcomeData.clear();
-    var now = DateTime.now();
-    // var history = widget.transHistory.where((element) {
-    //   var date =
-    //       DateTime.fromMillisecondsSinceEpoch(element.time.toInt() * 1000);
-    //   var diff = now.difference(date);
-    //   return diff.inDays >= 0 && diff.inDays <= 7;
-    // }).toList();
     var history = widget.transHistory.reversed;
     for (var item in history) {
-      //print(item);
       bool income = item.receiverMail == widget.transferEmail;
       if (income) {
         addToMap(incomeData, item);
@@ -315,11 +307,11 @@ class _Chart1State extends State<Chart1> {
   }
 
   void addToMap(Map<int, int> map, HistoryResponse item) {
-    var day = DateTime.fromMillisecondsSinceEpoch(item.time.toInt() * 1000).day;
+    var day = 0;
     if (map.containsKey(day)) {
-      map[day] += item.amount;
+      map[0] += item.amount;
     } else {
-      map.addAll({day: item.amount});
+      map.addAll({0: item.amount});
     }
   }
 
@@ -340,103 +332,58 @@ class _Chart1State extends State<Chart1> {
     func();
     return SfCartesianChart(
         backgroundColor: Theme.of(context).backgroundColor,
-        legend: Legend(isVisible: true, position: LegendPosition.bottom),
+        legend: Legend(isVisible: true, position: LegendPosition.bottom, textStyle: TextStyle(color: Theme.of(context).primaryColor)),
         title: ChartTitle(
             textStyle: TextStyle(color: Theme.of(context).highlightColor)),
         primaryXAxis: CategoryAxis(
             labelStyle: TextStyle(
-                color: Color(0xff7589a2),
+                color: Theme.of(context).highlightColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 14)),
         primaryYAxis: NumericAxis(
             labelStyle: TextStyle(
-                color: Color(0xff7589a2),
+                color: Theme.of(context).highlightColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 14)),
         tooltipBehavior: _tooltipBehavior,
         series: <ChartSeries>[
           ColumnSeries<MapEntry<int, int>, String>(
               isVisibleInLegend: true,
+
               spacing: 0.4,
               name: "spending",
               dataSource: outcomeData.entries.toList(),
-              xValueMapper: (MapEntry<int, int> d, _) => d.key.toString(),
+              xValueMapper: (MapEntry<int, int> d, _) => 'Spendings',
               yValueMapper: (MapEntry<int, int> d, _) => d.value,
               color: const Color(0xffff5182),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              dataLabelSettings: DataLabelSettings(
-                textStyle: TextStyle(
-                    color: Theme.of(context).highlightColor,
-                    fontWeight: FontWeight.bold),
-                isVisible: true,
-              )),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), topRight: Radius.circular(8))),
           ColumnSeries<MapEntry<int, int>, String>(
-            isVisibleInLegend: true,
-
-            spacing: 0.4,
-            name: "income",
-
-            dataSource: incomeData.entries.toList(),
-            xValueMapper: (MapEntry<int, int> d, _) => d.key.toString(),
-            yValueMapper: (MapEntry<int, int> d, _) => d.value,
-            color: const Color(0xff53fdd7),
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            //dataLabelSettings: DataLabelSettings(isVisible: true)
-          ),
-
-          // LineSeries<myData, String>(
-          //   isVisibleInLegend: true,
-          //   name: "outcome",
-          //   color: Colors.blue,
-          //   dataSource: getOutcomeData(),
-          //   xValueMapper: (myData d, _) => d.x,
-          //   yValueMapper: (myData d, _) => d.y,
-          // ),
-          // LineSeries<myData, String>(
-          //   isVisibleInLegend: true,
-          //   name: "outcome",
-          //   color: Colors.green,
-          //   dataSource: getIncomeData(),
-          //   xValueMapper: (myData d, _) => d.x,
-          //   yValueMapper: (myData d, _) => d.y,
-          // ),
+              isVisibleInLegend: true,
+              spacing: 0.4,
+              name: "income",
+              dataSource: incomeData.entries.toList(),
+              xValueMapper: (MapEntry<int, int> d, _) => 'Income',
+              yValueMapper: (MapEntry<int, int> d, _) => d.value,
+              color: const Color(0xff53fdd7),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), topRight: Radius.circular(8))),
         ]);
   }
 
   dynamic getIncomeData() {
-    List<myData> columndata = <myData>[
-      // myData("yakir", 10),
-      // myData("BFG", 20),
-      // myData("fsf", 30),
-      // myData("sdfd", 40),
-      // myData("zae", 50),
-      // myData("zae1", 50),
-      // myData("zae2", 50),
-    ];
+    List<myData> columndata = <myData>[];
 
     for (var item in incomeData.entries) {
       columndata.add(myData(item.key.toString(), item.value));
     }
 
-    //List<myData> columndata = incomeData.entries.map((item) {}).toList();
-
-    // print(incomeData);
     print(columndata);
 
     return columndata;
   }
 
   dynamic getOutcomeData() {
-    // List<myData> columndata = <myData>[
-    //   myData("yakir", 20),
-    //   myData("BFG", 11),
-    //   myData("fsf", 20),
-    //   myData("sdfd", 40),
-    //   myData("zae", 50),
-    //   myData("zae1", 30),
-    //   myData("zae2", 20),
-    // ];
-
     List<myData> columndata = outcomeData.entries.map((item) {
       myData(item.key.toString(), item.value);
     }).toList();
