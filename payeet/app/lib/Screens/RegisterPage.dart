@@ -1,6 +1,7 @@
 import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/UI_Elements/AppInputField.dart';
+import 'package:Payeet/UI_Elements/FullLogo.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,12 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
           child: SingleChildScrollView(
               child: Column(children: <Widget>[
         SizedBox(height: 45.0),
-        Container(
-          height: 200,
-          child: SvgPicture.asset(
-            'assets/icon/PayeetLogoNoBackground.svg',
-          ),
-        ),
+        FullLogo(),
         SizedBox(height: 45.0),
         MyForm(),
       ]))),

@@ -310,8 +310,8 @@ class _TransferPageState extends State<TransferPage> {
                                     padding: const EdgeInsets.only(bottom: 3),
                                     child: Container(
                                         decoration: BoxDecoration(
-                                            color:
-                                                Theme.of(context).bottomAppBarColor,
+                                            color: Theme.of(context)
+                                                .bottomAppBarColor,
                                             borderRadius:
                                                 BorderRadius.circular(8)),
                                         child: Dismissible(
@@ -431,8 +431,15 @@ class _TransferPageState extends State<TransferPage> {
                                               },
                                               selected: selected_index == index,
                                               leading: CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                    'assets/images/avatar.png'),
+                                                backgroundImage: NetworkImage(
+                                                    Globals.client
+                                                            .getCachedProfileImages[
+                                                        Globals
+                                                            .client
+                                                            .getCachedFriends[
+                                                                index]
+                                                            .imageID
+                                                            .toInt()]),
                                               ),
                                               dense: false,
                                               enabled: true,
@@ -596,7 +603,6 @@ class _MyFormState extends State<MyForm> {
                                 emailControler.text,
                                 int.parse(amountControler.text));
 
-
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Transfered successfully'),
                               backgroundColor: Colors.green,
@@ -607,9 +613,9 @@ class _MyFormState extends State<MyForm> {
                             setState(() {
                               context.read(Globals.transfer_email).state = "";
 
-                            FocusScope.of(context).unfocus();
-                            emailControler.clear();
-                            amountControler.clear();
+                              FocusScope.of(context).unfocus();
+                              emailControler.clear();
+                              amountControler.clear();
                               _loading = false;
                             });
                           } on FormatException catch (e) {
@@ -665,7 +671,6 @@ class _SearchFriendState extends State<SearchFriend> {
       searchBarStyle: SearchBarStyle(borderRadius: BorderRadius.circular(16.0)),
       hintText: 'Search An Email',
       minimumChars: 1,
-      
       iconActiveColor: Theme.of(context).highlightColor,
       textStyle: TextStyle(color: Theme.of(context).highlightColor),
       cancellationText: Text(

@@ -137,7 +137,7 @@ class _MyAppState extends State<MyApp> {
                     color: Color(0xff7589a2),
                     fontWeight: FontWeight.bold,
                     fontSize: 14)),
-            backgroundColor: Color(0xffeeeeee)),
+            backgroundColor: Color(0xfff7f7f7)),
         home: shouldMoveUser ? AppBase() : LoginPage(),
       );
     }));

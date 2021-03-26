@@ -97,33 +97,41 @@ class _StatsPageState extends State<StatsPage>
     }
 
     bool income = history[index].receiverMail == widget.transferEmail;
-    var brightness = MediaQuery.of(context).platformBrightness;
-    bool darkModeOn =
-        (context.read(Globals.themeMode).state == ThemeMode.dark ||
-            brightness == Brightness.dark);
+    bool darkModeOn = Globals.isDarkMode(context);
     var format = DateFormat('d/M/y');
     return Card(
         color: Theme.of(context).backgroundColor,
         child: ListTile(
-          // leading: CircleAvatar(
-          //   backgroundImage: AssetImage('assets/images/avatar.png'),
-          // ),
           dense: false,
           enabled: true,
-          leading: income
-              ? Icon(
-                  CupertinoIcons.money_dollar_circle,
-                  color: Theme.of(context).highlightColor,
-                  size: 40,
-                )
-              : SizedBox(
-                  child: Image(
-                      image: darkModeOn
-                          ? AssetImage('assets/images/inoutwhite.png')
-                          : AssetImage('assets/images/inoutblack.png')),
-                  height: 40,
-                  width: 40,
-                ),
+          leading: Container(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: EdgeInsets.only(left: 30),
+                child: income
+                    ? Icon(
+                        Icons.west,
+                        color: Theme.of(context).highlightColor,
+                        size: 20,
+                      )
+                    : Icon(
+                        Icons.east,
+                        color: Theme.of(context).highlightColor,
+                        size: 20,
+                      ),
+              ),
+            ),
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: darkModeOn
+                      ? AssetImage('assets/images/inoutwhite.png')
+                      : AssetImage('assets/images/inoutblack.png')),
+            ),
+          ),
+
           title: Text(
             income
                 ? "From ${history[index].senderMail}\n"

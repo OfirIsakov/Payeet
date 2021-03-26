@@ -3,6 +3,7 @@ import 'package:Payeet/Screens/ResetPasswordPage.dart';
 import 'package:Payeet/Screens/VerifyPage.dart';
 import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/UI_Elements/AppInputField.dart';
+import 'package:Payeet/UI_Elements/FullLogo.dart';
 import 'package:Payeet/grpc/protos/payeet.pb.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  height: 200,
-                  child: SvgPicture.asset(
-                    'assets/icon/PayeetLogoNoBackground.svg',
-                  ),
-                ),
+                FullLogo(),
                 SizedBox(height: 45.0),
                 MyForm(),
               ],
