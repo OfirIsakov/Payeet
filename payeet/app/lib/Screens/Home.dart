@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                             offset: Offset(0, 3), // changes position of shadow
                           ),
                         ],
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).bottomAppBarColor,
                         borderRadius: BorderRadius.only(
                           topRight: Radius.elliptical(128, 32),
                           topLeft: Radius.elliptical(128, 32),
@@ -183,8 +183,8 @@ class _HomePageState extends State<HomePage> {
                             maxHeight: 360,
                             child: ListView.builder(
                               itemBuilder: (_, int index) => ListTile(
-                                tileColor: Theme.of(context).accentColor,
-                                selectedTileColor: Theme.of(context).accentColor,
+                                tileColor: Theme.of(context).bottomAppBarColor,
+                                selectedTileColor: Theme.of(context).bottomAppBarColor,
                                 title: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

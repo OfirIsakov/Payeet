@@ -168,7 +168,7 @@ class _TransferPageState extends State<TransferPage> {
                                   icon: Icon(
                                     Icons.list,
                                     color: Theme.of(context).highlightColor,
-                                    size: !showCubes ? 22 : 16,
+                                    size: !showCubes ? 24 : 16,
                                   ),
                                 ),
                               ],
@@ -311,7 +311,7 @@ class _TransferPageState extends State<TransferPage> {
                                     child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                Theme.of(context).accentColor,
+                                                Theme.of(context).bottomAppBarColor,
                                             borderRadius:
                                                 BorderRadius.circular(8)),
                                         child: Dismissible(

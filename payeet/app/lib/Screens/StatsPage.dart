@@ -160,7 +160,6 @@ class _StatsPageState extends State<StatsPage>
       time = diff.inDays.toString() +
           ((diff.inDays == 1) ? ' DAY AGO' : ' DAYS AGO');
     } else {
-      print(diff.inDays);
       time = (diff.inDays / 7).floor().toString() +
           (((diff.inDays / 7).floor() == 1) ? ' WEEK AGO' : ' WEEKS AGO');
     }
@@ -186,6 +185,7 @@ class _StatsPageState extends State<StatsPage>
           },
           unselectedLabelColor: Theme.of(context).unselectedWidgetColor,
           labelColor: Theme.of(context).primaryColor,
+          indicatorColor: Theme.of(context).primaryColor,
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
           tabs: [
             Tab(
