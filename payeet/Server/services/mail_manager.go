@@ -59,7 +59,7 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 	var body bytes.Buffer
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	body.Write([]byte(fmt.Sprintf("Subject: This is a test subject \n%s\n\n", mimeHeaders)))
+	body.Write([]byte(fmt.Sprintf("Subject: Payeet - Your Verification Code \n%s\n\n", mimeHeaders)))
 
 	code := user.VerficationCode
 
@@ -80,7 +80,7 @@ func (manager *EmailManager) SendVerficationCode(user *User) error {
 }
 
 // SendNewLoginMessage sends the given user a mail that a login from a new device occurred
-func (manager *EmailManager) SendNewLoginMessage(user *User) error {
+func (manager *EmailManager) SendNewLoginMessage(user *User, deviceName, deviceIP string) error {
 
 	newLoginTemplate, err := template.ParseFiles("mail_templates//new_login_template.html")
 
@@ -91,12 +91,48 @@ func (manager *EmailManager) SendNewLoginMessage(user *User) error {
 	var body bytes.Buffer
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	body.Write([]byte(fmt.Sprintf("Subject: New Device Login \n%s\n\n", mimeHeaders)))
+	body.Write([]byte(fmt.Sprintf("Subject: Payeet Security Alert - New Device Login \n%s\n\n", mimeHeaders)))
 
 	newLoginTemplate.Execute(&body, struct {
+		Name       string
+		DeviceName string
+		DeviceIP   string
+	}{
+		Name:       strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
+		DeviceName: deviceName,
+		DeviceIP:   deviceIP,
+	})
+
+	err = manager.sendEmail([]string{user.Email}, body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SendNewLoginMessage sends the given user a mail that a login from a new device occurred
+func (manager *EmailManager) SendResetPasswordMessage(user *User) error {
+
+	passwordResetTemplate, err := template.ParseFiles("mail_templates//reset_password_template.html")
+
+	if err != nil {
+		return err
+	}
+
+	var body bytes.Buffer
+
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: Payeet - Password Reset Code \n%s\n\n", mimeHeaders)))
+
+	code := user.VerficationCode
+
+	passwordResetTemplate.Execute(&body, struct {
 		Name string
+		CODE string
 	}{
 		Name: strings.Title(user.FirstName) + " " + strings.Title(user.LastName),
+		CODE: code,
 	})
 
 	err = manager.sendEmail([]string{user.Email}, body)

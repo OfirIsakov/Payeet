@@ -27,12 +27,7 @@ class _FollowersPageState extends State<FollowersPage> {
                       dense: false,
                       enabled: true,
                       title: Text(
-                        "${Globals.client.getCachedFollowers[index]}\n",
-                        style:
-                            TextStyle(color: Theme.of(context).highlightColor),
-                      ),
-                      subtitle: Text(
-                        "${Globals.client.getCachedFollowers[index]}",
+                        "${Globals.client.getCachedFollowers[index].mail}\n",
                         style:
                             TextStyle(color: Theme.of(context).highlightColor),
                       ),
@@ -40,7 +35,7 @@ class _FollowersPageState extends State<FollowersPage> {
                           onPressed: () async {
                             try {
                               await Globals.client.addFriend(
-                                  Globals.client.getCachedFollowers[index]);
+                                  Globals.client.getCachedFollowers[index].mail);
                               setState(() {
                                 Globals.client.getCachedFriends.add(
                                     Globals.client.getCachedFollowers[index]);

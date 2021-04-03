@@ -32,6 +32,7 @@ class _AppBaseState extends State<AppBase> {
       await Globals.client.loginWithRefresh();
     });
 
+    await Globals.client.fetchProfileImages();
     await Globals.client.getFriends();
     await Globals.client.fetchTopUsers();
     await Globals.client.fetchFollowers();
@@ -47,7 +48,7 @@ class _AppBaseState extends State<AppBase> {
       label: "Friends",
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.transfer_within_a_station),
+      icon: Icon(CupertinoIcons.money_dollar_circle),
       label: "Transfer",
     ),
     BottomNavigationBarItem(
@@ -60,7 +61,7 @@ class _AppBaseState extends State<AppBase> {
     ),
   ];
 
-  final pageNames = ["Overview", "Friends", "Transfer", "Stats", "Profile"];
+  final pageNames = ["Home", "Friends", "Transfer", "Stats", "Profile"];
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,9 @@ class _AppBaseState extends State<AppBase> {
       HomePage(),
       FriendsPage(),
       TransferPage(),
-      StatsPage(transferEmail: Globals.client.getCachedUserID,),
+      StatsPage(
+        transferEmail: Globals.client.getCachedMail,
+      ),
       UserPage(),
     ];
     void _onItemTapped(int index) {
@@ -81,38 +84,25 @@ class _AppBaseState extends State<AppBase> {
       return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
-          title: Text(
-            pageNames[index],
-            style: Theme.of(context).textTheme.headline6,
-          ),
           centerTitle: false,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: (index == 0
+          actions: (index == 4
               ? [
                   IconButton(
                       icon: Icon(
-                        CupertinoIcons.chat_bubble_text,
+                        Icons.settings,
                         color: Theme.of(context).highlightColor,
                       ),
-                      onPressed: () {})
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SettingsPage()));
+                      }),
                 ]
-              : index == 4
-                  ? [
-                      IconButton(
-                          icon: Icon(
-                            Icons.more_horiz,
-                            color: Theme.of(context).highlightColor,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        SettingsPage()));
-                          }),
-                    ]
-                  : []),
+              : []),
         ),
         body: Center(
           child: _widgetOptions.elementAt(index),

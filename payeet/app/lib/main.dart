@@ -81,6 +81,10 @@ class _MyAppState extends State<MyApp> {
           unselectedWidgetColor: Colors.white,
           accentColor: Colors.black,
           primarySwatch: createMaterialColor(Colors.white),
+            primaryColor: Color(0xffeeeeee),
+          hintColor: Colors.white30,
+          inputDecorationTheme:
+              InputDecorationTheme(fillColor: Colors.grey[900]),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           highlightColor: Colors.white,
           bottomAppBarColor: const Color(0xff141414),
@@ -109,6 +113,9 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
             unselectedWidgetColor: Colors.black,
             primarySwatch: createMaterialColor(Colors.black),
+            primaryColor: Color(0xff111c4e),
+            hintColor: Colors.black26,
+            inputDecorationTheme: InputDecorationTheme(fillColor: Colors.white),
             accentColor: Colors.white,
             highlightColor: Colors.black,
             bottomAppBarColor: Colors.white,
@@ -130,7 +137,7 @@ class _MyAppState extends State<MyApp> {
                     color: Color(0xff7589a2),
                     fontWeight: FontWeight.bold,
                     fontSize: 14)),
-            backgroundColor: Colors.white),
+            backgroundColor: Color(0xfff7f7f7)),
         home: shouldMoveUser ? AppBase() : LoginPage(),
       );
     }));

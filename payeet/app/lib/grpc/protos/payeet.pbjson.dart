@@ -72,6 +72,7 @@ const LoginRequest$json = const {
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
     const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
     const {'1': 'Identifier', '3': 3, '4': 1, '5': 9, '10': 'Identifier'},
+    const {'1': 'DeviceName', '3': 4, '4': 1, '5': 9, '10': 'DeviceName'},
   ],
 };
 
@@ -94,6 +95,7 @@ const UserInfoResponse$json = const {
     const {'1': 'FirstName', '3': 1, '4': 1, '5': 9, '10': 'FirstName'},
     const {'1': 'LastName', '3': 2, '4': 1, '5': 9, '10': 'LastName'},
     const {'1': 'Mail', '3': 4, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'ImageID', '3': 5, '4': 1, '5': 3, '10': 'ImageID'},
   ],
 };
 
@@ -115,21 +117,15 @@ const GetFollowersRequest$json = const {
   '1': 'GetFollowersRequest',
 };
 
-const GetFollowersResponse$json = const {
-  '1': 'GetFollowersResponse',
-  '2': const [
-    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
-  ],
-};
-
 const GetFriendsRequest$json = const {
   '1': 'GetFriendsRequest',
 };
 
-const GetFriendsResponse$json = const {
-  '1': 'GetFriendsResponse',
+const GenericUser$json = const {
+  '1': 'GenericUser',
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'ImageID', '3': 2, '4': 1, '5': 3, '10': 'ImageID'},
   ],
 };
 
@@ -137,13 +133,6 @@ const SearchFriendRequest$json = const {
   '1': 'SearchFriendRequest',
   '2': const [
     const {'1': 'Search', '3': 1, '4': 1, '5': 9, '10': 'Search'},
-  ],
-};
-
-const SearchFriendResponse$json = const {
-  '1': 'SearchFriendResponse',
-  '2': const [
-    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
   ],
 };
 
@@ -163,6 +152,33 @@ const VerifyRequest$json = const {
   '2': const [
     const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
     const {'1': 'code', '3': 2, '4': 1, '5': 9, '10': 'code'},
+  ],
+};
+
+const CodeRequest$json = const {
+  '1': 'CodeRequest',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+  ],
+};
+
+const ImagesResponse$json = const {
+  '1': 'ImagesResponse',
+  '2': const [
+    const {'1': 'images', '3': 1, '4': 3, '5': 9, '10': 'images'},
+  ],
+};
+
+const ImagesRequest$json = const {
+  '1': 'ImagesRequest',
+};
+
+const ResetPasswordRequest$json = const {
+  '1': 'ResetPasswordRequest',
+  '2': const [
+    const {'1': 'Mail', '3': 1, '4': 1, '5': 9, '10': 'Mail'},
+    const {'1': 'Password', '3': 2, '4': 1, '5': 9, '10': 'Password'},
+    const {'1': 'Code', '3': 3, '4': 1, '5': 9, '10': 'Code'},
   ],
 };
 

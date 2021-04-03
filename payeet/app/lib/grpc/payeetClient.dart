@@ -34,12 +34,14 @@ class PayeetClient {
       _cachedInfo; // this is true when the client class has cached the user info from the server
   String _firstName;
   String _lastName;
-  List<String> _friends;
-  List<String> _followers;
+  List<GenericUser> _friends;
+  List<GenericUser> _followers;
 
   List<UserInfoResponse> _topUsers;
+  List<String> _profileImages;
 
-  String _userID;
+  String _mail;
+  int _imageID;
 
   // ctor
   PayeetClient(this.channel) {
@@ -53,37 +55,43 @@ class PayeetClient {
   bool get cachedInfo => _cachedInfo;
   String get getCachedFirstName => _firstName;
   String get getCachedLastName => _lastName;
-  List<String> get getCachedFriends => _friends;
-  List<String> get getCachedFollowers => _followers;
+  List<GenericUser> get getCachedFriends => _friends;
+  List<GenericUser> get getCachedFollowers => _followers;
+  List<String> get getCachedProfileImages => _profileImages;
   List<UserInfoResponse> get getTopUsers => _topUsers;
-  String get getCachedUserID => _userID;
+  String get getCachedMail => _mail;
+  int get getCachedImageID => _imageID;
 
-  Future<LoginResponse> login(String mail, String password) async {
+   Future<LoginResponse> login(String mail, String password) async {
     LoginResponse response;
 
     String identifier = '';
+    String deviceName = '';
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
       if (Platform.isAndroid) {
-        var build = await deviceInfoPlugin.androidInfo;
-        identifier = build.androidId;  //UUID for Android
+        var data = await deviceInfoPlugin.androidInfo;
+        identifier = data.androidId; // ID for Android
+        deviceName = data.brand + ' ' + data.model; // brand and model. eg: "Xiaomi MI 8"
       } else if (Platform.isIOS) {
         var data = await deviceInfoPlugin.iosInfo;
-        identifier = data.identifierForVendor;  //UUID for iOS
+        identifier = data.identifierForVendor; // ID for iOS
+        deviceName = data.utsname.machine; // model. eg: "iphone 7"
       }
     } on PlatformException {
       print('Failed to get platform version');
     }
 
-    print(identifier);
     try {
       response = await _unauthenticatedClient.login(LoginRequest()
         ..mail = mail
         ..password = password
-        ..identifier = identifier);
+        ..identifier = identifier
+        ..deviceName = deviceName);
     } catch (e) {
       rethrow; // cant login so throw the error
     }
+
 
     _accessToken = response.accessToken;
     tokenExpiresOn = response.expiresOn;
@@ -140,6 +148,14 @@ class PayeetClient {
     return response;
   }
 
+  // resendCode asks the server to send the given mail a new otp code
+  // getVerifyCode may fail and return Unavailable because the user is on timeout.
+  Future<StatusResponse> resendCode(String mail) async {
+    final response =
+        await _unauthenticatedClient.getVerifyCode(CodeRequest()..mail = mail);
+    return response;
+  }
+
   ResponseStream<HistoryResponse> getTransferHistory(String mail) {
     final response = _authenticatedClient
         .getFullHistory(HistoryRequest()..senderMail = mail);
@@ -147,7 +163,14 @@ class PayeetClient {
     return response;
   }
 
-  ResponseStream<SearchFriendResponse> searchFriend(String text) {
+  ResponseStream<HistoryResponse> getFiveFriendsTransfers() {
+    final response = _authenticatedClient
+        .getFiveFriendsTransfers(FiveFriendsHistoryRequest());
+
+    return response;
+  }
+
+  ResponseStream<GenericUser> searchFriend(String text) {
     final response =
         _authenticatedClient.searchFriend(SearchFriendRequest()..search = text);
 
@@ -181,7 +204,8 @@ class PayeetClient {
     // caching the user info
     _firstName = response.firstName;
     _lastName = response.lastName;
-    _userID = response.mail;
+    _mail = response.mail;
+    _imageID = response.imageID.toInt();
 
     return response;
   }
@@ -218,15 +242,13 @@ class PayeetClient {
   }
 
   Future<void> getFriends() async {
-    List<GetFriendsResponse> d =
+    _friends =
         await _authenticatedClient.getFriends(GetFriendsRequest()).toList();
-    _friends = d.map((e) => e.mail).toList();
   }
 
   Future<void> fetchFollowers() async {
-    var d =
+    _followers =
         await _authenticatedClient.getFollowers(GetFollowersRequest()).toList();
-    _followers = d.map((e) => e.mail).toList();
   }
 
   Future<void> fetchTopUsers() async {
@@ -234,6 +256,23 @@ class PayeetClient {
 
     this._topUsers = response.users;
   }
+
+  Future<void> fetchProfileImages() async {
+    final response =
+        await _authenticatedClient.getProfileImages(ImagesRequest());
+    this._profileImages = response.images;
+  }
+
+  Future<StatusResponse> resetPassword(String mail, String password, String code) async {
+    final response = await _unauthenticatedClient.resetPassword(ResetPasswordRequest()
+      ..mail = mail
+      ..password = password
+      ..code = code);
+
+    return response;
+  }
+
+  
 }
 
 // implementing the ClientChannel to have an interceptor to set the authorization

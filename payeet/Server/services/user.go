@@ -1,8 +1,9 @@
 package services
 
 import (
-	"crypto/rand"
 	"fmt"
+	"math/rand"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -22,13 +23,15 @@ type User struct {
 	Karma                float64  `bson:"Karma" json:"Karma"`
 	VerficationCode      string   `bson:"VerficationCode" json:"VerficationCode"`
 	Activated            bool     `bson:"Activated" json:"Activated"`
+	LastCodeRequest      int64    `bson:"LastCodeRequest" json:"LastCodeRequest"`
 	Identifiers          []string `bson:"Identifiers" json:"Identifiers"`
+	ImageID              int      `bson:"ImageID" json:"ImageID"`
 }
 
 // NewUser returns a new user.
-func NewUser(firstName string, lastName string, email string, password string, Role string) (*User, error) {
+func NewUser(firstName string, lastName string, email string, password string, Role string, TotalImages int) (*User, error) {
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := generatePassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("cannot hash password")
 	}
@@ -43,7 +46,7 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		FirstName:            firstName,
 		LastName:             lastName,
 		Email:                email,
-		Password:             string(hashedPassword),
+		Password:             hashedPassword,
 		Role:                 Role,
 		Balance:              0,
 		RefreshToken:         "",
@@ -52,11 +55,23 @@ func NewUser(firstName string, lastName string, email string, password string, R
 		Karma:                1.0,
 		VerficationCode:      code,
 		Activated:            false,
+		LastCodeRequest:      time.Now().Unix(),
 		Identifiers:          []string{},
+		ImageID:              rand.Intn(TotalImages),
 	}
 
 	return user, nil
 
+}
+
+// the function will perform our hash algorithm on the password and return it
+func generatePassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", fmt.Errorf("cannot hash password")
+	}
+
+	return string(hashedPassword), nil
 }
 
 const otpChars = "1234567890"
@@ -99,7 +114,9 @@ func (user *User) Clone() *User {
 		Karma:                user.Karma,
 		VerficationCode:      user.VerficationCode,
 		Activated:            user.Activated,
+		LastCodeRequest:      user.LastCodeRequest,
 		Identifiers:          user.Identifiers,
+		ImageID:              user.ImageID,
 	}
 }
 
@@ -119,7 +136,9 @@ func (user *User) ToBson() bson.D {
 		{Key: "Karma", Value: user.Karma},
 		{Key: "VerficationCode", Value: user.VerficationCode},
 		{Key: "Activated", Value: user.Activated},
+		{Key: "LastCodeRequest", Value: user.LastCodeRequest},
 		{Key: "Identifiers", Value: user.Identifiers},
+		{Key: "ImageID", Value: user.ImageID},
 	}
 
 	return a

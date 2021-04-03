@@ -7,13 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:Payeet/globals.dart';
+import 'package:grpc/grpc.dart';
 
-class RegisterPage extends StatefulWidget {
+import 'AppBase.dart';
+import 'VerifyPage.dart';
+
+class ResetPasswordPage extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,20 +40,14 @@ class MyForm extends StatefulWidget {
 }
 
 class _MyFormState extends State<MyForm> {
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
   final emailController = TextEditingController();
-  final confirmEmailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    firstNameController.dispose();
-    lastNameController.dispose();
     emailController.dispose();
-    confirmEmailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -65,6 +63,45 @@ class _MyFormState extends State<MyForm> {
         fontSize: 20.0,
         color: Theme.of(context).highlightColor);
 
+    void resetPassword() async {
+      if (_formKey.currentState.validate()) {
+        try {
+          setState(() {
+            _loading = true;
+          });
+
+          await Globals.client
+              .resetPassword(emailController.text, passwordController.text, '');
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) {
+              return VerifyPage(
+                  emailController.text, passwordController.text, true);
+            }),
+          );
+        } on GrpcError catch (e) {
+          setState(() {
+            _loading = false;
+          });
+
+          if (e.code == 14) {
+            // unavailable - probably hes on cooldown, let him in the verify page
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) {
+                return VerifyPage(
+                    emailController.text, passwordController.text, true);
+              }),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('[${e.codeName}] ${e.message}'),
+              backgroundColor: Colors.red,
+            ));
+          }
+        }
+      }
+    }
+
     return Form(
         key: _formKey,
         child: Container(
@@ -75,34 +112,6 @@ class _MyFormState extends State<MyForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      AppInputField(
-                        placeholderText: 'First Name',
-                        title: 'First Name',
-                        controller: firstNameController,
-                        textInputAction: TextInputAction.next,
-                        inputType: TextInputType.name,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 10.0),
-                      AppInputField(
-                        placeholderText: 'Last Name',
-                        title: 'Last Name',
-                        controller: lastNameController,
-                        textInputAction: TextInputAction.next,
-                        inputType: TextInputType.name,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 25.0),
                       AppInputField(
                         placeholderText: 'Email',
                         title: 'Email Address',
@@ -116,27 +125,10 @@ class _MyFormState extends State<MyForm> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 10.0),
+                      SizedBox(height: 20.0),
                       AppInputField(
-                        placeholderText: 'Confirm Email',
-                        title: 'Confirm Email Address',
-                        controller: confirmEmailController,
-                        textInputAction: TextInputAction.next,
-                        inputType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          if (value != emailController.text) {
-                            return 'No no, email not match';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 25.0),
-                      AppInputField(
-                        placeholderText: 'Password',
-                        title: 'Password',
+                        placeholderText: 'New Password',
+                        title: 'New Password',
                         controller: passwordController,
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -200,37 +192,10 @@ class _MyFormState extends State<MyForm> {
                           borderRadius: BorderRadius.circular(30.0),
                           color: Color(0xff01A0C7),
                           child: AppButton(
-                            text: "Register",
+                            text: "Request Reset",
                             isLoading: _loading,
                             clickFunction: () async {
-                              if (_formKey.currentState.validate()) {
-                                try {
-                                  setState(() {
-                                    _loading = true;
-                                  });
-                                  await Globals.client.register(
-                                      firstNameController.text,
-                                      lastNameController.text,
-                                      emailController.text,
-                                      passwordController.text);
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(builder: (context) {
-                                      return LoginPage();
-                                    }),
-                                  );
-                                } catch (e) {
-                                  setState(() {
-                                    _loading = false;
-                                  });
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content:
-                                        Text('[${e.codeName}] ${e.message}'),
-                                    backgroundColor: Colors.red,
-                                  ));
-                                }
-                              }
+                              resetPassword();
                             },
                           ),
                         ),
@@ -243,7 +208,7 @@ class _MyFormState extends State<MyForm> {
                               style: style,
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: 'Already registered? ',
+                                  text: 'Changed your mind? ',
                                   style: style.copyWith(
                                       color: Theme.of(context).hintColor,
                                       fontWeight: FontWeight.w700,
@@ -266,7 +231,7 @@ class _MyFormState extends State<MyForm> {
                                       }),
                               ],
                             ),
-                          ))),
+                          )))
                     ],
                   ),
                 ))));

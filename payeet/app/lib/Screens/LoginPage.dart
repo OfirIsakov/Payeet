@@ -1,5 +1,10 @@
 import 'package:Payeet/Screens/RegisterPage.dart';
+import 'package:Payeet/Screens/ResetPasswordPage.dart';
 import 'package:Payeet/Screens/VerifyPage.dart';
+import 'package:Payeet/UI_Elements/AppButton.dart';
+import 'package:Payeet/UI_Elements/AppInputField.dart';
+import 'package:Payeet/UI_Elements/FullLogo.dart';
+import 'package:Payeet/grpc/protos/payeet.pb.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,12 +32,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  height: 100,
-                  child: SvgPicture.asset(
-                    'assets/icon/payeet_icon.svg',
-                  ),
-                ),
+                FullLogo(),
                 SizedBox(height: 45.0),
                 MyForm(),
               ],
@@ -95,7 +95,8 @@ class _MyFormState extends State<MyForm> {
             // permission denied
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) {
-                return VerifyPage(emailControler.text, passwordControler.text);
+                return VerifyPage(
+                    emailControler.text, passwordControler.text, false);
               }),
             );
           } else {
@@ -114,25 +115,12 @@ class _MyFormState extends State<MyForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              TextFormField(
-                autocorrect: false,
+              AppInputField(
+                placeholderText: 'Email',
+                title: 'Email Address',
                 controller: emailControler,
-                style: style,
                 textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    hintText: "Email",
-                    hintStyle: style,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).highlightColor,
-                            width: 2.5),
-                        borderRadius: BorderRadius.circular(32.0))),
+                inputType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter some text';
@@ -141,28 +129,12 @@ class _MyFormState extends State<MyForm> {
                 },
               ),
               SizedBox(height: 25.0),
-              TextFormField(
-                autocorrect: false,
-                textInputAction: TextInputAction.send,
-                onFieldSubmitted: (s) {
-                  login();
-                },
-                controller: passwordControler,
-                style: style,
+              AppInputField(
+                placeholderText: 'Password',
+                title: 'Password',
                 obscureText: true,
-                decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                    ),
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    hintText: "Password",
-                    hintStyle: style,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Theme.of(context).highlightColor,
-                            width: 2.5),
-                        borderRadius: BorderRadius.circular(32.0))),
+                controller: passwordControler,
+                textInputAction: TextInputAction.send,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter some text';
@@ -170,49 +142,77 @@ class _MyFormState extends State<MyForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 5.0),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      style: style,
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Forgot password?',
+                            style: style.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: style.fontSize / 1.5),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ResetPasswordPage()),
+                                );
+                              }),
+                      ],
+                    ),
+                  )),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Material(
                   elevation: 5.0,
                   borderRadius: BorderRadius.circular(30.0),
                   color: Color(0xff01A0C7),
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    onPressed: () async {
+                  child: AppButton(
+                    text: "Login",
+                    isLoading: _loading,
+                    clickFunction: () async {
                       login();
                     },
-                    child: !_loading
-                        ? Text("Login",
-                            textAlign: TextAlign.center,
-                            style: style.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold))
-                        : CupertinoActivityIndicator(),
                   ),
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  style: style,
-                  children: <TextSpan>[
-                    TextSpan(text: 'Not registered? '),
-                    TextSpan(
-                        text: 'Register',
-                        style: style.copyWith(
-                            color: Colors.blue[400],
-                            fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterPage()),
-                            );
-                          }),
-                  ],
-                ),
-              )
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                      child: RichText(
+                    text: TextSpan(
+                      style: style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Not registered? ',
+                          style: style.copyWith(
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: style.fontSize / 1.5),
+                        ),
+                        TextSpan(
+                            text: 'Register',
+                            style: style.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: style.fontSize / 1.5),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()),
+                                );
+                              }),
+                      ],
+                    ),
+                  ))),
             ],
           ),
         ));

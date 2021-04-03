@@ -48,6 +48,7 @@ class ConfirmDialog extends StatelessWidget {
       return AlertDialog(
         title: Center(child:Text(this.title, style: TextStyle(color: Theme.of(context).highlightColor))),
         backgroundColor: Theme.of(context).backgroundColor,
+        content: content,
         actions: [
 
           TextButton(onPressed: cancelFunction,

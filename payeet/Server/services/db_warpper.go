@@ -51,8 +51,7 @@ type DBWrapper interface {
 
 	GetFollowers(mail string) ([]string, error)
 
-	GetSenderHistory(mail string) ([]*Transaction, error)
-	GetReceiverHistory(mail string) ([]*Transaction, error)
+	GetFullHistory(mail string) ([]*Transaction, error)
 
 	Write(message []byte) (int, error) // we must implement an io.Writer function to log into mongo
 
@@ -67,6 +66,11 @@ type DBWrapper interface {
 
 	CheckIdentifier(mail, identifier string) (bool, error)
 	AddIdentifier(mail, identifier string) error
+
+	SetVerficationCode(mail string, code string) error
+	ResetLastCodeRequest(mail string) error
+
+	ChangePassword(mail, newPassword string) error
 }
 
 // MongoDBWrapper is a warpper for mongodb
@@ -267,6 +271,16 @@ func (store *MongoDBWrapper) GetAllUsers() (a []*User, err error) {
 
 }
 
+//SetVerficationCode sets a new code in the field.
+func (store *MongoDBWrapper) SetVerficationCode(mail string, code string) error {
+	return store.ChangeFieldValue(mail, "VerficationCode", code)
+}
+
+//ResetLastCodeRequest sets the value to current time.
+func (store *MongoDBWrapper) ResetLastCodeRequest(mail string) error {
+	return store.ChangeFieldValue(mail, "LastCodeRequest", time.Now().Unix())
+}
+
 //SetRefreshToken makes changes to a field name.
 func (store *MongoDBWrapper) SetRefreshToken(mail string, refreshToken string) error {
 	return store.ChangeFieldValue(mail, "RefreshToken", refreshToken)
@@ -404,15 +418,18 @@ func (store *MongoDBWrapper) GetMailsByStart(search string) ([]string, error) {
 	return results, nil
 }
 
-// GetSenderHistory will fetch all of the transaction history of a given mail where the user is the sender
-func (store *MongoDBWrapper) GetSenderHistory(mail string) ([]*Transaction, error) {
+// GetFullHistory will return a transaction array of all the transactions of the given user
+func (store *MongoDBWrapper) GetFullHistory(mail string) ([]*Transaction, error) {
+
+	findOptions := options.Find()
+	findOptions.SetSort(bson.M{"Time": 1}) // sort from newest to oldest
 
 	_, err := store.GetUserByEmail(mail)
 	if err != nil {
 		return nil, err
 	}
 
-	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Sender": mail})
+	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"$or": []interface{}{bson.M{"Sender": mail}, bson.M{"Receiver": mail}}}, findOptions)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "Wrong mail")
 	}
@@ -423,27 +440,6 @@ func (store *MongoDBWrapper) GetSenderHistory(mail string) ([]*Transaction, erro
 	}
 
 	return senderResults, nil
-}
-
-// GetReceiverHistory will fetch all of the transaction history of a given mail where the user is the receiver
-func (store *MongoDBWrapper) GetReceiverHistory(mail string) ([]*Transaction, error) {
-
-	_, err := store.GetUserByEmail(mail)
-	if err != nil {
-		return nil, err
-	}
-
-	cursor, err := store.TransactionsCollection.Find(context.TODO(), bson.M{"Receiver": mail})
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "Wrong mail")
-	}
-
-	receiverResults := []*Transaction{}
-	if err = cursor.All(context.TODO(), &receiverResults); err != nil {
-		return receiverResults, status.Errorf(codes.Internal, "Error trying to convert mongo data to transactions")
-	}
-
-	return receiverResults, nil
 }
 
 // GetFollowers fetches all the users the follow the user
@@ -697,6 +693,30 @@ func (store *MongoDBWrapper) AddIdentifier(mail, identifier string) error {
 	user.Identifiers = append(user.Identifiers, identifier)
 
 	err = store.ChangeFieldValue(mail, "Identifiers", user.Identifiers)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddIdentifier will add the given identifier to the DB
+func (store *MongoDBWrapper) ChangePassword(mail, newPassword string) error {
+
+	// get the user
+	_, err := store.GetUserByEmail(mail)
+	if err != nil {
+		return err
+	}
+
+	// generate the new hashed password
+	hashedPassword, err := generatePassword(newPassword)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Cannot hash password")
+	}
+
+	// set the new password
+	err = store.ChangeFieldValue(mail, "Password", hashedPassword)
 	if err != nil {
 		return err
 	}

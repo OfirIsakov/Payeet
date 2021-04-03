@@ -5,6 +5,7 @@ import (
 	"net"
 	"regexp"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -12,6 +13,7 @@ import (
 
 	"github.com/go-passwd/validator"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 )
 
@@ -20,11 +22,12 @@ type AuthServer struct {
 	mongoDBWrapper MongoDBWrapper
 	jwtManager     *JWTManager
 	emailManager   *EmailManager
+	TotalImages    int
 }
 
 // NewAuthServer creates a new authentication server
-func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager) *AuthServer {
-	return &AuthServer{mongoDBWrapper, jwtManager, emailManager}
+func NewAuthServer(mongoDBWrapper MongoDBWrapper, jwtManager *JWTManager, emailManager *EmailManager, TotalImages int) *AuthServer {
+	return &AuthServer{mongoDBWrapper, jwtManager, emailManager, TotalImages}
 }
 
 // Login checks if the details are good and sends a new jet token to the user
@@ -40,7 +43,7 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
 	}
 
-	if user.Activated != true {
+	if !user.Activated {
 		return nil, status.Errorf(codes.PermissionDenied, "User not verified")
 	}
 
@@ -58,8 +61,16 @@ func (server *AuthServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 		return nil, status.Errorf(codes.Internal, "Something went wrong!")
 	}
 	if isNew {
+		// get the ip from the context
+		p, ok := peer.FromContext(ctx)
+		if !ok {
+			return nil, status.Errorf(codes.Internal, "Something went wrong!")
+		}
+		deviceIPAndPort := p.Addr.String()
+		deviceIP := strings.Split(deviceIPAndPort, ":")[0]
+
 		// send the user that a new device was recorded, dont log the user in if it fails to send
-		err = server.emailManager.SendNewLoginMessage(user)
+		err = server.emailManager.SendNewLoginMessage(user, req.GetDeviceName(), deviceIP)
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "Something went wrong!")
 		}
@@ -113,14 +124,8 @@ func (server *AuthServer) RefreshToken(ctx context.Context, req *pb.RefreshToken
 
 }
 
-// Register creates a new user.
-func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
 
-	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user")
-
-	if err != nil {
-		return nil, err
-	}
+func (server *AuthServer) ValidatePassword(firstName , lastName , email , password string) error {
 
 	passwordValidator := validator.New(
 		validator.MinLength(
@@ -133,15 +138,33 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		validator.CommonPassword(nil),
 		validator.Similarity(
 			[]string{
-				req.GetFirstName(),
-				req.GetLastName(),
-				req.GetMail()},
+				firstName,
+				lastName,
+				email},
 			nil,
 			nil))
-	err = passwordValidator.Validate(req.GetPassword())
+	err := passwordValidator.Validate(password)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// Register creates a new user.
+func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.StatusResponse, error) {
+
+	user, err := NewUser(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword(), "user", server.TotalImages)
+
 	if err != nil {
 		return nil, err
 	}
+	err = server.ValidatePassword(req.GetFirstName(), req.GetLastName(), req.GetMail(), req.GetPassword())
+	if err != nil{
+		return nil, err
+	}	
 
 	if !IsEmailValid(req.GetMail()) {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid mail format!")
@@ -152,9 +175,11 @@ func (server *AuthServer) Register(ctx context.Context, req *pb.RegisterRequest)
 		return nil, status.Errorf(codes.Internal, "Something went wrong while creating the user!")
 	}
 
-	err = server.emailManager.SendVerficationCode(user)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+	if !userOnTimeout(user) {
+		err = server.emailManager.SendVerficationCode(user)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+		}
 	}
 
 	return &pb.StatusResponse{}, nil
@@ -232,4 +257,121 @@ func (server *AuthServer) Verify(ctx context.Context, req *pb.VerifyRequest) (*p
 	}
 
 	return &pb.StatusResponse{}, nil
+}
+
+// GetVerifyCode send the user a new code to their mail, if they are not on timeout.
+func (server *AuthServer) GetVerifyCode(ctx context.Context, req *pb.CodeRequest) (*pb.StatusResponse, error) {
+
+	// get the user from the mail
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	// check if the user is not on timeout
+
+	if userOnTimeout(user) {
+		return nil, status.Errorf(codes.Unavailable, "please wait between requests")
+	}
+
+	// generate a new verification code.
+	user.VerficationCode, err = server.refreshCode(user)
+	if err != nil {
+		return nil, err 
+	}
+
+	// send the user a mail with a new verification code.
+	err = server.emailManager.SendVerficationCode(user)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+	}
+
+	return &pb.StatusResponse{}, nil
+}
+
+// Verify handles verifying and activating users.
+func (server *AuthServer) ResetPassword(ctx context.Context, req *pb.ResetPasswordRequest) (*pb.StatusResponse, error) {
+
+	// find the user in the database.
+	user, err := server.mongoDBWrapper.GetUserByEmail(req.GetMail())
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "Invalid username or password")
+	}
+
+	// if the code is empty and he isnt on a cooldown send a mail
+	if len(req.GetCode()) == 0 {
+		if userOnTimeout(user) {
+			return nil, status.Errorf(codes.Unavailable, "Please wait between requests")
+		}
+
+		// generate a new verification code.
+		user.VerficationCode, err = server.refreshCode(user)
+		if err != nil {
+			return nil, err 
+		}
+
+		// send the user a mail with a new verification code.
+		err = server.emailManager.SendResetPasswordMessage(user)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "Couldn't send verfication code")
+		}
+
+		return &pb.StatusResponse{}, nil // tell the user we created a code and didnt raise an error
+	}
+
+	if user.VerficationCode != req.GetCode() {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid code")
+	}
+
+	err = server.ValidatePassword(user.FirstName,
+		user.LastName,
+		user.Email, req.GetPassword())
+	if err != nil{
+		return nil, err
+	}	
+
+	err = server.mongoDBWrapper.ChangePassword(user.Email, req.GetPassword())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	// generate a new verification code so the same code cannot be used in order to change the password again
+	user.VerficationCode, err = server.refreshCode(user)
+	if err != nil {
+		return nil, err 
+	}
+
+
+	return &pb.StatusResponse{}, nil
+}
+
+// refreshCode generates a new verification code and updates the database.
+func (server *AuthServer) refreshCode(user *User) (string, error){
+	// generate a new verification code.
+	var err error
+	user.VerficationCode, err = generateNewCode(6)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	// set it in the DB
+	err = server.mongoDBWrapper.SetVerficationCode(user.Email, user.VerficationCode)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+	err = server.mongoDBWrapper.ResetLastCodeRequest(user.Email)
+	if err != nil {
+		return "", status.Errorf(codes.Internal, "Something went wrong!")
+	}
+
+	return user.VerficationCode, nil
+}
+
+// userOnTimeout checks if the is on timeout
+// if the user is on timeout he cannot call ciretin functions.
+func userOnTimeout(user *User) bool {
+	currTime := time.Now().Unix()
+
+	// 300 is 5 min
+	return currTime-user.LastCodeRequest <= 300
 }
