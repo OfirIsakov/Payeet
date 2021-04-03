@@ -13,6 +13,16 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
+void logout(BuildContext context) {
+  SecureStorage.deleteSecureData('refreshToken');
+
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) {
+      return LoginPage();
+    }),
+  );
+}
+
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
@@ -119,12 +129,7 @@ class _UserPageState extends State<UserPage> {
                         },
                         actionText: Text('logout'),
                         actionFunction: () async {
-                          SecureStorage.deleteSecureData('refreshToken');
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) {
-                              return LoginPage();
-                            }),
-                          );
+                          logout(context);
                         }),
                   );
                 },

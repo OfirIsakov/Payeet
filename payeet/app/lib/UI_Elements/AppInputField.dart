@@ -5,6 +5,7 @@ class AppInputField extends StatelessWidget {
   AppInputField({
     Key key,
     this.placeholderText,
+    this.title,
     this.controller,
     this.obscureText = false,
     this.autocorrect = false,
@@ -15,6 +16,7 @@ class AppInputField extends StatelessWidget {
   }) : super(key: key);
 
   final String placeholderText;
+  final String title;
   final TextEditingController controller;
   final bool obscureText;
   final bool autocorrect;
@@ -27,30 +29,45 @@ class AppInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle style = TextStyle(
         fontFamily: 'Montserrat',
-        fontSize: 20.0,
+        fontSize: 18.0,
         color: Theme.of(context).highlightColor);
 
-    return TextFormField(
-      focusNode: focusNode,
-      autocorrect: false,
-      controller: controller,
-      style: style,
-      obscureText: obscureText,
-      textInputAction: textInputAction,
-      keyboardType: inputType,
-      decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide(color: Colors.grey, width: 1.0),
-          ),
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: placeholderText,
-          hintStyle: style,
-          border: OutlineInputBorder(
+    return Column(children: [
+      Align(
+          alignment: Alignment.bottomLeft,
+          child: RichText(
+              text: TextSpan(
+                  style: style.copyWith(
+                      fontWeight: FontWeight.w300,
+                      fontSize: style.fontSize / 1.5),
+                  text: title))),
+      TextFormField(
+        focusNode: focusNode,
+        autocorrect: false,
+        controller: controller,
+        style: style,
+        obscureText: obscureText,
+        textInputAction: textInputAction,
+        keyboardType: inputType,
+        decoration: InputDecoration(
+            filled: true,
+            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.grey, width: 1.0),
+            ),
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: placeholderText,
+            hintStyle: style.copyWith(
+                color: Theme.of(context).hintColor,
+                fontWeight: FontWeight.w300),
+            border: OutlineInputBorder(
               borderSide: BorderSide(
                   color: Theme.of(context).highlightColor, width: 2.5),
-              borderRadius: BorderRadius.circular(32.0))),
-      validator: validator,
-    );
+              borderRadius: BorderRadius.circular(12.0),
+            )),
+        validator: validator,
+      )
+    ]);
   }
 }

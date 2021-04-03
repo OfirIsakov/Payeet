@@ -18,7 +18,8 @@ class StatsPage extends StatefulWidget {
   _StatsPageState createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
+class _StatsPageState extends State<StatsPage>
+    with SingleTickerProviderStateMixin {
   final emailControler = TextEditingController();
   StreamController<HistoryResponse> streamController;
   List<HistoryResponse> history = [];
@@ -32,9 +33,13 @@ class _StatsPageState extends State<StatsPage> {
     streamController = null;
   }
 
+  TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+
+    _tabController = new TabController(length: 3, vsync: this);
 
     if (Globals.transHistory.length == 0 || streamController == null) {
       streamController = StreamController.broadcast();
@@ -50,13 +55,13 @@ class _StatsPageState extends State<StatsPage> {
     history = Globals.transHistory;
   }
 
-  setSelectedRadio(int val) {
+  setSelectedFilter(int val) {
     var now = DateTime.now();
 
     setState(() {
       context.read(Globals.radioIndex).state = val;
       history = Globals.transHistory;
-      if (val == 2) {
+      if (val == 1) {
         // transactions from last week.
         history = Globals.transHistory.where((element) {
           var date =
@@ -64,7 +69,7 @@ class _StatsPageState extends State<StatsPage> {
           var diff = now.difference(date);
           return diff.inDays >= 0 && diff.inDays <= 7;
         }).toList();
-      } else if (val == 3) {
+      } else if (val == 2) {
         // transactions from today
         history = Globals.transHistory.where((element) {
           var date =
@@ -92,33 +97,41 @@ class _StatsPageState extends State<StatsPage> {
     }
 
     bool income = history[index].receiverMail == widget.transferEmail;
-    var brightness = MediaQuery.of(context).platformBrightness;
-    bool darkModeOn =
-        (context.read(Globals.themeMode).state == ThemeMode.dark ||
-            brightness == Brightness.dark);
-    var format = DateFormat('d/m/y');
+    bool darkModeOn = Globals.isDarkMode(context);
+    var format = DateFormat('d/M/y');
     return Card(
         color: Theme.of(context).backgroundColor,
         child: ListTile(
-          // leading: CircleAvatar(
-          //   backgroundImage: AssetImage('assets/images/avatar.png'),
-          // ),
           dense: false,
           enabled: true,
-          leading: income
-              ? Icon(
-                  CupertinoIcons.money_dollar_circle,
-                  color: Theme.of(context).highlightColor,
-                  size: 40,
-                )
-              : SizedBox(
-                  child: Image(
-                      image: darkModeOn
-                          ? AssetImage('assets/images/inoutwhite.png')
-                          : AssetImage('assets/images/inoutblack.png')),
-                  height: 40,
-                  width: 40,
-                ),
+          leading: Container(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: EdgeInsets.only(left: 30),
+                child: income
+                    ? Icon(
+                        Icons.west,
+                        color: Theme.of(context).highlightColor,
+                        size: 20,
+                      )
+                    : Icon(
+                        Icons.east,
+                        color: Theme.of(context).highlightColor,
+                        size: 20,
+                      ),
+              ),
+            ),
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: darkModeOn
+                      ? AssetImage('assets/images/inoutwhite.png')
+                      : AssetImage('assets/images/inoutblack.png')),
+            ),
+          ),
+
           title: Text(
             income
                 ? "From ${history[index].senderMail}\n"
@@ -152,17 +165,11 @@ class _StatsPageState extends State<StatsPage> {
         diff.inHours > 0 && diff.inDays == 0) {
       time = format.format(date);
     } else if (diff.inDays > 0 && diff.inDays < 7) {
-      if (diff.inDays == 1) {
-        time = diff.inDays.toString() + ' DAY AGO';
-      } else {
-        time = diff.inDays.toString() + ' DAYS AGO';
-      }
+      time = diff.inDays.toString() +
+          ((diff.inDays == 1) ? ' DAY AGO' : ' DAYS AGO');
     } else {
-      if (diff.inDays == 7) {
-        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
-      } else {
-        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
-      }
+      time = (diff.inDays / 7).floor().toString() +
+          (((diff.inDays / 7).floor() == 1) ? ' WEEK AGO' : ' WEEKS AGO');
     }
 
     return time;
@@ -175,46 +182,32 @@ class _StatsPageState extends State<StatsPage> {
           delegate: SliverChildListDelegate([
         LimitedBox(
           maxHeight: 300,
-          child: Chart1(transferEmail: widget.transferEmail, transHistory: history,),
+          child: Chart1(
+            transferEmail: widget.transferEmail,
+            transHistory: history,
+          ),
         ),
-        Row(
-          children: [
-            Text(
-              "Transactions",
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline6,
-              ),
+        TabBar(
+          onTap: (val) {
+            setSelectedFilter(val);
+          },
+          unselectedLabelColor: Theme.of(context).unselectedWidgetColor,
+          labelColor: Theme.of(context).primaryColor,
+          indicatorColor: Theme.of(context).primaryColor,
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w300),
+          tabs: [
+            Tab(
+              text: "All Time",
             ),
+            Tab(
+              text: "Week",
+            ),
+            Tab(
+              text: "Day",
+            )
           ],
-        ),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Radio(
-              value: 1,
-              groupValue: context.read(Globals.radioIndex).state,
-              activeColor: Colors.green,
-              onChanged: (val) {
-                setSelectedRadio(val);
-              },
-            ),
-            Radio(
-              value: 2,
-              groupValue: context.read(Globals.radioIndex).state,
-              activeColor: Colors.blue,
-              onChanged: (val) {
-                setSelectedRadio(val);
-              },
-            ),
-            Radio(
-              value: 3,
-              groupValue: context.read(Globals.radioIndex).state,
-              activeColor: Colors.red,
-              onChanged: (val) {
-                setSelectedRadio(val);
-              },
-            ),
-          ],
+          controller: _tabController,
+          indicatorSize: TabBarIndicatorSize.tab,
         ),
       ])),
       SliverFixedExtentList(

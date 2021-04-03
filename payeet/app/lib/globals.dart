@@ -51,4 +51,12 @@ class Globals {
 
     SecureStorage.writeSecureData('ThemeIndex', index.toString());
   }
+
+  static bool isDarkMode(BuildContext context){
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool darkModeOn =
+        (context.read(themeMode).state == ThemeMode.dark &&
+            brightness == Brightness.dark);
+    return darkModeOn;
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:Payeet/globals.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:Payeet/UI_Elements/confirm.dart';
@@ -80,25 +81,24 @@ class _TransferPageState extends State<TransferPage> {
               final formatCurrency =
                   new NumberFormat.simpleCurrency(decimalDigits: 0);
               return FittedBox(
-                child: RichText(
+                  child: Center(
+                      child: Column(children: [
+                RichText(
                   text: TextSpan(
-                    text: "Balance\n",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Theme.of(context).highlightColor,
-                        fontSize: 30),
-                    children: <TextSpan>[
-                      TextSpan(
+                      text: "Balance",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).highlightColor,
+                          fontSize: 32)),
+                ),
+                RichText(
+                    text: TextSpan(
                         text: "${formatCurrency.format(balance)}",
                         style: TextStyle(
-                            fontWeight: FontWeight.w300,
+                            fontWeight: FontWeight.w600,
                             color: Theme.of(context).highlightColor,
-                            fontSize: 40),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                            fontSize: 56)))
+              ])));
             }),
           ),
 
@@ -106,9 +106,11 @@ class _TransferPageState extends State<TransferPage> {
             children: [
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                  child: Column(
+                  child: Center(
+                      child: Column(
                     children: [
                       ButtonBar(
+                        alignment: MainAxisAlignment.center,
                         children: [
                           TextButton(
                               onPressed: () {
@@ -119,7 +121,9 @@ class _TransferPageState extends State<TransferPage> {
                               child: Text(
                                 "Favorites",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: index == 1
+                                        ? FontWeight.w600
+                                        : FontWeight.w300,
                                     color: Theme.of(context).highlightColor,
                                     fontSize: 20),
                               )),
@@ -132,7 +136,9 @@ class _TransferPageState extends State<TransferPage> {
                               child: Text(
                                 "Add Friend",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: index == 0
+                                        ? FontWeight.w600
+                                        : FontWeight.w300,
                                     color: Theme.of(context).highlightColor,
                                     fontSize: 20),
                               )),
@@ -150,6 +156,7 @@ class _TransferPageState extends State<TransferPage> {
                                   icon: Icon(
                                     Icons.view_week,
                                     color: Theme.of(context).highlightColor,
+                                    size: showCubes ? 22 : 14,
                                   ),
                                 ),
                                 IconButton(
@@ -161,13 +168,14 @@ class _TransferPageState extends State<TransferPage> {
                                   icon: Icon(
                                     Icons.list,
                                     color: Theme.of(context).highlightColor,
+                                    size: !showCubes ? 24 : 16,
                                   ),
                                 ),
                               ],
                             )
                           : Container(),
                     ],
-                  )),
+                  ))),
               Padding(
                 padding: const EdgeInsets.only(bottom: 36, left: 36, right: 36),
                 child: index == 0
@@ -183,8 +191,14 @@ class _TransferPageState extends State<TransferPage> {
                                       context: context,
                                       builder: (_) => ConfirmDialog(
                                         danger: true,
-                                        title:
-                                            'Delete ${Globals.client.getCachedFriends[index]}?',
+                                        title: 'Unfollow',
+                                        content: Text(
+                                            'Would you like to remove ${Globals.client.getCachedFriends[index].mail} from your favorites?',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .highlightColor,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18)),
                                         cancelFunction: () {
                                           setState(() {
                                             Globals.client.getCachedFriends;
@@ -234,14 +248,12 @@ class _TransferPageState extends State<TransferPage> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: selected_index == index
-                                              ? Colors.cyan
+                                              ? Theme.of(context).primaryColor
                                               : Theme.of(context)
-                                                  .highlightColor,
-                                          // border: Border.all(
-                                          //   color: Colors.red[500],
-                                          // ),
+                                                  .inputDecorationTheme
+                                                  .fillColor,
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
+                                              Radius.circular(16))),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -272,8 +284,12 @@ class _TransferPageState extends State<TransferPage> {
                                                   .textTheme
                                                   .headline2
                                                   .copyWith(
-                                                      color: Theme.of(context)
-                                                          .accentColor),
+                                                      color: selected_index ==
+                                                              index
+                                                          ? Theme.of(context)
+                                                              .accentColor
+                                                          : Theme.of(context)
+                                                              .highlightColor),
                                               text:
                                                   "${Globals.client.getCachedFriends[index].mail}\n",
                                             )),
@@ -292,113 +308,147 @@ class _TransferPageState extends State<TransferPage> {
                             : ListView.separated(
                                 itemBuilder: (_, index) => Padding(
                                     padding: const EdgeInsets.only(bottom: 3),
-                                    child: Dismissible(
-                                        confirmDismiss: (direction) async {
-                                          if (direction ==
-                                              DismissDirection.endToStart) {
-                                            setState(() {
-                                              context
-                                                      .read(Globals.transfer_email)
-                                                      .state =
-                                                  Globals
-                                                      .client
-                                                      .getCachedFriends[index]
-                                                      .mail;
-                                              selected_index = index;
-                                            });
-                                          }
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .bottomAppBarColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: Dismissible(
+                                            confirmDismiss: (direction) async {
+                                              if (direction ==
+                                                  DismissDirection.endToStart) {
+                                                setState(() {
+                                                  context
+                                                          .read(Globals
+                                                              .transfer_email)
+                                                          .state =
+                                                      Globals
+                                                          .client
+                                                          .getCachedFriends[
+                                                              index]
+                                                          .mail;
+                                                  selected_index = index;
+                                                });
+                                              }
 
-                                          // remove friend.
-                                          if (direction ==
-                                              DismissDirection.startToEnd) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => ConfirmDialog(
-                                                danger: true,
-                                                title:
-                                                    'Delete ${Globals.client.getCachedFriends[index]}?',
-                                                cancelFunction: () {
-                                                  setState(() {
+                                              // remove friend.
+                                              if (direction ==
+                                                  DismissDirection.startToEnd) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => ConfirmDialog(
+                                                    danger: true,
+                                                    title: 'Unfollow',
+                                                    content: Text(
+                                                        'Would you like to remove ${Globals.client.getCachedFriends[index].mail} from your favorites?',
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .highlightColor,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 18)),
+                                                    cancelFunction: () {
+                                                      setState(() {
+                                                        Globals.client
+                                                            .getCachedFriends;
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      return false;
+                                                    },
+                                                    actionText: Text('Approve'),
+                                                    actionFunction: () async {
+                                                      try {
+                                                        await Globals.client
+                                                            .removeFriend(Globals
+                                                                .client
+                                                                .getCachedFriends[
+                                                                    index]
+                                                                .mail);
+                                                        setState(() {
+                                                          Globals.client
+                                                              .getCachedFriends
+                                                              .removeAt(index);
+                                                        });
+                                                      } catch (e) {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                SnackBar(
+                                                          content: Text(
+                                                              '[${e.codeName}] ${e.message}'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                        ));
+                                                      }
+
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      return true;
+                                                    },
+                                                  ),
+                                                );
+                                              }
+
+                                              return false;
+                                            },
+                                            secondaryBackground: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              alignment: Alignment.centerRight,
+                                              child: Icon(CupertinoIcons
+                                                  .money_dollar_circle),
+                                            ),
+                                            background: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              alignment: Alignment.centerLeft,
+                                              child: Icon(Icons
+                                                  .delete_forever_outlined),
+                                            ),
+                                            key: ValueKey(Globals.client
+                                                .getCachedFriends[index]),
+                                            child: ListTile(
+                                              onTap: () async {
+                                                setState(() {
+                                                  context
+                                                          .read(Globals
+                                                              .transfer_email)
+                                                          .state =
+                                                      Globals
+                                                          .client
+                                                          .getCachedFriends[
+                                                              index]
+                                                          .mail;
+                                                  selected_index = index;
+                                                });
+                                              },
+                                              selected: selected_index == index,
+                                              leading: CircleAvatar(
+                                                backgroundImage: NetworkImage(
                                                     Globals.client
-                                                        .getCachedFriends;
-                                                  });
-                                                  Navigator.of(context).pop();
-                                                  return false;
-                                                },
-                                                actionText: Text('Approve'),
-                                                actionFunction: () async {
-                                                  try {
-                                                    await Globals.client
-                                                        .removeFriend(Globals
+                                                            .getCachedProfileImages[
+                                                        Globals
                                                             .client
                                                             .getCachedFriends[
                                                                 index]
-                                                            .mail);
-                                                    setState(() {
-                                                      Globals.client
-                                                          .getCachedFriends
-                                                          .removeAt(index);
-                                                    });
-                                                  } catch (e) {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          '[${e.codeName}] ${e.message}'),
-                                                      backgroundColor:
-                                                          Colors.red,
-                                                    ));
-                                                  }
-
-                                                  Navigator.of(context).pop();
-                                                  return true;
-                                                },
+                                                            .imageID
+                                                            .toInt()]),
                                               ),
-                                            );
-                                          }
-
-                                          return false;
-                                        },
-                                        secondaryBackground: Container(
-                                          alignment: Alignment.centerRight,
-                                          color: Colors.green,
-                                          child: Icon(
-                                              Icons.transfer_within_a_station),
-                                        ),
-                                        background: Container(
-                                          alignment: Alignment.centerLeft,
-                                          color: Colors.red,
-                                          child: Icon(
-                                              Icons.delete_forever_outlined),
-                                        ),
-                                        key: ValueKey(Globals
-                                            .client.getCachedFriends[index]),
-                                        child: ListTile(
-                                          onTap: () async {
-                                            setState(() {
-                                              context
-                                                      .read(Globals.transfer_email)
-                                                      .state =
-                                                  Globals
-                                                      .client
-                                                      .getCachedFriends[index]
-                                                      .mail;
-                                              selected_index = index;
-                                            });
-                                          },
-                                          selected: selected_index == index,
-                                          leading: CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                                'assets/images/avatar.png'),
-                                          ),
-                                          dense: false,
-                                          enabled: true,
-                                          title: Text(
-                                            "${Globals.client.getCachedFriends[index].mail}\n",
-                                          ),
-                                          trailing: Icon(
-                                              Icons.transfer_within_a_station),
-                                        ))),
+                                              dense: false,
+                                              enabled: true,
+                                              title: Text(
+                                                "${Globals.client.getCachedFriends[index].mail}\n",
+                                              ),
+                                              trailing: Icon(CupertinoIcons
+                                                  .arrow_right_arrow_left),
+                                            )))),
                                 separatorBuilder: (_, index) => SizedBox(
                                   height: 5,
                                 ),
@@ -481,6 +531,7 @@ class _MyFormState extends State<MyForm> {
         children: <Widget>[
           AppInputField(
             focusNode: widget.emailNode,
+            title: 'Email',
             placeholderText: 'Email',
             controller: emailControler,
             textInputAction: TextInputAction.next,
@@ -492,9 +543,10 @@ class _MyFormState extends State<MyForm> {
               return null;
             },
           ),
-          SizedBox(height: 25.0),
+          SizedBox(height: 8.0),
           AppInputField(
             focusNode: widget.amountNode,
+            title: 'Amount',
             placeholderText: 'Amount',
             controller: amountControler,
             textInputAction: TextInputAction.done,
@@ -529,8 +581,14 @@ class _MyFormState extends State<MyForm> {
                     showDialog(
                       context: context,
                       builder: (_) => ConfirmDialog(
-                        title:
-                            'Transfer ${amountControler.text} to ${emailControler.text}?',
+                        danger: true,
+                        title: 'Transfer',
+                        content: Text(
+                            'Would you like to transfer ${amountControler.text} to ${emailControler.text}?',
+                            style: TextStyle(
+                                color: Theme.of(context).highlightColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18)),
                         cancelFunction: () {
                           Navigator.of(context).pop();
                           return false;
@@ -555,6 +613,9 @@ class _MyFormState extends State<MyForm> {
                             setState(() {
                               context.read(Globals.transfer_email).state = "";
 
+                              FocusScope.of(context).unfocus();
+                              emailControler.clear();
+                              amountControler.clear();
                               _loading = false;
                             });
                           } on FormatException catch (e) {
@@ -567,6 +628,7 @@ class _MyFormState extends State<MyForm> {
                               backgroundColor: Colors.red,
                             ));
                           } catch (e) {
+                            print(e);
                             setState(() {
                               _loading = false;
                             });
@@ -607,6 +669,7 @@ class _SearchFriendState extends State<SearchFriend> {
   Widget build(BuildContext context) {
     return SearchBar<GenericUser>(
       searchBarStyle: SearchBarStyle(borderRadius: BorderRadius.circular(16.0)),
+      hintText: 'Search An Email',
       minimumChars: 1,
       iconActiveColor: Theme.of(context).highlightColor,
       textStyle: TextStyle(color: Theme.of(context).highlightColor),

@@ -1,6 +1,7 @@
 import 'package:Payeet/Screens/LoginPage.dart';
 import 'package:Payeet/UI_Elements/AppButton.dart';
 import 'package:Payeet/UI_Elements/AppInputField.dart';
+import 'package:Payeet/UI_Elements/FullLogo.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,12 +26,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           child: SingleChildScrollView(
               child: Column(children: <Widget>[
         SizedBox(height: 45.0),
-        Container(
-          height: 100,
-          child: SvgPicture.asset(
-            'assets/icon/payeet_icon.svg',
-          ),
-        ),
+        FullLogo(),
         SizedBox(height: 45.0),
         MyForm(),
       ]))),
@@ -118,6 +114,7 @@ class _MyFormState extends State<MyForm> {
                     children: <Widget>[
                       AppInputField(
                         placeholderText: 'Email',
+                        title: 'Email Address',
                         controller: emailController,
                         textInputAction: TextInputAction.next,
                         inputType: TextInputType.emailAddress,
@@ -129,9 +126,9 @@ class _MyFormState extends State<MyForm> {
                         },
                       ),
                       SizedBox(height: 20.0),
-                      
                       AppInputField(
-                        placeholderText: 'Password',
+                        placeholderText: 'New Password',
+                        title: 'New Password',
                         controller: passwordController,
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -145,6 +142,7 @@ class _MyFormState extends State<MyForm> {
                       SizedBox(height: 10.0),
                       AppInputField(
                         placeholderText: 'Confirm Password',
+                        title: 'Confirm Password',
                         controller: confirmPasswordController,
                         textInputAction: TextInputAction.next,
                         obscureText: true,
@@ -202,27 +200,38 @@ class _MyFormState extends State<MyForm> {
                           ),
                         ),
                       ),
-                      RichText(
-                        text: TextSpan(
-                          style: style,
-                          children: <TextSpan>[
-                            TextSpan(text: 'Suddenly remembered?? '),
-                            TextSpan(
-                                text: 'Login',
-                                style: style.copyWith(
-                                    color: Colors.blue[400],
-                                    fontWeight: FontWeight.bold),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pop(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginPage()),
-                                    );
-                                  }),
-                          ],
-                        ),
-                      )
+                      Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                              child: RichText(
+                            text: TextSpan(
+                              style: style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Changed your mind? ',
+                                  style: style.copyWith(
+                                      color: Theme.of(context).hintColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: style.fontSize / 1.5),
+                                ),
+                                TextSpan(
+                                    text: 'Login',
+                                    style: style.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: style.fontSize / 1.5),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.pop(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()),
+                                        );
+                                      }),
+                              ],
+                            ),
+                          )))
                     ],
                   ),
                 ))));
